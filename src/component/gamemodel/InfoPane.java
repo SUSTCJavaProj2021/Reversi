@@ -1,6 +1,6 @@
-package view;
+package component.gamemodel;
 
-import controller.output.Player;
+import controller.Player;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;

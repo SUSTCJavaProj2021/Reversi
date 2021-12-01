@@ -1,30 +1,24 @@
 package controller;
 
-import controller.GameStatus;
-import controller.PlayerConstants;
-import controller.CLIGameSystem;
-import controller.PlayerConstants;
-import controller.DebugConsole;
 import controller.output.OutputCategory;
 import controller.output.OutputChannel;
-import javafx.beans.property.StringProperty;
 
 public class GameController {
 
-    public CLIGameSystem sys;
+    private CLIGameSystem sys;
     private boolean isGameModifiable;
 
     public GameController(boolean isGameModifiable) {
         this.isGameModifiable = isGameModifiable;
-        sys = new CLIGameSystem();
+        setGameSystem(new CLIGameSystem());
     }
 
     public int getRowSize() {
-        return sys.rowSize;
+        return getGameSystem().rowSize;
     }
 
     public int getColSize() {
-        return sys.colSize;
+        return getGameSystem().colSize;
     }
 
     public boolean getModifiability() {
@@ -34,11 +28,20 @@ public class GameController {
 
     public void onGridClick(int rowIndex, int colIndex) {
         DebugConsole.writeToConsole(OutputChannel.STDOUT, OutputCategory.CLI_INFO,
-                String.format("%s Clicked Grid (%d, %d)", sys.curPlayer.toString(), rowIndex, colIndex));
-        sys.makeMove(rowIndex, colIndex);
+                String.format("%s Clicked Grid (%d, %d)", getGameSystem().curPlayer.toString(), rowIndex, colIndex));
+        getGameSystem().makeMove(rowIndex, colIndex);
     }
 
     public BlockStatus getBlockInfo(int rowIndex, int colIndex) {
-        return sys.getBlockStatus(rowIndex, colIndex);
+        return getGameSystem().getBlockStatus(rowIndex, colIndex);
     }
+
+    public CLIGameSystem getGameSystem() {
+        return sys;
+    }
+
+    public void setGameSystem(CLIGameSystem sys) {
+        this.sys = sys;
+    }
+
 }
