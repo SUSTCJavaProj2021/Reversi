@@ -7,10 +7,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
 public class InfoPane extends GridPane {
+    public static final int MIN_WIDTH = 200;
 
     public InfoPane(Player player) {
         super();
         this.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
-        this.setMinWidth(200);
+        this.setMinWidth(MIN_WIDTH);
     }
 }

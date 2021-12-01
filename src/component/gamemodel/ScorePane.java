@@ -9,8 +9,8 @@ import javafx.scene.paint.Color;
 
 
 public class ScorePane extends GridPane {
-    public static final int MIN_HEIGHT = 75;
-    public static final int PREF_HEIGHT = 100;
+    public static final int MIN_HEIGHT = 45;
+    public static final int PREF_HEIGHT = 60;
 
     public static final Color backgroundColor = Color.LIGHTGRAY;
     public static final Background background = new Background(new BackgroundFill(backgroundColor, null, null));
@@ -50,8 +50,8 @@ public class ScorePane extends GridPane {
                     Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.CENTER, true);
             this.getColumnConstraints().add(i, columnConstraints[i]);
         }
-        columnConstraints[0].setPercentWidth(25);
+        columnConstraints[0].setPercentWidth(35);
         columnConstraints[1].setPercentWidth(50);
-        columnConstraints[2].setPercentWidth(25);
+        columnConstraints[2].setPercentWidth(35);
     }
 }
