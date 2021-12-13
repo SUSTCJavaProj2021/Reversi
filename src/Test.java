@@ -1,158 +1,65 @@
-import javafx.animation.*;
-import javafx.application.*;
-import javafx.beans.property.*;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.geometry.Insets;
-import javafx.scene.*;
-import javafx.scene.control.Label;
-import javafx.scene.effect.*;
-import javafx.scene.Cursor;
-import javafx.scene.Node;
-import javafx.scene.image.*;
-import javafx.scene.layout.StackPane;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.util.Duration;
+import javafx.scene.shape.*;
+import javafx.stage.*;
+//import org.scenicview.ScenicView;
 
+// Java 8 code
 public class Test extends Application {
 
-    private static final double BLUR_AMOUNT = 10;
+    private static final int shadowSize = 50;
 
-    private static final Effect frostEffect =
-            new BoxBlur(BLUR_AMOUNT, BLUR_AMOUNT, 3);
+    @Override public void start(final Stage stage) {
+        stage.initStyle(StageStyle.TRANSPARENT);
 
-    private static final ImageView background = new ImageView();
-    private static final StackPane layout = new StackPane();
-
-    @Override public void start(Stage stage) {
-        layout.getChildren().setAll(background, createContent());
-        layout.setStyle("-fx-background-color: null");
-
-        Scene scene = new Scene(
-                layout,
-                200, 300,
-                Color.TRANSPARENT
+        StackPane stackPane = new StackPane(createShadowPane());
+        stackPane.setStyle(
+                "-fx-background-color: rgba(102,102,102,0.5);" +
+                        "-fx-background-insets: " + shadowSize + ";"
         );
 
-        Platform.setImplicitExit(false);
-
-        scene.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) Platform.exit();
-        });
-        makeSmoke(stage);
-
-        stage.initStyle(StageStyle.TRANSPARENT);
+        Scene scene = new Scene(stackPane, 450, 450);
+        scene.setFill(Color.TRANSPARENT);
         stage.setScene(scene);
         stage.show();
-
-        background.setImage(copyBackground(stage));
-        background.setEffect(frostEffect);
-
-        makeDraggable(stage, layout);
     }
 
-    // copy a background node to be frozen over.
-    private Image copyBackground(Stage stage) {
-        final int X = (int) stage.getX();
-        final int Y = (int) stage.getY();
-        final int W = (int) stage.getWidth();
-        final int H = (int) stage.getHeight();
-
-        try {
-            java.awt.Robot robot = new java.awt.Robot();
-            java.awt.image.BufferedImage image = robot.createScreenCapture(new java.awt.Rectangle(X, Y, W, H));
-
-            return SwingFXUtils.toFXImage(image, null);
-        } catch (java.awt.AWTException e) {
-            System.out.println("The robot of doom strikes!");
-            e.printStackTrace();
-
-            return null;
-        }
-    }
-
-    // create some content to be displayed on top of the frozen glass panel.
-    private Label createContent() {
-        Label label = new Label("Create a new question for drop shadow effects.\n\nDrag to move\n\nDouble click to close");
-        label.setPadding(new Insets(10));
-
-        label.setStyle("-fx-font-size: 15px; -fx-text-fill: green;");
-        label.setMaxWidth(250);
-        label.setWrapText(true);
-
-        return label;
-    }
-
-    // makes a stage draggable using a given node.
-    public void makeDraggable(final Stage stage, final Node byNode) {
-        final Delta dragDelta = new Delta();
-        byNode.setOnMousePressed(mouseEvent -> {
-            // record a delta distance for the drag and drop operation.
-            dragDelta.x = stage.getX() - mouseEvent.getScreenX();
-            dragDelta.y = stage.getY() - mouseEvent.getScreenY();
-            byNode.setCursor(Cursor.MOVE);
-        });
-        final BooleanProperty inDrag = new SimpleBooleanProperty(false);
-
-        byNode.setOnMouseReleased(mouseEvent -> {
-            byNode.setCursor(Cursor.HAND);
-
-            if (inDrag.get()) {
-                stage.hide();
-
-                Timeline pause = new Timeline(new KeyFrame(Duration.millis(50), event -> {
-                    background.setImage(copyBackground(stage));
-                    layout.getChildren().set(
-                            0,
-                            background
-                    );
-                    stage.show();
-                }));
-                pause.play();
-            }
-
-            inDrag.set(false);
-        });
-        byNode.setOnMouseDragged(mouseEvent -> {
-            stage.setX(mouseEvent.getScreenX() + dragDelta.x);
-            stage.setY(mouseEvent.getScreenY() + dragDelta.y);
-
-            layout.getChildren().set(
-                    0,
-                    makeSmoke(stage)
-            );
-
-            inDrag.set(true);
-        });
-        byNode.setOnMouseEntered(mouseEvent -> {
-            if (!mouseEvent.isPrimaryButtonDown()) {
-                byNode.setCursor(Cursor.HAND);
-            }
-        });
-        byNode.setOnMouseExited(mouseEvent -> {
-            if (!mouseEvent.isPrimaryButtonDown()) {
-                byNode.setCursor(Cursor.DEFAULT);
-            }
-        });
-    }
-
-    private javafx.scene.shape.Rectangle makeSmoke(Stage stage) {
-        return new javafx.scene.shape.Rectangle(
-                stage.getWidth(),
-                stage.getHeight(),
-                Color.WHITESMOKE.deriveColor(
-                        0, 1, 1, 0.08
-                )
+    // Create a shadow effect as a halo around the pane and not within
+    // the pane's content area.
+    private Pane createShadowPane() {
+        Pane shadowPane = new Pane();
+        // a "real" app would do this in a CSS stylesheet.
+        shadowPane.setStyle(
+                "-fx-background-color: white;" +
+                        "-fx-effect: dropshadow(gaussian, #181212, " + shadowSize + ", 0, 0, 0);" +
+                        "-fx-background-insets: " + shadowSize + ";"
         );
-    }
 
-    /** records relative x and y co-ordinates. */
-    private static class Delta {
-        double x, y;
+        Rectangle innerRect = new Rectangle();
+        Rectangle outerRect = new Rectangle();
+        shadowPane.layoutBoundsProperty().addListener(
+                (observable, oldBounds, newBounds) -> {
+                    innerRect.relocate(
+                            newBounds.getMinX() + shadowSize,
+                            newBounds.getMinY() + shadowSize
+                    );
+                    innerRect.setWidth(newBounds.getWidth() - shadowSize * 2);
+                    innerRect.setHeight(newBounds.getHeight() - shadowSize * 2);
+
+                    outerRect.setWidth(newBounds.getWidth());
+                    outerRect.setHeight(newBounds.getHeight());
+
+                    Shape clip = Shape.subtract(outerRect, innerRect);
+                    shadowPane.setClip(clip);
+                }
+        );
+
+        return shadowPane;
     }
 
     public static void main(String[] args) {
         launch(args);
     }
-}  
+}

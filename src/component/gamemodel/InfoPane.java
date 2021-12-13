@@ -11,7 +11,7 @@ public class InfoPane extends GridPane {
 
     public InfoPane(Player player) {
         super();
-        this.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+        this.setBackground(new Background(new BackgroundFill(Color.web("1D1F2C"), null, null)));
         this.setMinWidth(MIN_WIDTH);
     }
 }

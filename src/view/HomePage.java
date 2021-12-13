@@ -42,12 +42,12 @@ public class HomePage {
 
     public HomePage() {
 
-        welcomeText = new Label(LiteralConstants.WelcomeText.getText());
+        welcomeText = new Label(LiteralConstants.WelcomeText.toString());
 
-        playButton = new Button(LiteralConstants.PlayButtonText.getText());
-        settingsButton = new Button(LiteralConstants.SettingsButtonText.getText());
-        slButton = new Button(LiteralConstants.SaveAndLoadButtonText.getText());
-        statisticsButton = new Button(LiteralConstants.StatisticsButtonText.getText());
+        playButton = new Button(LiteralConstants.PlayButtonText.toString());
+        settingsButton = new Button(LiteralConstants.SettingsButtonText.toString());
+        slButton = new Button(LiteralConstants.SaveAndLoadButtonText.toString());
+        statisticsButton = new Button(LiteralConstants.StatisticsButtonText.toString());
 
         welcomeText.setFont(new Font("Cambria", 24));
         welcomeText.setTextFill(Paint.valueOf("BLACK"));
@@ -119,7 +119,6 @@ public class HomePage {
 
         rootColConstraints[0].setPercentWidth(25);
         rootColConstraints[1].setPercentWidth(75);
-
 
     }
 

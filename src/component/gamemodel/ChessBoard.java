@@ -14,9 +14,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import controller.BlockStatus;
-import controller.DebugConsole;
+import controller.Log0j;
 import controller.GameController;
 import controller.output.OutputCategory;
 import controller.output.OutputChannel;
@@ -97,7 +96,7 @@ public class ChessBoard extends GridPane {
             }
 
         }
-        DebugConsole.writeToConsole(OutputChannel.STDOUT, OutputCategory.GUI_INFO, "Board Updated.");
+        Log0j.writeLog(OutputChannel.STDOUT, OutputCategory.GUI_INFO, "Board Updated.");
     }
 
     // Below are color updaters
@@ -114,7 +113,7 @@ public class ChessBoard extends GridPane {
                                 new BackgroundFill((row + col) % 2 == 0 ? color1 : color2, null, null)));
             }
         }
-        DebugConsole.writeToConsole(OutputChannel.STDOUT, OutputCategory.GUI_INFO, "Board Color Updated.");
+        Log0j.writeLog(OutputChannel.STDOUT, OutputCategory.GUI_INFO, "Board Color Updated.");
     }
 
     private void bindToController() {

@@ -2,6 +2,7 @@ package res.language;
 
 public enum LiteralConstants {
     // Button Text
+    HomeButtonText("Home"),
     PlayButtonText("Play"),
     StatisticsButtonText("Statistics"),
     SettingsButtonText("Settings"),
@@ -19,7 +20,8 @@ public enum LiteralConstants {
         this.literal = text;
     }
 
-    public String getText() {
+    @Override
+    public String toString(){
         return this.literal;
     }
 }

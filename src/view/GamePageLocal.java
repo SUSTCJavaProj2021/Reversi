@@ -23,10 +23,13 @@ public class GamePageLocal {
         rootPane = new BorderPane();
 
         rootPane.setLeft(new InfoPane(new Player()));
+        rootPane.setRight(new InfoPane(new Player()));
 
         // BEGINNING OF TEMPORARY TEST
         ScorePane sc = new ScorePane(controller);
+
         rootPane.setTop(sc);
+
         // END OF TEMPORARY TEST
 
         rootPane.setCenter(chessBoard);
