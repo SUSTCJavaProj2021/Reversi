@@ -35,7 +35,6 @@ import res.language.LiteralConstants;
 
 public class HomePage {
 
-    public Scene scene;
 
     public GridPane UIPane;
     public GridPane rootPane;
@@ -52,7 +51,7 @@ public class HomePage {
 
     public Label welcomeText;
 
-    public HomePage(int resWidth, int resHeight, String imageSrc) {
+    public HomePage(String imageSrc) {
 
         welcomeText = new Label(LiteralConstants.WelcomeText.getText());
 
@@ -81,13 +80,6 @@ public class HomePage {
 
         rootPane = new GridPane();
         UIPane = new GridPane();
-        scene = new Scene(rootPane, resWidth, resHeight);
-
-        // JMetro
-        // JMetro jMetro = new JMetro(Style.DARK);
-        // jMetro.setScene(scene);
-        // rootPane.getStyleClass().add(JMetroStyleClass.BACKGROUND);
-        // End
 
         hBox = new HBox();
 
@@ -135,8 +127,11 @@ public class HomePage {
             rootColConstraints[i] = new ColumnConstraints();
             rootPane.getColumnConstraints().add(rootColConstraints[i]);
         }
+
         rootColConstraints[0].setPercentWidth(25);
         rootColConstraints[1].setPercentWidth(75);
+
+
     }
 
 }

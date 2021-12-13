@@ -9,7 +9,8 @@ public enum LiteralConstants {
     WelcomeText("Wow! Well played!"),
 
     // TODO: PlayPage Text
-    PlayLocalText("Play Local Game");
+    PlayLocalText("Play Local Game"),
+    BackButtonText("Back");
 
     private String literal;
 
