@@ -1,14 +1,15 @@
 package res.language;
 
 public enum LiteralConstants {
-    // HomePage Text
+    // Button Text
     PlayButtonText("Play"),
     StatisticsButtonText("Statistics"),
     SettingsButtonText("Settings"),
-    slButtonText("Save / Load"),
-    WelcomeText("Wow! Well played!"),
+    SaveAndLoadButtonText("Save / Load"),
+    ExitButtonText("Exit"),
 
     // TODO: PlayPage Text
+    WelcomeText("Wow! Well played!"),
     PlayLocalText("Play Local Game"),
     BackButtonText("Back");
 
