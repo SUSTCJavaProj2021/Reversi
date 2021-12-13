@@ -13,7 +13,8 @@ public class PlayPage {
     public PlayPage() {
         root = new BorderPane();
         playLocalButton = new Button(LiteralConstants.PlayLocalText.toString());
-
+        playLocalButton.setPrefHeight(75);
+        playLocalButton.setPrefWidth(300);
         root.setCenter(playLocalButton);
     }
 }

@@ -1,65 +1,57 @@
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
-import javafx.stage.*;
-//import org.scenicview.ScenicView;
+import javafx.scene.control.Button;
+import javafx.scene.control.ToolBar;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
-// Java 8 code
 public class Test extends Application {
-
-    private static final int shadowSize = 50;
-
-    @Override public void start(final Stage stage) {
-        stage.initStyle(StageStyle.TRANSPARENT);
-
-        StackPane stackPane = new StackPane(createShadowPane());
-        stackPane.setStyle(
-                "-fx-background-color: rgba(102,102,102,0.5);" +
-                        "-fx-background-insets: " + shadowSize + ";"
-        );
-
-        Scene scene = new Scene(stackPane, 450, 450);
-        scene.setFill(Color.TRANSPARENT);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    // Create a shadow effect as a halo around the pane and not within
-    // the pane's content area.
-    private Pane createShadowPane() {
-        Pane shadowPane = new Pane();
-        // a "real" app would do this in a CSS stylesheet.
-        shadowPane.setStyle(
-                "-fx-background-color: white;" +
-                        "-fx-effect: dropshadow(gaussian, #181212, " + shadowSize + ", 0, 0, 0);" +
-                        "-fx-background-insets: " + shadowSize + ";"
-        );
-
-        Rectangle innerRect = new Rectangle();
-        Rectangle outerRect = new Rectangle();
-        shadowPane.layoutBoundsProperty().addListener(
-                (observable, oldBounds, newBounds) -> {
-                    innerRect.relocate(
-                            newBounds.getMinX() + shadowSize,
-                            newBounds.getMinY() + shadowSize
-                    );
-                    innerRect.setWidth(newBounds.getWidth() - shadowSize * 2);
-                    innerRect.setHeight(newBounds.getHeight() - shadowSize * 2);
-
-                    outerRect.setWidth(newBounds.getWidth());
-                    outerRect.setHeight(newBounds.getHeight());
-
-                    Shape clip = Shape.subtract(outerRect, innerRect);
-                    shadowPane.setClip(clip);
-                }
-        );
-
-        return shadowPane;
-    }
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    class WindowButtons extends HBox {
+
+        public WindowButtons() {
+            Button closeBtn = new Button("X");
+
+            closeBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    Platform.exit();
+                }
+            });
+
+            this.getChildren().add(closeBtn);
+        }
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        //remove window decoration
+        primaryStage.initStyle(StageStyle.UNDECORATED);
+
+        BorderPane borderPane = new BorderPane();
+        borderPane.setStyle("-fx-background-color: green;");
+
+        ToolBar toolBar = new ToolBar();
+
+        int height = 25;
+        toolBar.setPrefHeight(height);
+        toolBar.setMinHeight(height);
+        toolBar.setMaxHeight(height);
+        toolBar.getItems().add(new WindowButtons());
+
+        borderPane.setTop(toolBar);
+
+        primaryStage.setScene(new Scene(borderPane, 300, 250));
+        primaryStage.show();
     }
 }
