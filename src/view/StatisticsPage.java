@@ -1,6 +1,7 @@
 package view;
 
 import controller.GameController;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -12,6 +13,7 @@ public class StatisticsPage {
 
     public StatisticsPage(GameController controller){
         root = new GridPane();
+        root.add(new TextField("Well played!"),0, 0);
 
         root.setBackground(new Background(new BackgroundFill(Color.web("26272F"), null, null)));
     }

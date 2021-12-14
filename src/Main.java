@@ -31,7 +31,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         //Initialize Controller
         GameController controller = new GameController(true);
-        
+
 
         //Configure pages
         selectorPage = new SelectorPage();
@@ -105,9 +105,9 @@ public class Main extends Application {
                 cs[i] = new ColumnConstraints();
                 mainView.getColumnConstraints().add(cs[i]);
             }
-            cs[1].setMinWidth(150);
-            cs[1].setPrefWidth(250);
-            cs[1].setMaxWidth(250);
+            cs[1].setMinWidth(175);
+            cs[1].setPrefWidth(175);
+            cs[1].setMaxWidth(175);
         }
 
         Log0j.writeLog(getClass().toString(), "Main View initialized.");
@@ -185,8 +185,13 @@ public class Main extends Application {
         Image iconImg = new Image("/res/icon.png");
 
         Scene mainScene = new Scene(mainView);
+
         primaryStage.setWidth(1280);
         primaryStage.setHeight(800);
+
+        primaryStage.setMinWidth(600);
+        primaryStage.setMinHeight(450);
+
         primaryStage.setScene(mainScene);
         primaryStage.setTitle("Reversi!");
         primaryStage.getIcons().add(iconImg);
