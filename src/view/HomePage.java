@@ -1,6 +1,7 @@
 package view;
 
 import controller.GameController;
+import controller.GameSystem;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
@@ -31,7 +32,7 @@ public class HomePage {
 
     public Label welcomeText;
 
-    public HomePage(GameController controller) {
+    public HomePage(GameSystem system) {
 
         welcomeText = new Label(LiteralConstants.WelcomeText.toString());
 

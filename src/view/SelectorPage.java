@@ -16,7 +16,7 @@ public class SelectorPage {
     public AboutButton aboutButton;
     public ExitButton exitButton;
 
-    public AdaptiveStyleButton currentSelectedButton;
+    public AdaptiveStyleSelectorButton currentSelectedButton;
 
     public enum Selector{
         Home, Play, Statistics, SaveAndLoad, Settings, About, Exit;
@@ -68,8 +68,7 @@ public class SelectorPage {
     }
 
     public void setCurrentSelection(Selector s){
-        currentSelectedButton.setBackground(AdaptiveStyleButton.defaultBackground);
-        currentSelectedButton.isSelected = false;
+        currentSelectedButton.setDeselected();
 
         switch(s){
             case Home:
@@ -100,10 +99,8 @@ public class SelectorPage {
                 currentSelectedButton = exitButton;
                 break;
         }
-        currentSelectedButton.setBackground(AdaptiveStyleButton.selectedBackground);
-        currentSelectedButton.isSelected = true;
-        currentSelectedButton.setOpacity(1.0);
+        currentSelectedButton.setSelected();
 
-        Log0j.writeLog(getClass().toString(), "Switched selection to " + currentSelectedButton.getClass());
+        Log0j.writeLog(getClass().getSimpleName(), "Switched selection to " + currentSelectedButton.getClass());
     }
 }

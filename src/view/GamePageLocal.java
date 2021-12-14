@@ -10,29 +10,28 @@ import javafx.scene.paint.Color;
 import controller.GameController;
 
 public class GamePageLocal {
-    public Scene rootScene;
-    public BorderPane rootPane;
+    public BorderPane root;
 
     public ChessBoard chessBoard;
 
     public GamePageLocal(GameController controller) {
         chessBoard = new ChessBoard(controller);
-        rootPane = new BorderPane();
+        root = new BorderPane();
 
-        rootPane.setLeft(new InfoPane(new Player()));
-        rootPane.setRight(new InfoPane(new Player()));
+        root.setLeft(new InfoPane(new Player()));
+        root.setRight(new InfoPane(new Player()));
 
         // BEGINNING OF TEMPORARY TEST
         ScorePane sc = new ScorePane(controller);
 
-        rootPane.setTop(sc);
+        root.setTop(sc);
 
         // END OF TEMPORARY TEST
 
-        rootPane.setCenter(chessBoard);
+        root.setCenter(chessBoard);
 
 
-        rootPane.setBackground(new Background(
+        root.setBackground(new Background(
                 new BackgroundFill(Color.BLACK, null, null)));
 
 
@@ -51,7 +50,5 @@ public class GamePageLocal {
 //        columnConstraints[1].setPercentWidth(75);
 //        rowConstraints[0].setPercentHeight(8);
 //        rowConstraints[1].setPercentHeight(92);
-
-        rootScene = new Scene(rootPane);
     }
 }

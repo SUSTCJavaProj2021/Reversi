@@ -1,6 +1,7 @@
 package view;
 
 import controller.GameController;
+import controller.GameSystem;
 import javafx.geometry.HPos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
@@ -13,7 +14,7 @@ public class PlayPage {
     public Button playLocalButton;
     public Button loadGameButton;
 
-    public PlayPage(GameController controller) {
+    public PlayPage(GameSystem system) {
         root = new GridPane();
         playLocalButton = new Button(LiteralConstants.PlayLocalText.toString());
         playLocalButton.setPrefHeight(75);

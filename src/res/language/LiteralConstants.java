@@ -11,7 +11,7 @@ public enum LiteralConstants {
     ExitButtonText("Exit"),
 
     // TODO: PlayPage Text
-    WelcomeText("We recommend you that you surrender immediately after 15 minutes."),
+    WelcomeText("We recommend that you surrender immediately after 15 minutes."),
     PlayLocalText("Play Local Game"),
     LoadGameText("Load Game from the Database"),
     BackButtonText("Back");

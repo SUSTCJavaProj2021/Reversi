@@ -1,16 +1,13 @@
 package controller;
 
-import controller.output.OutputCategory;
-import controller.output.OutputChannel;
-
 public class GameController {
 
-    private CLIGameSystem sys;
+    private CLIGameController sys;
     private boolean isGameModifiable;
 
     public GameController(boolean isGameModifiable) {
         this.isGameModifiable = isGameModifiable;
-        setGameSystem(new CLIGameSystem());
+        setGameSystem(new CLIGameController());
     }
 
     public int getRowSize() {
@@ -36,11 +33,11 @@ public class GameController {
         return getGameSystem().getBlockStatus(rowIndex, colIndex);
     }
 
-    public CLIGameSystem getGameSystem() {
+    public CLIGameController getGameSystem() {
         return sys;
     }
 
-    public void setGameSystem(CLIGameSystem sys) {
+    public void setGameSystem(CLIGameController sys) {
         this.sys = sys;
     }
 

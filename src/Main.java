@@ -1,4 +1,5 @@
 import controller.GameController;
+import controller.GameSystem;
 import controller.Log0j;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -29,17 +30,16 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        //Initialize Controller
-        GameController controller = new GameController(true);
-
+        //Initialize Game System
+        GameSystem gameSystem = new GameSystem();
 
         //Configure pages
         selectorPage = new SelectorPage();
-        homePage = new HomePage(controller);
-        playPage = new PlayPage(controller);
-        statisticsPage = new StatisticsPage(controller);
-        saveAndLoadPage = new SaveAndLoadPage(controller);
-        settingsPage = new SettingsPage(controller);
+        homePage = new HomePage(gameSystem);
+        playPage = new PlayPage(gameSystem);
+        statisticsPage = new StatisticsPage(gameSystem);
+        saveAndLoadPage = new SaveAndLoadPage(gameSystem);
+        settingsPage = new SettingsPage(gameSystem);
         aboutPage = new AboutPage();
         Log0j.writeLog(getClass().toString(), "All pages loaded.");
 
@@ -170,9 +170,9 @@ public class Main extends Application {
         playPage.playLocalButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                GamePageLocal gameLocalPage = new GamePageLocal(controller);
+                GamePageLocal gameLocalPage = new GamePageLocal(gameSystem.startNewGame());
                 Stage s = new Stage();
-                s.setScene(gameLocalPage.rootScene);
+                s.setScene(new Scene(gameLocalPage.root));
                 s.setTitle("LocalPlay");
                 s.show();
             }

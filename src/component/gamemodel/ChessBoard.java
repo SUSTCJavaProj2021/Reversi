@@ -96,7 +96,7 @@ public class ChessBoard extends GridPane {
             }
 
         }
-        Log0j.writeLog(getClass().toString(), "Board Updated.");
+        Log0j.writeLog(getClass().getSimpleName(), "Board Updated.");
     }
 
     // Below are color updaters
@@ -113,7 +113,7 @@ public class ChessBoard extends GridPane {
                                 new BackgroundFill((row + col) % 2 == 0 ? color1 : color2, null, null)));
             }
         }
-        Log0j.writeLog(getClass().toString(), "Board Color Updated.");
+        Log0j.writeLog(getClass().getSimpleName(), "Board Color Updated.");
     }
 
     private void bindToController() {

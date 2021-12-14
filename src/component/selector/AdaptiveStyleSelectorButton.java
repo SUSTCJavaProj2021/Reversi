@@ -11,7 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
-public class AdaptiveStyleButton extends Button {
+public class AdaptiveStyleSelectorButton extends Button {
     public static final double cornerRadii = 10;
     public static final Background defaultBackground = new Background(new BackgroundFill(Color.web("1D1F2C"), new CornerRadii(cornerRadii), null));
     public static final Background selectedBackground = new Background(new BackgroundFill(Color.web("2A2C38"), new CornerRadii(cornerRadii), null));
@@ -22,7 +22,7 @@ public class AdaptiveStyleButton extends Button {
         DEFAULT, ONMOUSE, SELECTED;
     }
 
-    public AdaptiveStyleButton(String text) {
+    public AdaptiveStyleSelectorButton(String text) {
         super(text);
         isSelected = false;
         setMinWidth(Button.USE_COMPUTED_SIZE);
@@ -73,12 +73,29 @@ public class AdaptiveStyleButton extends Button {
         setOnMouseReleased(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                setBackground(selectedBackground);
+                setSelected();
             }
         });
     }
 
-    private AdaptiveStyleButton outer() {
+    public void setSelected(){
+        isSelected = true;
+        setBackground(selectedBackground);
+        setOpacity(1.0);
+    }
+
+    public void setDeselected(){
+        isSelected = false;
+        setOpacity(0.8);
+        FadeTransition ft = new FadeTransition(Duration.millis(200), outer());
+        ft.setFromValue(1.0);
+        ft.setToValue(0.8);
+        ft.setCycleCount(1);
+        ft.play();
+        setBackground(defaultBackground);
+    }
+
+    private AdaptiveStyleSelectorButton outer() {
         return this;
     }
 

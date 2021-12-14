@@ -3,14 +3,14 @@ package controller;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class CLIGameSystem implements GameSystem {
+public class CLIGameController {
 
     public final int rowSize = 8, colSize = 8;
     public int board[][];
     public PlayerConstants curPlayer;
     private StringProperty GUICurPlayerProperty;
 
-    public CLIGameSystem() {
+    public CLIGameController() {
         board = new int[rowSize][colSize];
         board[rowSize / 2 - 1][colSize / 2 - 1] = board[rowSize / 2][colSize / 2] = 1;
         board[rowSize / 2 - 1][colSize / 2] = board[rowSize / 2][colSize / 2 - 1] = -1;
@@ -19,7 +19,6 @@ public class CLIGameSystem implements GameSystem {
         getCurPlayerProperty().setValue("Current Player: " + curPlayer.toString());
     }
 
-    @Override
     public BlockStatus getBlockStatus(int rowIndex, int colIndex) {
         if (board[rowIndex][colIndex] == 1) {
             return BlockStatus.WHITE_PLAYER;
