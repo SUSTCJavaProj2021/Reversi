@@ -1,9 +1,8 @@
 package component.selector;
 
-import controller.Log0j;
+import controller.logger.Log0j;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.image.ImageView;
@@ -13,6 +12,8 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 
 public class SelectorPage {
+    public static final double CORNER_RADII = 10;
+
     public GridPane root;
     public VBox selector;
 
@@ -21,7 +22,9 @@ public class SelectorPage {
     public SelectorButton currentSelectedButton;
     public ExitButton exitButton;
 
-    public SelectorPage(Label title) {
+    public boolean hasBottom;
+
+    public SelectorPage(){
         root = new GridPane();
         {
             Separator separators[] = new Separator[2];
@@ -35,11 +38,24 @@ public class SelectorPage {
         }
 
         selector = new VBox();
-        selector.setPrefWidth(SelectorButton.PREFERRED_WIDTH + 20);
+        selector.setPrefWidth(SelectorButton.PREFERRED_WIDTH);
         selector.setMinWidth(VBox.USE_COMPUTED_SIZE);
         GridPane.setVgrow(selector, Priority.ALWAYS);
         GridPane.setHgrow(selector, Priority.ALWAYS);
 
+        root.add(selector, 1, 0);
+
+
+        buttonList = new ArrayList<SelectorButton>(0);
+        currentSelectedButton = null;
+        hasBottom = false;
+
+        root.setPrefWidth(SelectorButton.PREFERRED_WIDTH + 20);
+        root.setBackground(new Background(new BackgroundFill(Color.rgb(0,0,0,0.05), new CornerRadii(CORNER_RADII), null)));
+    }
+
+    public SelectorPage(Label title) {
+        this();
         if (title != null) {
             Separator separators[] = new Separator[2];
             for (int i = 0; i < 2; i++) {
@@ -51,17 +67,13 @@ public class SelectorPage {
             }
             selector.getChildren().addAll(separators[0], title, separators[1]);
         }
-        root.add(selector, 1, 0);
-
-
-        buttonList = new ArrayList<SelectorButton>(0);
-        currentSelectedButton = null;
-
-        root.setBackground(new Background(new BackgroundFill(Color.web("1D1F2C"), null, null)));
     }
 
     public void init() {
         setCurrentSelection(buttonList.get(0));
+        if(!hasBottom){
+            fillBottom();
+        }
     }
 
     public void addSelection(String selectionText, Node node, ImageView icon) {
@@ -95,12 +107,16 @@ public class SelectorPage {
 
 
     public void setExitButton(ImageView icon) {
+        fillBottom();
+        exitButton = new ExitButton(icon);
+        selector.getChildren().add(exitButton);
+    }
+
+    public void fillBottom(){
+        hasBottom = true;
         Region fillRegion = new Region();
         VBox.setVgrow(fillRegion, Priority.ALWAYS);
         selector.getChildren().add(fillRegion);
-
-        exitButton = new ExitButton(icon);
-        selector.getChildren().add(exitButton);
     }
 
 }

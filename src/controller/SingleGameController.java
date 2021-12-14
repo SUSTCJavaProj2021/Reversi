@@ -1,7 +1,7 @@
 package controller;
 
 import component.gamemodel.ChessBoard;
-import javafx.beans.WeakInvalidationListener;
+import controller.logger.Log0j;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -17,14 +17,17 @@ public class SingleGameController {
 
     public ChessBoard chessBoard;
 
+    public boolean isCheatMode;
 
     public SingleGameController(Player whitePlayer, Player blackPlayer, boolean isGameModifiable) {
         this.isGameModifiable = isGameModifiable;
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
 
-        controller = new  CLIGameController();
+        //TEST ONLY
+        controller = new CLIGameController();
 
+        isCheatMode = false;
         curPlayerNameProperty = new SimpleStringProperty(whitePlayer.nameProperty.getValue());
         updateCurrentPlayer();
     }
@@ -51,8 +54,8 @@ public class SingleGameController {
         forceUpdateGUI();
     }
 
-    public void updateCurrentPlayer(){
-        switch(controller.getCurPlayer()){
+    public void updateCurrentPlayer() {
+        switch (controller.getCurPlayer()) {
             case WHITE_PLAYER:
                 currentPlayer = whitePlayer;
                 break;
@@ -71,11 +74,11 @@ public class SingleGameController {
         return whitePlayer;
     }
 
-    public Player getBlackPlayer(){
+    public Player getBlackPlayer() {
         return blackPlayer;
     }
 
-    public Player getCurrentPlayer(){
+    public Player getCurrentPlayer() {
         return currentPlayer;
     }
 
@@ -83,11 +86,16 @@ public class SingleGameController {
         this.controller = controller;
     }
 
-    public void bindToChessboard(ChessBoard chessBoard){
+    public void bindToChessboard(ChessBoard chessBoard) {
         this.chessBoard = chessBoard;
     }
 
-    public void forceUpdateGUI(){
+    public void setCheatmode(boolean isEnabled) {
+        isCheatMode = isEnabled;
+        Log0j.writeLog("Cheat mode switched: " + (isCheatMode ? "ON" : "OFF"));
+    }
+
+    public void forceUpdateGUI() {
 
         Log0j.writeLog("Triggering GUI update.");
 

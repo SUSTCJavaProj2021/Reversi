@@ -2,7 +2,7 @@ package view;
 
 import component.selector.SelectorPage;
 import controller.GameSystem;
-import controller.Log0j;
+import controller.logger.Log0j;
 import res.literal.LiteralConstants;
 import view.contentpages.*;
 import res.icons.Icon;
@@ -20,6 +20,7 @@ public class MainView extends GridPane {
     public static final double VIEWCOVER_CORNER_RADII = 10;
     public static final double VIEWCOVER_HORIZONTAL_DIST = 20;
     public static final double VIEWCOVER_VERTICAL_DIST = 50;
+    public static final double SELECTOR_WIDTH = 180;
 
     public BorderPane viewCoverPane;
     public StackPane viewPane;
@@ -129,9 +130,8 @@ public class MainView extends GridPane {
 
         {
             ColumnConstraints cs = new ColumnConstraints();
-            cs.setMinWidth(180);
-            cs.setPrefWidth(180);
-            cs.setMaxWidth(180);
+            cs.setMinWidth(SELECTOR_WIDTH);
+            cs.setMaxWidth(SELECTOR_WIDTH);
             getColumnConstraints().add(cs);
         }
 

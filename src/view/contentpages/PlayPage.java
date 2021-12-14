@@ -1,8 +1,9 @@
 package view.contentpages;
 
 import component.TitleLabel;
+import component.selector.SelectorPage;
 import controller.GameSystem;
-import controller.Log0j;
+import controller.logger.Log0j;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -15,38 +16,42 @@ import res.literal.LiteralConstants;
 import view.gamepages.GamePageLocal;
 
 public class PlayPage {
-    public GridPane root;
+    public static final double SELECTOR_WIDTH = 180;
 
-    public Button playLocalButton;
-    public Button loadGameButton;
+    public GridPane root;
+    public SelectorPage selectorPage;
+
+    public Button newLocalGameButton;
+    public Button loadLocalGameButton;
+
 
     public PlayPage(GameSystem gameSystem) {
         root = new GridPane();
         root.add(new TitleLabel("Play"), 0, 0);
+        GridPane.setColumnSpan(root.getChildren().get(0), 2);
+        selectorPage = new SelectorPage(null);
 
-
-        playLocalButton = new Button(LiteralConstants.PlayLocalText.toString());
-        playLocalButton.setPrefHeight(75);
-        playLocalButton.setPrefWidth(300);
-
-        loadGameButton = new Button(LiteralConstants.LoadGameText.toString());
-        loadGameButton.setPrefHeight(75);
-        loadGameButton.setPrefWidth(300);
-
-
-        GridPane.setHalignment(playLocalButton, HPos.CENTER);
-        GridPane.setHalignment(loadGameButton, HPos.CENTER);
-        root.add(playLocalButton, 0, 1);
-        root.add(loadGameButton, 0, 2);
+        GridPane.setRowSpan(selectorPage.root, 2);
+        root.add(selectorPage.root, 0, 1);
 
         {
-            ColumnConstraints c = new ColumnConstraints();
-            c.setHgrow(Priority.ALWAYS);
-            c.setPercentWidth(100);
-
-            root.getColumnConstraints().add(c);
+            ColumnConstraints columnConstraints[] = new ColumnConstraints[2];
+            for (int i = 0; i < 2; i++) {
+                columnConstraints[i] = new ColumnConstraints();
+                columnConstraints[i].setHgrow(Priority.ALWAYS);
+                root.getColumnConstraints().add(columnConstraints[i]);
+            }
+            columnConstraints[0].setMinWidth(SELECTOR_WIDTH);
+            columnConstraints[0].setMaxWidth(SELECTOR_WIDTH);
         }
-        playLocalButton.setOnAction(new EventHandler<ActionEvent>() {
+
+
+        //TEST LOCAL GAME
+        newLocalGameButton = new Button(LiteralConstants.PlayLocalText.toString());
+        newLocalGameButton.setPrefHeight(75);
+        newLocalGameButton.setPrefWidth(300);
+
+        newLocalGameButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
                 GamePageLocal gameLocalPage = new GamePageLocal(gameSystem.startNewGame());
@@ -63,6 +68,38 @@ public class PlayPage {
                 Log0j.writeLog("LocalPlay (New Game) initialized.");
             }
         });
+
+
+        //TEST LOAD GAME
+        loadLocalGameButton = new Button(LiteralConstants.LoadGameText.toString());
+        loadLocalGameButton.setPrefHeight(75);
+        loadLocalGameButton.setPrefWidth(300);
+
+        loadLocalGameButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //Theoretically, a new prompt asking for choosing the saves should pop up.
+
+                GamePageLocal gameLocalPage = new GamePageLocal(gameSystem.loadGame(0, false));
+                Image iconImg = new Image("/res/icons/App.png");
+                Stage s = new Stage();
+                s.setScene(new Scene(gameLocalPage.root));
+                s.setTitle("LocalPlay");
+                s.getIcons().add(iconImg);
+
+                s.setMinWidth(GamePageLocal.MIN_WIDTH);
+                s.setMinHeight(GamePageLocal.MIN_HEIGHT);
+
+                s.show();
+                Log0j.writeLog("LocalPlay (Load Game) initialized.");
+            }
+        });
+
+
+        GridPane.setHalignment(newLocalGameButton, HPos.CENTER);
+        GridPane.setHalignment(loadLocalGameButton, HPos.CENTER);
+        root.add(newLocalGameButton, 1, 1);
+        root.add(loadLocalGameButton, 1, 2);
 
     }
 }

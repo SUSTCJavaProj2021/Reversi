@@ -2,5 +2,6 @@
     jfx doesn't allow me to use code to style the chart.
  */
 {
+    -fx-font-family: "Constantia";
     -fx-text-fill: #FFFFFF;
 }

@@ -9,8 +9,7 @@ import javafx.scene.control.Control;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import controller.BlockStatus;
-import controller.Log0j;
+import controller.logger.Log0j;
 import controller.SingleGameController;
 import model.Chess;
 

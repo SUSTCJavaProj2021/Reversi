@@ -1,5 +1,7 @@
 package controller;
 
+import controller.logger.Log0j;
+
 import java.util.ArrayList;
 import java.util.List;
 

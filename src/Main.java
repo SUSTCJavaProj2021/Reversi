@@ -1,5 +1,5 @@
 import controller.GameSystem;
-import controller.Log0j;
+import controller.logger.Log0j;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;

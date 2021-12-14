@@ -105,18 +105,26 @@ public class HomePage {
         welcomeText.setTextFill(Color.WHITE);
         welcomeText.setWrapText(true);
 
+        Label welcomeText2 = new Label("But who can play this game for more than 15 minutes? Unless you are debugging.\n QAQ");
+        welcomeText2.setFont(new Font("Constantia", 15));
+        welcomeText2.setAlignment(Pos.CENTER_LEFT);
+        welcomeText2.setTextFill(Color.WHITE);
+        welcomeText2.setWrapText(true);
+
         root.addRow(1, welcomeText);
-        root.addRow(2, displayPane);
+        root.addRow(2,welcomeText2);
+        root.addRow(3, displayPane);
 
         {
-            RowConstraints rootRowConstraints[] = new RowConstraints[3];
-            for (int i = 0; i < 3; i++) {
+            RowConstraints rootRowConstraints[] = new RowConstraints[4];
+            for (int i = 0; i < 4; i++) {
                 rootRowConstraints[i] = new RowConstraints();
                 root.getRowConstraints().add(rootRowConstraints[i]);
             }
 
             rootRowConstraints[1].setPercentHeight(20);
-            rootRowConstraints[2].setPercentHeight(80);
+            rootRowConstraints[2].setPercentHeight(10);
+            rootRowConstraints[3].setPercentHeight(50);
         }
 
     }
