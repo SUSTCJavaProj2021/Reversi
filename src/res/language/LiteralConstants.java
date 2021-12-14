@@ -7,11 +7,13 @@ public enum LiteralConstants {
     StatisticsButtonText("Statistics"),
     SettingsButtonText("Settings"),
     SaveAndLoadButtonText("Save / Load"),
+    AboutButtonText("About"),
     ExitButtonText("Exit"),
 
     // TODO: PlayPage Text
-    WelcomeText("Wow! Well played!"),
+    WelcomeText("We recommend you that you surrender immediately after 15 minutes."),
     PlayLocalText("Play Local Game"),
+    LoadGameText("Load Game from the Database"),
     BackButtonText("Back");
 
     private String literal;

@@ -1,14 +1,15 @@
-package component.pagecomponents;
+package component.selector;
 
+import javafx.animation.FadeTransition;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 
 public class AdaptiveStyleButton extends Button {
     public static final double cornerRadii = 10;
@@ -24,7 +25,6 @@ public class AdaptiveStyleButton extends Button {
     public AdaptiveStyleButton(String text) {
         super(text);
         isSelected = false;
-
         setMinWidth(Button.USE_COMPUTED_SIZE);
         setMinHeight(Button.USE_COMPUTED_SIZE);
         setPrefSize(Double.POSITIVE_INFINITY, 45);
@@ -32,10 +32,20 @@ public class AdaptiveStyleButton extends Button {
         setTextFill(Color.WHITE);
         setFont(new Font("Segoe UI", 14));
 
+        //Unselected
+        setOpacity(0.8);
+
         setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                setBackground(selectedBackground);
+                if(!isSelected){
+                    setBackground(selectedBackground);
+                    FadeTransition ft = new FadeTransition(Duration.millis(200), outer());
+                    ft.setFromValue(0.8);
+                    ft.setToValue(1.0);
+                    ft.setCycleCount(1);
+                    ft.play();
+                }
             }
         });
 
@@ -44,6 +54,11 @@ public class AdaptiveStyleButton extends Button {
             public void handle(MouseEvent event) {
                 if (!isSelected) {
                     setBackground(defaultBackground);
+                    FadeTransition ft = new FadeTransition(Duration.millis(200), outer());
+                    ft.setFromValue(1.0);
+                    ft.setToValue(0.8);
+                    ft.setCycleCount(1);
+                    ft.play();
                 }
             }
         });
@@ -58,9 +73,13 @@ public class AdaptiveStyleButton extends Button {
         setOnMouseReleased(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                    setBackground(selectedBackground);
+                setBackground(selectedBackground);
             }
         });
+    }
+
+    private AdaptiveStyleButton outer() {
+        return this;
     }
 
 }

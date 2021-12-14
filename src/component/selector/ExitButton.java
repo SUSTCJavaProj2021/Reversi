@@ -1,4 +1,4 @@
-package component.pagecomponents;
+package component.selector;
 
 import res.language.LiteralConstants;
 

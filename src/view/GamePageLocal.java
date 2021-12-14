@@ -4,16 +4,13 @@ import component.gamemodel.ChessBoard;
 import component.gamemodel.InfoPane;
 import component.gamemodel.ScorePane;
 import controller.Player;
-import javafx.geometry.HPos;
 import javafx.scene.Scene;
-import javafx.scene.control.Control;
-import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import controller.GameController;
 
 public class GamePageLocal {
-    public Scene scene;
+    public Scene rootScene;
     public BorderPane rootPane;
 
     public ChessBoard chessBoard;
@@ -55,6 +52,6 @@ public class GamePageLocal {
 //        rowConstraints[0].setPercentHeight(8);
 //        rowConstraints[1].setPercentHeight(92);
 
-        scene = new Scene(rootPane);
+        rootScene = new Scene(rootPane);
     }
 }

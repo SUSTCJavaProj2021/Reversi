@@ -6,13 +6,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Control;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import controller.BlockStatus;
 import controller.Log0j;
@@ -22,6 +16,7 @@ import controller.output.OutputChannel;
 import model.Chess;
 
 public class ChessBoard extends GridPane {
+    public static final int boardSize = 400;
 
     public StackPane grid[][];
     public int rowSize, colSize;
@@ -37,7 +32,7 @@ public class ChessBoard extends GridPane {
         this.controller = controller;
         this.rowSize = controller.getRowSize();
         this.colSize = controller.getColSize();
-        cellMinSize = 400 / this.rowSize;
+        cellMinSize = boardSize / this.rowSize;
         grid = new StackPane[rowSize][colSize];
         for (int row = 0; row < this.rowSize; row++) {
             grid[row] = new StackPane[this.colSize];
@@ -49,7 +44,7 @@ public class ChessBoard extends GridPane {
                 grid[row][col] = new StackPane();
                 grid[row][col].setMinHeight(cellMinSize);
                 grid[row][col].setMinWidth(cellMinSize);
-
+                grid[row][col].setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, BorderWidths.DEFAULT)));
                 this.add(grid[row][col], col, row);
             }
         }
@@ -63,12 +58,17 @@ public class ChessBoard extends GridPane {
                     .add(new ColumnConstraints(0, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY,
                             Priority.ALWAYS, HPos.CENTER, true));
         }
+        this.setMinWidth(boardSize);
+        this.setMinHeight(boardSize);
+        this.setPrefWidth(GridPane.USE_COMPUTED_SIZE);
+        this.setPrefHeight(GridPane.USE_COMPUTED_SIZE);
+
         updateBoardColor(Color.hsb(15, 0.58, 0.27), Color.hsb(42, 0.36, 0.84));
         updateBoard();
         if (controller.getModifiability()) {
             bindToController();
         }
-        ;
+
     }
 
     public void updateBoard() {
@@ -96,7 +96,7 @@ public class ChessBoard extends GridPane {
             }
 
         }
-        Log0j.writeLog(OutputChannel.STDOUT, OutputCategory.GUI_INFO, "Board Updated.");
+        Log0j.writeLog(getClass().toString(), "Board Updated.");
     }
 
     // Below are color updaters
@@ -113,7 +113,7 @@ public class ChessBoard extends GridPane {
                                 new BackgroundFill((row + col) % 2 == 0 ? color1 : color2, null, null)));
             }
         }
-        Log0j.writeLog(OutputChannel.STDOUT, OutputCategory.GUI_INFO, "Board Color Updated.");
+        Log0j.writeLog(getClass().toString(), "Board Color Updated.");
     }
 
     private void bindToController() {

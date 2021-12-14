@@ -27,7 +27,7 @@ public class GameController {
 
 
     public void onGridClick(int rowIndex, int colIndex) {
-        Log0j.writeLog(OutputChannel.STDOUT, OutputCategory.CLI_INFO,
+        Log0j.writeLog(getClass().toString(),
                 String.format("%s Clicked Grid (%d, %d)", getGameSystem().curPlayer.toString(), rowIndex, colIndex));
         getGameSystem().makeMove(rowIndex, colIndex);
     }

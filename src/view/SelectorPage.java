@@ -1,6 +1,7 @@
 package view;
 
-import component.pagecomponents.*;
+import component.selector.*;
+import controller.Log0j;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
@@ -12,12 +13,13 @@ public class SelectorPage {
     public StatisticsButton statisticsButton;
     public SaveAndLoadButton saveAndLoadButton;
     public SettingsButton settingsButton;
+    public AboutButton aboutButton;
     public ExitButton exitButton;
 
     public AdaptiveStyleButton currentSelectedButton;
 
     public enum Selector{
-        Home, Play, Statistics, SaveAndLoad, Settings, Exit;
+        Home, Play, Statistics, SaveAndLoad, Settings, About, Exit;
     }
 
     public SelectorPage() {
@@ -31,12 +33,14 @@ public class SelectorPage {
         statisticsButton = new StatisticsButton();
         saveAndLoadButton = new SaveAndLoadButton();
         settingsButton = new SettingsButton();
+        aboutButton = new AboutButton();
         exitButton = new ExitButton();
+
 
         Region fillRegion = new Region();
         VBox.setVgrow(fillRegion, Priority.ALWAYS);
-        HBox buttonGap[] = new HBox[4];
-        for(int i = 0; i < 4; i ++ ){
+        HBox buttonGap[] = new HBox[5];
+        for(int i = 0; i < 5; i ++ ){
             buttonGap[i] = new HBox();
             buttonGap[i].setMinHeight(5);
             buttonGap[i].setMaxHeight(5);
@@ -52,6 +56,8 @@ public class SelectorPage {
         root.getChildren().add(saveAndLoadButton);
         root.getChildren().add(buttonGap[3]);
         root.getChildren().add(settingsButton);
+        root.getChildren().add(buttonGap[4]);
+        root.getChildren().add(aboutButton);
         root.getChildren().add(fillRegion);
         root.getChildren().add(exitButton);
 
@@ -67,40 +73,37 @@ public class SelectorPage {
 
         switch(s){
             case Home:
-                homeButton.setBackground(AdaptiveStyleButton.onMousePressedBackground);
-                homeButton.isSelected = true;
                 currentSelectedButton = homeButton;
                 break;
 
             case Play:
-                playButton.setBackground(AdaptiveStyleButton.onMousePressedBackground);
-                playButton.isSelected = true;
                 currentSelectedButton = playButton;
                 break;
 
             case Statistics:
-                statisticsButton.setBackground(AdaptiveStyleButton.onMousePressedBackground);
-                statisticsButton.isSelected = true;
                 currentSelectedButton = statisticsButton;
                 break;
 
             case Settings:
-                settingsButton.setBackground(AdaptiveStyleButton.onMousePressedBackground);
-                settingsButton.isSelected = true;
                 currentSelectedButton = settingsButton;
                 break;
 
             case SaveAndLoad:
-                saveAndLoadButton.setBackground(AdaptiveStyleButton.onMousePressedBackground);
-                saveAndLoadButton.isSelected = true;
                 currentSelectedButton = saveAndLoadButton;
                 break;
 
+            case About:
+                currentSelectedButton = aboutButton;
+                break;
+
             case Exit:
-                exitButton.setBackground(AdaptiveStyleButton.onMousePressedBackground);
-                exitButton.isSelected = true;
                 currentSelectedButton = exitButton;
                 break;
         }
+        currentSelectedButton.setBackground(AdaptiveStyleButton.selectedBackground);
+        currentSelectedButton.isSelected = true;
+        currentSelectedButton.setOpacity(1.0);
+
+        Log0j.writeLog(getClass().toString(), "Switched selection to " + currentSelectedButton.getClass());
     }
 }
