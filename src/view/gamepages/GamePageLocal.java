@@ -15,12 +15,12 @@ public class GamePageLocal {
     public static final double MIN_WIDTH = InfoPane.MIN_WIDTH * 2 + ChessBoard.BOARD_SIZE;
     public static final double MIN_HEIGHT = ChessBoard.BOARD_SIZE + ScorePane.MIN_HEIGHT;
 
-    public BorderPane root;
+    public final BorderPane root;
 
-    public ChessBoard chessBoard;
-    public ScorePane scorePane;
-    public InfoPane whitePlayerInfoPane;
-    public InfoPane blackPlayerInfoPane;
+    public final ChessBoard chessBoard;
+    public final ScorePane scorePane;
+    public final InfoPane whitePlayerInfoPane;
+    public final InfoPane blackPlayerInfoPane;
 
     public GamePageLocal(SingleGameController controller) {
         chessBoard = new ChessBoard(controller);
@@ -43,7 +43,7 @@ public class GamePageLocal {
             btn.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent actionEvent) {
-                    controller.setCheatmode(true);
+                    controller.setCheatMode(true);
                 }
             });
             root.setBottom(btn);

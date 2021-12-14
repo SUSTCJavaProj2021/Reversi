@@ -18,8 +18,8 @@ import view.gamepages.GamePageLocal;
 public class PlayPage {
     public static final double SELECTOR_WIDTH = 180;
 
-    public GridPane root;
-    public SelectorPage selectorPage;
+    public final GridPane root;
+    public final SelectorPage selectorPage;
 
     public Button newLocalGameButton;
     public Button loadLocalGameButton;

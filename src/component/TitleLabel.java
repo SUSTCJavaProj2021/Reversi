@@ -10,7 +10,7 @@ public class TitleLabel extends Label {
 
     public TitleLabel(String title) {
         super(title);
-        setFont(new Font("Segoe UI", FONT_SIZE));
+        setFont(new Font("Constantia", FONT_SIZE));
         setTextFill(Color.WHITE);
         setMinHeight(PREFERRED_HEIGHT);
         setPrefHeight(PREFERRED_HEIGHT);

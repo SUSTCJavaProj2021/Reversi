@@ -1,3 +1,6 @@
+import component.gamemodel.ChessBoard;
+import controller.Player;
+import controller.SingleGameController;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -6,8 +9,8 @@ public class Test extends Application{
 
     @Override
     public void start(Stage primaryStage){
-        TestComponent t = new TestComponent();
-        primaryStage.setScene(new Scene(t));
+        ChessBoard cb = new ChessBoard(new SingleGameController(new Player("K"), new Player("X"), false));
+        primaryStage.setScene(new Scene(cb));
         primaryStage.show();
     }
 

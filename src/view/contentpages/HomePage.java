@@ -16,9 +16,9 @@ import javafx.scene.text.Font;
 import res.literal.LiteralConstants;
 
 public class HomePage {
-    public GridPane root;
+    public final GridPane root;
 
-    public GridPane displayPane;
+    public final GridPane displayPane;
 
     public HBox hBox1;
     public HBox hBox2;

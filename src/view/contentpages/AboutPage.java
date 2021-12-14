@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
 import res.literal.LiteralConstants;
 
 public class AboutPage {
-    public GridPane root;
+    public final GridPane root;
 
     public AboutPage() {
         root = new GridPane();

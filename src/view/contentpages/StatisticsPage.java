@@ -9,7 +9,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
 public class StatisticsPage {
-    public GridPane root;
+    public final GridPane root;
 
     public StatisticsPage(GameSystem gameSystem){
         root = new GridPane();

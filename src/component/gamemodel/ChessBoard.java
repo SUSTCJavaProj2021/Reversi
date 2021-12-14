@@ -15,6 +15,7 @@ import model.Chess;
 
 public class ChessBoard extends GridPane {
     public static final int BOARD_SIZE = 400;
+    public static final double CHESS_SIZE_RATIO = 0.618;
 
     public StackPane grid[][];
     public int rowSize, colSize;
@@ -56,8 +57,8 @@ public class ChessBoard extends GridPane {
                 Chess chess = new Chess(15, Color.TRANSPARENT);
                 grid[row][col].getChildren().add(chess);
                 chess.radiusProperty().bind(Bindings.min(
-                        grid[row][col].widthProperty().divide(2).multiply(0.618),
-                        grid[row][col].heightProperty().divide(2).multiply(0.618)));
+                        grid[row][col].widthProperty().divide(2).multiply(CHESS_SIZE_RATIO),
+                        grid[row][col].heightProperty().divide(2).multiply(CHESS_SIZE_RATIO)));
             }
         }
 

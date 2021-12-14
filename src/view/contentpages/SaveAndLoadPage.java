@@ -8,7 +8,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
 public class SaveAndLoadPage {
-    public GridPane root;
+    public final GridPane root;
 
     public SaveAndLoadPage(GameSystem gameSystem) {
         root = new GridPane();

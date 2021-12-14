@@ -90,7 +90,7 @@ public class SingleGameController {
         this.chessBoard = chessBoard;
     }
 
-    public void setCheatmode(boolean isEnabled) {
+    public void setCheatMode(boolean isEnabled) {
         isCheatMode = isEnabled;
         Log0j.writeLog("Cheat mode switched: " + (isCheatMode ? "ON" : "OFF"));
     }
