@@ -1,45 +1,209 @@
-import javafx.animation.FadeTransition;
+import javafx.animation.*;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Parent;
+import javafx.event.*;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ToolBar;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
-public class Test extends Application {
+import java.util.Random;
 
-    public static void main(String[] args) {
+public class Test extends Application {
+    private static final int FIELD_SIZE = 10;
+
+    private static final Random random = new Random(42);
+
+    public static void main(String[] args){
         launch(args);
     }
 
-
     @Override
-    public void start(Stage primaryStage) {
-        //remove window decoration
-        Rectangle rect = new Rectangle (100, 40, 100, 100);
-        rect.setArcHeight(50);
-        rect.setArcWidth(50);
-        rect.setFill(Color.VIOLET);
+    public void start(Stage stage) throws Exception {
+        TilePane field = generateField();
 
-        FadeTransition ft = new FadeTransition(Duration.millis(3000), rect);
-        ft.setFromValue(1.0);
-        ft.setToValue(0.3);
-        ft.setCycleCount(4);
-        ft.setAutoReverse(true);
+        Scene scene = new Scene(field);
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
 
-        ft.play();
-        BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(rect);
-        primaryStage.setScene(new Scene(borderPane, 300, 250));
-        primaryStage.show();
+        field.addEventFilter(
+                LightningEvent.PLASMA_STRIKE,
+                event -> System.out.println(
+                        "Field filtered strike: " + event.getI() + ", " + event.getJ()
+                )
+        );
+
+        field.addEventHandler(
+                LightningEvent.PLASMA_STRIKE,
+                event -> System.out.println(
+                        "Field handled strike: " + event.getI() + ", " + event.getJ()
+                )
+        );
+
+        periodicallyStrikeRandomNodes(field);
     }
+
+    private void periodicallyStrikeRandomNodes(TilePane field) {
+        Timeline timeline = new Timeline(
+                new KeyFrame(
+                        Duration.seconds(0),
+                        event -> strikeRandomNode(field)
+                ),
+                new KeyFrame(
+                        Duration.millis(300)
+                )
+        );
+
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+    }
+
+    private void strikeRandomNode(TilePane field) {
+        LightningReactor struckNode = (LightningReactor)
+                field.getChildren()
+                        .get(
+                                random.nextInt(
+                                        FIELD_SIZE * FIELD_SIZE
+                                )
+                        );
+        LightningEvent lightningStrike = new LightningEvent(
+                this,
+                struckNode
+        );
+
+        struckNode.fireEvent(lightningStrike);
+    }
+
+    private TilePane generateField() {
+        TilePane field = new TilePane();
+        field.setPrefColumns(10);
+        field.setMinWidth(TilePane.USE_PREF_SIZE);
+        field.setMaxWidth(TilePane.USE_PREF_SIZE);
+
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                field.getChildren().add(
+                        new LightningReactor(
+                                i, j,
+                                new StrikeEventHandler()
+                        )
+                );
+            }
+        }
+        return field;
+    }
+
+    private class LightningReactor extends Rectangle {
+        private static final int SIZE = 20;
+        private final int i;
+        private final int j;
+
+        private FillTransition fillTransition = new FillTransition(Duration.seconds(4));
+
+        public LightningReactor(int i, int j, EventHandler<? super LightningEvent> lightningEventHandler) {
+            super(SIZE, SIZE);
+
+            this.i = i;
+            this.j = j;
+
+            Color baseColor =
+                    (i + j) % 2 == 0
+                            ? Color.RED
+                            : Color.WHITE;
+            setFill(baseColor);
+
+            fillTransition.setFromValue(Color.YELLOW);
+            fillTransition.setToValue(baseColor);
+            fillTransition.setShape(this);
+
+            addEventHandler(
+                    LightningEvent.PLASMA_STRIKE,
+                    lightningEventHandler
+            );
+        }
+
+        public void strike() {
+            fillTransition.playFromStart();
+        }
+
+        public int getI() {
+            return i;
+        }
+
+        public int getJ() {
+            return j;
+        }
+    }
+
+    private class StrikeEventHandler implements EventHandler<LightningEvent> {
+        @Override
+        public void handle(LightningEvent event) {
+            LightningReactor reactor = (LightningReactor) event.getTarget();
+            reactor.strike();
+
+            System.out.println("Reactor received strike: " + reactor.getI() + ", " + reactor.getJ());
+
+
+            // event.consume();  if event is consumed the handler for the parent node will not be invoked.
+        }
+    }
+
+    static class LightningEvent extends Event {
+
+        private static final long serialVersionUID = 20121107L;
+
+        private int i, j;
+
+        public int getI() {
+            return i;
+        }
+
+        public int getJ() {
+            return j;
+        }
+
+        /**
+         * The only valid EventType for the CustomEvent.
+         */
+        public static final EventType<LightningEvent> PLASMA_STRIKE =
+                new EventType<>(Event.ANY, "PLASMA_STRIKE");
+
+        /**
+         * Creates a new {@code LightningEvent} with an event type of {@code PLASMA_STRIKE}.
+         * The source and target of the event is set to {@code NULL_SOURCE_TARGET}.
+         */
+        public LightningEvent() {
+            super(PLASMA_STRIKE);
+        }
+
+        /**
+         * Construct a new {@code LightningEvent} with the specified event source and target.
+         * If the source or target is set to {@code null}, it is replaced by the
+         * {@code NULL_SOURCE_TARGET} value. All LightningEvents have their type set to
+         * {@code PLASMA_STRIKE}.
+         *
+         * @param source    the event source which sent the event
+         * @param target    the event target to associate with the event
+         */
+        public LightningEvent(Object source, EventTarget target) {
+            super(source, target, PLASMA_STRIKE);
+
+            this.i = ((LightningReactor) target).getI();
+            this.j = ((LightningReactor) target).getJ();
+        }
+
+        @Override
+        public LightningEvent copyFor(Object newSource, EventTarget newTarget) {
+            return (LightningEvent) super.copyFor(newSource, newTarget);
+        }
+
+        @Override
+        public EventType<? extends LightningEvent> getEventType() {
+            return (EventType<? extends LightningEvent>) super.getEventType();
+        }
+
+    }
+
 }
