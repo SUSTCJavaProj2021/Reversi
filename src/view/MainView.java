@@ -3,6 +3,9 @@ package view;
 import component.selector.SelectorPage;
 import controller.GameSystem;
 import controller.logger.Log0j;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import res.literal.LiteralConstants;
 import view.contentpages.*;
 import res.icons.Icon;
@@ -14,6 +17,8 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+
+import java.net.URISyntaxException;
 
 
 public class MainView extends GridPane {
@@ -33,17 +38,21 @@ public class MainView extends GridPane {
     public SettingsPage settingsPage;
     public AboutPage aboutPage;
 
-    public MainView(GameSystem gameSystem) {
+    public GameSystem gameSystem;
+    public Theme theme;
 
+
+    public MainView(GameSystem gameSystem, Theme theme) {
         super();
+        this.gameSystem = gameSystem;
+        this.theme = theme;
 
-
-        homePage = new HomePage(gameSystem);
-        playPage = new PlayPage(gameSystem);
-        statisticsPage = new StatisticsPage(gameSystem);
-        saveAndLoadPage = new SaveAndLoadPage(gameSystem);
-        settingsPage = new SettingsPage(gameSystem);
-        aboutPage = new AboutPage();
+        homePage = new HomePage(gameSystem, theme);
+        playPage = new PlayPage(gameSystem, theme);
+        statisticsPage = new StatisticsPage(gameSystem, theme);
+        saveAndLoadPage = new SaveAndLoadPage(gameSystem, theme);
+        settingsPage = new SettingsPage(gameSystem, theme);
+        aboutPage = new AboutPage(theme);
         Log0j.writeLog("Content pages loaded.");
 
         homePage.root.setVisible(false);
@@ -90,7 +99,7 @@ public class MainView extends GridPane {
         viewCoverPane.setCenter(viewPane);
         GridPane.setHgrow(viewCoverPane, Priority.ALWAYS);
         GridPane.setVgrow(viewCoverPane, Priority.ALWAYS);
-        viewCoverPane.setBackground(new Background(new BackgroundFill(Color.web("26272F"), new CornerRadii(VIEWCOVER_CORNER_RADII), null)));
+        theme.bindFrontPane(viewCoverPane.backgroundProperty());
         Log0j.writeLog("ViewCover Pane loaded.");
 
 
@@ -99,13 +108,15 @@ public class MainView extends GridPane {
         ImageView imageView = new ImageView(img);
         imageView.setPreserveRatio(true);
         imageView.setFitHeight(40);
+
         Label selectorTitle = new Label();
         selectorTitle.setGraphic(imageView);
         selectorTitle.setTextFill(Color.WHITE);
         selectorTitle.setText("Reversi!");
         selectorTitle.setTextAlignment(TextAlignment.CENTER);
         selectorTitle.setFont(new Font("Segoe UI", 20));
-        selectorPage = new SelectorPage(selectorTitle);
+
+        selectorPage = new SelectorPage(selectorTitle, theme);
 
 
         //Initialize Content Selector
@@ -126,8 +137,8 @@ public class MainView extends GridPane {
         add(selectorPage.root, 0, 0);
         add(viewCoverPane, 1, 0);
 
-        setBackground(new Background(new BackgroundFill(Color.web("1C202C"), null, null)));
 
+        theme.bindBackPane(backgroundProperty());
         {
             ColumnConstraints cs = new ColumnConstraints();
             cs.setMinWidth(SELECTOR_WIDTH);
@@ -136,5 +147,17 @@ public class MainView extends GridPane {
         }
 
         Log0j.writeLog("Main View initialized.");
+
+        try{
+            Media media = new Media(getClass().getResource("/res/bgm.mp3").toURI().toString());
+            MediaPlayer mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+            mediaPlayer.play();
+            mediaPlayer.setVolume(0.4);
+            Log0j.writeLog("BGM Initialized.");
+            add(new MediaView(mediaPlayer),1,0);
+        }catch (URISyntaxException e){
+            e.printStackTrace();
+        }
     }
 }

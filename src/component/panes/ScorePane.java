@@ -6,24 +6,25 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import view.Theme;
 
 
 public class ScorePane extends GridPane {
     public static final int MIN_HEIGHT = 45;
     public static final int PREF_HEIGHT = 70;
 
-    public static final Color backgroundColor = Color.LIGHTGRAY;
-    public static final Background background = new Background(new BackgroundFill(backgroundColor, null, null));
-
     private Label playerName[];
     private Label curPlayerLabel;
 
+    public Theme theme;
 
-    public ScorePane(SingleGameController controller) {
+
+    public ScorePane(SingleGameController controller, Theme theme) {
         super();
+        this.theme = theme;
+        theme.bindPaintBackground(backgroundProperty());
         this.setMinHeight(MIN_HEIGHT);
         this.setPrefHeight(PREF_HEIGHT);
-        this.setBackground(background);
 
         //Initialize Player Label
         playerName = new Label[2];

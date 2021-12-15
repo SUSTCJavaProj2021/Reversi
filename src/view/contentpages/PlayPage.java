@@ -15,6 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import res.literal.LiteralConstants;
+import view.Theme;
 import view.gamepages.GamePageLocal;
 import view.prompts.LoadGamePrompt;
 
@@ -27,12 +28,18 @@ public class PlayPage {
     public Button newLocalGameButton;
     public Button loadLocalGameButton;
 
+    public final GameSystem gameSystem;
+    public final Theme theme;
 
-    public PlayPage(GameSystem gameSystem) {
+
+    public PlayPage(GameSystem gameSystem, Theme theme) {
+        this.gameSystem = gameSystem;
+        this.theme = theme;
+
         root = new GridPane();
-        root.add(new TitleLabel("Play"), 0, 0);
+        root.add(new TitleLabel("Play", theme), 0, 0);
         GridPane.setColumnSpan(root.getChildren().get(0), 2);
-        selectorPage = new SelectorPage(null);
+        selectorPage = new SelectorPage(null, theme);
 
         GridPane.setRowSpan(selectorPage.root, 2);
         root.add(selectorPage.root, 0, 1);
@@ -48,7 +55,12 @@ public class PlayPage {
             columnConstraints[0].setMaxWidth(SELECTOR_WIDTH);
         }
 
+        initPlayLocalGameButton();
+        initLoadGameButton();
 
+    }
+
+    private void initPlayLocalGameButton() {
         //TEST LOCAL GAME
         newLocalGameButton = new Button(LiteralConstants.PlayLocalText.toString());
         newLocalGameButton.setPrefHeight(75);
@@ -57,7 +69,7 @@ public class PlayPage {
         newLocalGameButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                GamePageLocal gameLocalPage = new GamePageLocal(gameSystem.startNewGame());
+                GamePageLocal gameLocalPage = new GamePageLocal(gameSystem.startNewGame(), theme);
                 Image iconImg = new Image("/res/icons/App.png");
                 Stage gameStage = new Stage();
                 gameStage.setScene(new Scene(gameLocalPage.root));
@@ -71,9 +83,12 @@ public class PlayPage {
                 Log0j.writeLog("LocalPlay (New Game) initialized.");
             }
         });
+        GridPane.setHalignment(newLocalGameButton, HPos.CENTER);
+        root.add(newLocalGameButton, 1, 1);
+    }
 
-
-        //TEST LOAD GAME
+    private void initLoadGameButton() {
+//TEST LOAD GAME
         loadLocalGameButton = new Button(LiteralConstants.LoadGameText.toString());
         loadLocalGameButton.setPrefHeight(75);
         loadLocalGameButton.setPrefWidth(300);
@@ -82,12 +97,14 @@ public class PlayPage {
             @Override
             public void handle(ActionEvent actionEvent) {
                 //Theoretically, a new prompt asking for choosing the saves should pop up.
-                SimpleIntegerProperty indexProperty = new SimpleIntegerProperty(-1);
+                //todo: change default index property
+                SimpleIntegerProperty indexProperty = new SimpleIntegerProperty(2);
                 Stage promptStage = new Stage();
                 promptStage.setScene(new Scene(new LoadGamePrompt(gameSystem, indexProperty).root));
                 promptStage.showAndWait();
-                if(indexProperty.intValue()!=-1){
-                    GamePageLocal gameLocalPage = new GamePageLocal(gameSystem.loadGame(indexProperty.intValue(), false));
+
+                if (indexProperty.intValue() != -1) {
+                    GamePageLocal gameLocalPage = new GamePageLocal(gameSystem.loadGame(indexProperty.intValue(), false), theme);
                     Image iconImg = new Image("/res/icons/App.png");
                     Stage gameStage = new Stage();
                     gameStage.setScene(new Scene(gameLocalPage.root));
@@ -100,12 +117,7 @@ public class PlayPage {
                 }
             }
         });
-
-
-        GridPane.setHalignment(newLocalGameButton, HPos.CENTER);
         GridPane.setHalignment(loadLocalGameButton, HPos.CENTER);
-        root.add(newLocalGameButton, 1, 1);
         root.add(loadLocalGameButton, 1, 2);
-
     }
 }

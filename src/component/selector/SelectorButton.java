@@ -13,6 +13,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+import view.Theme;
 
 public class SelectorButton extends Button {
 
@@ -46,7 +47,7 @@ public class SelectorButton extends Button {
         DEFAULT, ONMOUSE, SELECTED;
     }
 
-    public SelectorButton(String text, Node node, ImageView icon) {
+    public SelectorButton(String text, Node node, ImageView icon, Theme theme) {
         super(text);
         this.node = node;
         isSelected = false;

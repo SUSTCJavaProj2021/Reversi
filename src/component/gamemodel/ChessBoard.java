@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 import controller.logger.Log0j;
 import controller.SingleGameController;
 import model.Chess;
+import view.Theme;
 
 public class ChessBoard extends GridPane {
     public static final int BOARD_SIZE = 400;
@@ -22,13 +23,15 @@ public class ChessBoard extends GridPane {
     public SingleGameController controller;
     public final int cellMinSize;
 
+    public Theme theme;
+
     /**
      * New Game Initialization
      *
      * @param <<code>controller</code> the specific GameController
      */
-    public ChessBoard(SingleGameController controller) {
-
+    public ChessBoard(SingleGameController controller, Theme theme) {
+        this.theme = theme;
         this.controller = controller;
         this.rowSize = controller.getRowSize();
         this.colSize = controller.getColSize();
@@ -92,14 +95,13 @@ public class ChessBoard extends GridPane {
                 }
 
                 PlayerConstants currentPlayer = controller.getBlockStatus(row, col);
-                Chess chess = ((Chess)grid[row][col].getChildren().get(0));
+                Chess chess = ((Chess) grid[row][col].getChildren().get(0));
 
                 if (currentPlayer == PlayerConstants.WHITE_PLAYER) {
                     chess.setColor(Color.WHITE);
                 } else if (currentPlayer == PlayerConstants.BLACK_PLAYER) {
                     chess.setColor(Color.BLACK);
-                }
-                else{
+                } else {
                     chess.setColor(Color.TRANSPARENT);
                 }
             }

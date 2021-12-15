@@ -8,16 +8,19 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import view.Theme;
 import view.prompts.LoadSystemPrompt;
 
 public class SaveAndLoadPage {
     public final GridPane root;
     public final GameSystem gameSystem;
+    public final Theme theme;
 
-    public SaveAndLoadPage(GameSystem gameSystem) {
+    public SaveAndLoadPage(GameSystem gameSystem, Theme theme) {
         this.gameSystem = gameSystem;
+        this.theme = theme;
         root = new GridPane();
-        root.add(new TitleLabel("Save And Load"), 0, 0);
+        root.add(new TitleLabel("Save And Load", theme), 0, 0);
 
 
         Button btn = new Button("Load");

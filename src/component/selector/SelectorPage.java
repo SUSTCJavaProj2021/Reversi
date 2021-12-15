@@ -8,6 +8,7 @@ import javafx.scene.control.Separator;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import view.Theme;
 
 import java.util.ArrayList;
 
@@ -24,7 +25,11 @@ public class SelectorPage {
 
     public boolean hasBottom;
 
-    public SelectorPage(){
+    public Theme theme;
+
+
+    public SelectorPage(Theme theme){
+        this.theme = theme;
         root = new GridPane();
         {
             Separator separators[] = new Separator[2];
@@ -54,8 +59,8 @@ public class SelectorPage {
         root.setBackground(new Background(new BackgroundFill(Color.rgb(0,0,0,0.05), new CornerRadii(CORNER_RADII), null)));
     }
 
-    public SelectorPage(Label title) {
-        this();
+    public SelectorPage(Label title, Theme theme) {
+        this(theme);
         if (title != null) {
             Separator separators[] = new Separator[2];
             for (int i = 0; i < 2; i++) {
@@ -77,7 +82,7 @@ public class SelectorPage {
     }
 
     public void addSelection(String selectionText, Node node, ImageView icon) {
-        SelectorButton button = new SelectorButton(selectionText, node, icon);
+        SelectorButton button = new SelectorButton(selectionText, node, icon, theme);
         if (buttonList.size() != 0) {
             Separator separator = new Separator(Orientation.HORIZONTAL);
             separator.setMinHeight(5);
@@ -108,7 +113,7 @@ public class SelectorPage {
 
     public void setExitButton(ImageView icon) {
         fillBottom();
-        exitButton = new ExitButton(icon);
+        exitButton = new ExitButton(icon, theme);
         selector.getChildren().add(exitButton);
     }
 

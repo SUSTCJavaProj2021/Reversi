@@ -14,6 +14,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import res.literal.LiteralConstants;
+import view.Theme;
 
 public class HomePage {
     public final GridPane root;
@@ -31,7 +32,10 @@ public class HomePage {
 
     public Label welcomeText;
 
-    public HomePage(GameSystem gameSystem) {
+    public Theme theme;
+
+    public HomePage(GameSystem gameSystem, Theme theme) {
+        this.theme = theme;
 
         welcomeText = new Label(LiteralConstants.WelcomeText.toString());
 
@@ -61,7 +65,7 @@ public class HomePage {
         */
 
         root = new GridPane();
-        root.addRow(0, new TitleLabel("Home"));
+        root.addRow(0, new TitleLabel("Home", theme));
 
         displayPane = new GridPane();
 

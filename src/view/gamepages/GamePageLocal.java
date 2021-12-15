@@ -10,6 +10,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import controller.SingleGameController;
+import view.Theme;
 
 public class GamePageLocal {
     public static final double MIN_WIDTH = InfoPane.MIN_WIDTH * 2 + ChessBoard.BOARD_SIZE;
@@ -23,19 +24,22 @@ public class GamePageLocal {
     public final InfoPane whitePlayerInfoPane;
     public final InfoPane blackPlayerInfoPane;
 
-    public GamePageLocal(SingleGameController controller) {
+    public Theme theme;
+
+    public GamePageLocal(SingleGameController controller, Theme theme) {
+        this.theme = theme;
         this.controller = controller;
-        chessBoard = new ChessBoard(controller);
+        chessBoard = new ChessBoard(controller, theme);
         root = new BorderPane();
 
-        whitePlayerInfoPane = new InfoPane(controller.getWhitePlayer());
-        blackPlayerInfoPane = new InfoPane(controller.getBlackPlayer());
+        whitePlayerInfoPane = new InfoPane(controller.getWhitePlayer(),theme);
+        blackPlayerInfoPane = new InfoPane(controller.getBlackPlayer(),theme);
 
         root.setLeft(whitePlayerInfoPane);
         root.setRight(blackPlayerInfoPane);
 
 
-        scorePane = new ScorePane(controller);
+        scorePane = new ScorePane(controller, theme);
         root.setTop(scorePane);
 
         //TEST CHEAT MODE
@@ -53,8 +57,8 @@ public class GamePageLocal {
 
         root.setCenter(chessBoard);
 
-        root.setBackground(new Background(
-                new BackgroundFill(Color.web("1C202C"), null, null)));
+        theme.bindBackPane(root.backgroundProperty());
+
 
 
         //Set Auto-sized Columns
