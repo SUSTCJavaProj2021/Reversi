@@ -51,14 +51,6 @@ public class MainApp extends Application {
         primaryStage.show();
         Log0j.writeLog("Stage shown.");
 
-        {
-            Stage s = new Stage();
-            s.setWidth(800);
-            s.setHeight(500);
-            s.showAndWait();
-            theme.backPaneBackgroundPR.setValue(new Background(new BackgroundFill(Color.WHITE, null, null)));
-        }
-
     }
 
     public static void main(String[] args) {

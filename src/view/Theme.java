@@ -15,6 +15,7 @@ public class Theme {
     public ObjectProperty<Background> backPaneBackgroundPR;
     public ObjectProperty<Background> frontPaneBackgroundPR;
 
+    public ObjectProperty<Color> themeColorPR;
     public ObjectProperty<Paint> themePaintPR;
     public ObjectProperty<Paint> titleFontPaintPR;
     public ObjectProperty<Font> titleFontFamilyPR;
@@ -35,6 +36,7 @@ public class Theme {
     public static final Background defaultFrontPaneBKGND = new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.15),
             new CornerRadii(MainView.VIEWCOVER_CORNER_RADII), null));
 
+    public static final Color defaultThemeColor = Color.rgb(29, 31, 44);
     public static final Paint defaultThemePaint = Color.rgb(29, 31, 44);
     public static final Paint defaultTitleFontPaint = Color.WHITE;
     public static final Font defaultTitleFontFamily = new Font("Constantia", 25);
@@ -46,11 +48,37 @@ public class Theme {
     public Theme() {
         backPaneBackgroundPR = new SimpleObjectProperty<>(this, "backPaneBackground", defaultBackPaneBKGND);
         frontPaneBackgroundPR = new SimpleObjectProperty<>(this, "frontPaneBackground", defaultFrontPaneBKGND);
-        themePaintPR = new SimpleObjectProperty<>(this, "themeColor", defaultThemePaint);
+        themeColorPR = new SimpleObjectProperty<>(this, "themeColor", defaultThemeColor);
+        themePaintPR = new SimpleObjectProperty<>(this, "themePaint", defaultThemePaint);
         titleFontFamilyPR = new SimpleObjectProperty<>(this, "titleFontFamily", defaultTitleFontFamily);
         titleFontPaintPR = new SimpleObjectProperty<>(this, "titleFontPaint", defaultTitleFontPaint);
         textFontFamilyPR = new SimpleObjectProperty<>(this, "textFontFamily", defaultTextFontFamily);
         textFontPaintPR = new SimpleObjectProperty<>(this, "textFontPaint", defaultTextFontPaint);
+        initRelations();
+    }
+
+    public void initRelations() {
+        themePaintPR.bind(Bindings.createObjectBinding(() -> {
+            return themeColorPR.getValue();
+        }, themeColorPR));
+    }
+
+    public void bindBackPane(ObjectProperty<Background> background) {
+        background.bind(Bindings.createObjectBinding(() -> {
+            Background newBackground = backPaneBackgroundPR.getValue();
+            return newBackground;
+        }, backPaneBackgroundPR));
+    }
+
+    public void bindBackPaneTo(ObjectProperty<Background> background) {
+        backPaneBackgroundPR.bind(Bindings.createObjectBinding(() -> {
+            Background newBackground = background.getValue();
+            return newBackground;
+        }, background));
+    }
+
+    public void unbindBackPane(){
+        backPaneBackgroundPR.unbind();
     }
 
     public void bindFrontPane(ObjectProperty<Background> background) {
@@ -60,12 +88,17 @@ public class Theme {
         }, frontPaneBackgroundPR));
     }
 
-    public void bindBackPane(ObjectProperty<Background> background) {
-        background.bind(Bindings.createObjectBinding(() -> {
-            Background newBackground = backPaneBackgroundPR.getValue();
+    public void bindFrontPanePRTo(ObjectProperty<Background> background) {
+        frontPaneBackgroundPR.bind(Bindings.createObjectBinding(() -> {
+            Background newBackground = background.getValue();
             return newBackground;
-        }, backPaneBackgroundPR));
+        }, background));
     }
+
+    public void unbindFrontPane(){
+        frontPaneBackgroundPR.unbind();
+    }
+
 
     public void bindPaint(ObjectProperty<Paint> paint) {
         paint.bind(Bindings.createObjectBinding(() -> {
