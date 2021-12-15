@@ -9,8 +9,8 @@ public class Test extends Application{
 
     @Override
     public void start(Stage primaryStage){
-        ChessBoard cb = new ChessBoard(new SingleGameController(new Player("K"), new Player("X"), false));
-        primaryStage.setScene(new Scene(cb));
+        TestComponent t = new TestComponent();
+        primaryStage.setScene(new Scene(t));
         primaryStage.show();
     }
 

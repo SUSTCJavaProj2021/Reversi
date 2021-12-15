@@ -16,6 +16,7 @@ public class GamePageLocal {
     public static final double MIN_HEIGHT = ChessBoard.BOARD_SIZE + ScorePane.MIN_HEIGHT;
 
     public final BorderPane root;
+    public final SingleGameController controller;
 
     public final ChessBoard chessBoard;
     public final ScorePane scorePane;
@@ -23,6 +24,7 @@ public class GamePageLocal {
     public final InfoPane blackPlayerInfoPane;
 
     public GamePageLocal(SingleGameController controller) {
+        this.controller = controller;
         chessBoard = new ChessBoard(controller);
         root = new BorderPane();
 

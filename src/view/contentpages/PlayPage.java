@@ -4,6 +4,8 @@ import component.TitleLabel;
 import component.selector.SelectorPage;
 import controller.GameSystem;
 import controller.logger.Log0j;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -14,6 +16,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import res.literal.LiteralConstants;
 import view.gamepages.GamePageLocal;
+import view.prompts.LoadGamePrompt;
 
 public class PlayPage {
     public static final double SELECTOR_WIDTH = 180;
@@ -56,15 +59,15 @@ public class PlayPage {
             public void handle(ActionEvent arg0) {
                 GamePageLocal gameLocalPage = new GamePageLocal(gameSystem.startNewGame());
                 Image iconImg = new Image("/res/icons/App.png");
-                Stage s = new Stage();
-                s.setScene(new Scene(gameLocalPage.root));
-                s.setTitle("LocalPlay");
-                s.getIcons().add(iconImg);
+                Stage gameStage = new Stage();
+                gameStage.setScene(new Scene(gameLocalPage.root));
+                gameStage.setTitle("LocalPlay");
+                gameStage.getIcons().add(iconImg);
 
-                s.setMinWidth(GamePageLocal.MIN_WIDTH);
-                s.setMinHeight(GamePageLocal.MIN_HEIGHT);
+                gameStage.setMinWidth(GamePageLocal.MIN_WIDTH);
+                gameStage.setMinHeight(GamePageLocal.MIN_HEIGHT);
 
-                s.show();
+                gameStage.show();
                 Log0j.writeLog("LocalPlay (New Game) initialized.");
             }
         });
@@ -79,19 +82,22 @@ public class PlayPage {
             @Override
             public void handle(ActionEvent actionEvent) {
                 //Theoretically, a new prompt asking for choosing the saves should pop up.
-
-                GamePageLocal gameLocalPage = new GamePageLocal(gameSystem.loadGame(0, false));
-                Image iconImg = new Image("/res/icons/App.png");
-                Stage s = new Stage();
-                s.setScene(new Scene(gameLocalPage.root));
-                s.setTitle("LocalPlay");
-                s.getIcons().add(iconImg);
-
-                s.setMinWidth(GamePageLocal.MIN_WIDTH);
-                s.setMinHeight(GamePageLocal.MIN_HEIGHT);
-
-                s.show();
-                Log0j.writeLog("LocalPlay (Load Game) initialized.");
+                SimpleIntegerProperty indexProperty = new SimpleIntegerProperty(-1);
+                Stage promptStage = new Stage();
+                promptStage.setScene(new Scene(new LoadGamePrompt(gameSystem, indexProperty).root));
+                promptStage.showAndWait();
+                if(indexProperty.intValue()!=-1){
+                    GamePageLocal gameLocalPage = new GamePageLocal(gameSystem.loadGame(indexProperty.intValue(), false));
+                    Image iconImg = new Image("/res/icons/App.png");
+                    Stage gameStage = new Stage();
+                    gameStage.setScene(new Scene(gameLocalPage.root));
+                    gameStage.setTitle("LocalPlay");
+                    gameStage.getIcons().add(iconImg);
+                    gameStage.setMinWidth(GamePageLocal.MIN_WIDTH);
+                    gameStage.setMinHeight(GamePageLocal.MIN_HEIGHT);
+                    gameStage.show();
+                    Log0j.writeLog("LocalPlay (Load Game) initialized.");
+                }
             }
         });
 

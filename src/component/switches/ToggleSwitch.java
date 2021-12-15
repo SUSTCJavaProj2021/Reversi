@@ -7,6 +7,20 @@ import javafx.scene.layout.HBox;
 public class ToggleSwitch extends HBox {
     private final Label textLabel = new Label();
 
-    private SimpleBooleanProperty isSwitcedOn;
+    private SimpleBooleanProperty isSwitchedOn;
+
+    public SimpleBooleanProperty getSwitchedOnProperty(){
+        return isSwitchedOn;
+    }
+
+    private void init(){
+
+    }
+
+
+
+    public ToggleSwitch(){
+
+    }
 
 }
