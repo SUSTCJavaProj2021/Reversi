@@ -30,7 +30,7 @@ public class ScorePane extends GridPane {
         playerName = new Label[2];
         for(int i = 0; i < 2; i++){
             playerName[i] = new Label();
-            theme.bindTextFontFamily(playerName[i].fontProperty());
+//            theme.bindTextFontFamily(playerName[i].fontProperty());
             theme.bindTextFontPaint(playerName[i].textFillProperty());
         }
         playerName[0].textProperty().bind(controller.getWhitePlayer().nameProperty);
@@ -48,7 +48,7 @@ public class ScorePane extends GridPane {
         //Initialize Turn Indicator
         curPlayerLabel = new Label();
         curPlayerLabel.textProperty().bind(controller.curPlayerNameProperty);
-        theme.bindTextFontFamily(curPlayerLabel.fontProperty());
+//        theme.bindTextFontFamily(curPlayerLabel.fontProperty());
         theme.bindTextFontPaint(curPlayerLabel.textFillProperty());
         this.add(curPlayerLabel, 1, 0);
 

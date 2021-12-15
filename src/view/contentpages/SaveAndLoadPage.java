@@ -8,10 +8,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import res.literal.LiteralConstants;
 import view.Theme;
 import view.prompts.LoadSystemPrompt;
 
-public class SaveAndLoadPage {
+public class SaveAndLoadPage implements Updatable{
     public final GridPane root;
     public final GameSystem gameSystem;
     public final Theme theme;
@@ -20,7 +21,7 @@ public class SaveAndLoadPage {
         this.gameSystem = gameSystem;
         this.theme = theme;
         root = new GridPane();
-        root.add(new TitleLabel("Save And Load", theme), 0, 0);
+        root.add(new TitleLabel(LiteralConstants.SaveAndLoadPageTitle.toString(), theme), 0, 0);
 
 
         Button btn = new Button("Load");
@@ -36,5 +37,10 @@ public class SaveAndLoadPage {
         });
 
         root.add(btn, 0, 1);
+    }
+
+    @Override
+    public void update() {
+
     }
 }

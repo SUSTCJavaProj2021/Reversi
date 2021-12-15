@@ -19,7 +19,7 @@ import view.Theme;
 import view.gamepages.GamePageLocal;
 import view.prompts.LoadGamePrompt;
 
-public class PlayPage {
+public class PlayPage implements Updatable{
     public static final double SELECTOR_WIDTH = 180;
 
     public final GridPane root;
@@ -37,8 +37,10 @@ public class PlayPage {
         this.theme = theme;
 
         root = new GridPane();
-        root.add(new TitleLabel("Play", theme), 0, 0);
+        root.add(new TitleLabel(LiteralConstants.PlayPageTitle.toString(), theme), 0, 0);
         GridPane.setColumnSpan(root.getChildren().get(0), 2);
+
+        //Selector
         selectorPage = new SelectorPage(null, theme);
 
         GridPane.setRowSpan(selectorPage.root, 2);
@@ -119,5 +121,10 @@ public class PlayPage {
         });
         GridPane.setHalignment(loadLocalGameButton, HPos.CENTER);
         root.add(loadLocalGameButton, 1, 2);
+    }
+
+    @Override
+    public void update() {
+
     }
 }

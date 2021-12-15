@@ -38,6 +38,7 @@ public class MainApp extends Application {
         primaryStage.setWidth(1280);
         primaryStage.setHeight(800);
 
+        //Experience-based numbers
         primaryStage.setMinWidth(600);
         primaryStage.setMinHeight(450);
 

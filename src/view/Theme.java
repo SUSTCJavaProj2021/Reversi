@@ -1,10 +1,12 @@
 package view;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -21,6 +23,8 @@ public class Theme {
     public ObjectProperty<Font> titleFontFamilyPR;
     public ObjectProperty<Paint> textFontPaintPR;
     public ObjectProperty<Font> textFontFamilyPR;
+    //Audio related
+    public DoubleProperty volumePR;
 
     //Chessboard Color
     public ObjectProperty<Paint> playerChessPaintPR1;
@@ -28,6 +32,7 @@ public class Theme {
     public ObjectProperty<Paint> chessGridPaintPR1;
     public ObjectProperty<Paint> chessGridPaintPR2;
     public ObjectProperty<Background> chessBoardBackgroundPR;
+
 
 
     public static final Background defaultBackPaneBKGND = new Background(new BackgroundImage(new Image("/res/background.jpg"),
@@ -138,4 +143,7 @@ public class Theme {
         }, textFontFamilyPR));
     }
 
+    public void loadTheme(){
+
+    }
 }

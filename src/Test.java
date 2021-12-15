@@ -9,8 +9,6 @@ public class Test extends Application{
 
     @Override
     public void start(Stage primaryStage){
-        TestComponent t = new TestComponent();
-        primaryStage.setScene(new Scene(t));
         primaryStage.show();
     }
 
