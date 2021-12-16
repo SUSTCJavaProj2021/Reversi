@@ -5,45 +5,15 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.io.*;
 
 public class Theme {
-    //Stage related
-    public SimpleDoubleProperty mainWindowPrefWidth;
-    public SimpleDoubleProperty mainWindowPrefHeight;
-//    public int mainWindowMinWidth;
-//    public int mainWindowMinHeight;
-
-    //Overall Theme related
-    public ObjectProperty<Background> backPaneBackgroundPR;
-    public ObjectProperty<Background> frontPaneBackgroundPR;
-    public BooleanProperty isBackgroundPureColor;
-
-    public ObjectProperty<Color> themeColorPR;
-    public ObjectProperty<Paint> themePaintPR;
-    public ObjectProperty<Font> titleFontFamilyPR;
-    public ObjectProperty<Paint> titleFontPaintPR;
-    public ObjectProperty<Font> menuFontFamilyPR;
-    public ObjectProperty<Paint> menuFontPaintPR;
-    public ObjectProperty<Font> textFontFamilyPR;
-    public ObjectProperty<Paint> textFontPaintPR;
-    //Audio related
-    public DoubleProperty volumePR;
-
-    //Chessboard Color
-    public ObjectProperty<Paint> playerChessPaintPR1;
-    public ObjectProperty<Paint> playerChessPaintPR2;
-    public ObjectProperty<Paint> chessGridPaintPR1;
-    public ObjectProperty<Paint> chessGridPaintPR2;
-    public ObjectProperty<Background> chessBoardBackgroundPR;
 
     //Fields below are all default settings.
     //They are all base on experience.
@@ -52,6 +22,8 @@ public class Theme {
     public static final int DEFAULT_MAIN_WINDOW_PREF_HEIGHT = 800;
     public static final int DEFAULT_MAIN_WINDOW_MIN_WIDTH = 600;
     public static final int DEFAULT_MAIN_WINDOW_MIN_HEIGHT = 450;
+
+    public static final double defaultVolume = 0.4;
 
     public static final Background defaultBackPaneBKGND = new Background(new BackgroundImage(new Image("/res/background.jpg"),
             BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT));
@@ -68,32 +40,76 @@ public class Theme {
     public static final Font defaultTextFontFamily = new Font("Segoe UI", 16);
     public static final Paint defaultTextFontPaint = Color.WHITE;
 
+
+    //Below are properties
+
+    //Stage related
+    public final SimpleDoubleProperty mainWindowPrefWidth;
+    public final SimpleDoubleProperty mainWindowPrefHeight;
+//    public int mainWindowMinWidth;
+//    public int mainWindowMinHeight;
+
+
+    //Audio related
+    public final DoubleProperty volumePR;
+
+    //Theme related
+    public final ObjectProperty<Background> backPaneBackgroundPR;
+    public final ObjectProperty<Background> frontPaneBackgroundPR;
+//    public final BooleanProperty isBackgroundPureColor;
+
+    public final ObjectProperty<Color> themeColorPR;
+    public final ObjectProperty<Paint> themePaintPR;
+    public final ObjectProperty<Font> titleFontFamilyPR;
+    public final ObjectProperty<Paint> titleFontPaintPR;
+    public final ObjectProperty<Font> menuFontFamilyPR;
+    public final ObjectProperty<Paint> menuFontPaintPR;
+    public final ObjectProperty<Font> textFontFamilyPR;
+    public final ObjectProperty<Paint> textFontPaintPR;
+
+    //Chessboard Color
+//    public final ObjectProperty<Paint> playerChessPaintPR1;
+//    public final ObjectProperty<Paint> playerChessPaintPR2;
+//    public final ObjectProperty<Paint> chessGridPaintPR1;
+//    public final ObjectProperty<Paint> chessGridPaintPR2;
+//    public final ObjectProperty<Background> chessBoardBackgroundPR;
+
+
+    public final Stage primaryStage;
+
     //todo: finish chessboard paint default
     //Default Theme
-    public Theme() {
-        mainWindowPrefWidth = new SimpleDoubleProperty(DEFAULT_MAIN_WINDOW_PREF_WIDTH);
-        mainWindowPrefHeight = new SimpleDoubleProperty(DEFAULT_MAIN_WINDOW_PREF_HEIGHT);
+    public Theme(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+        mainWindowPrefWidth = new SimpleDoubleProperty();
+        mainWindowPrefHeight = new SimpleDoubleProperty();
 
-        backPaneBackgroundPR = new SimpleObjectProperty<>(defaultBackPaneBKGND);
-        frontPaneBackgroundPR = new SimpleObjectProperty<>(defaultFrontPaneBKGND);
+        volumePR = new SimpleDoubleProperty();
 
-        themeColorPR = new SimpleObjectProperty<>(defaultThemeColor);
-        themePaintPR = new SimpleObjectProperty<>(defaultThemePaint);
-        titleFontFamilyPR = new SimpleObjectProperty<>(defaultTitleFontFamily);
-        titleFontPaintPR = new SimpleObjectProperty<>(defaultTitleFontPaint);
-        menuFontFamilyPR = new SimpleObjectProperty<>(defaultMenuFontFamily);
-        menuFontPaintPR = new SimpleObjectProperty<>(defaultMenuFontPaint);
-        textFontFamilyPR = new SimpleObjectProperty<>(defaultTextFontFamily);
-        textFontPaintPR = new SimpleObjectProperty<>(defaultTextFontPaint);
+        backPaneBackgroundPR = new SimpleObjectProperty<>();
+        frontPaneBackgroundPR = new SimpleObjectProperty<>();
 
-        Log0j.writeLog("Theme initialized.");
+        themeColorPR = new SimpleObjectProperty<>();
+        themePaintPR = new SimpleObjectProperty<>();
+        titleFontFamilyPR = new SimpleObjectProperty<>();
+        titleFontPaintPR = new SimpleObjectProperty<>();
+        menuFontFamilyPR = new SimpleObjectProperty<>();
+        menuFontPaintPR = new SimpleObjectProperty<>();
+        textFontFamilyPR = new SimpleObjectProperty<>();
+        textFontPaintPR = new SimpleObjectProperty<>();
+
+        applyDefaultTheme();
         initRelations();
+        Log0j.writeLog("Theme initialized.");
+
         loadTheme();
     }
 
     public void applyDefaultTheme() {
-        mainWindowPrefWidth.setValue(DEFAULT_MAIN_WINDOW_PREF_WIDTH);
-        mainWindowPrefHeight.setValue(DEFAULT_MAIN_WINDOW_PREF_HEIGHT);
+        primaryStage.setWidth(DEFAULT_MAIN_WINDOW_PREF_WIDTH);
+        primaryStage.setHeight(DEFAULT_MAIN_WINDOW_PREF_HEIGHT);
+
+        volumePR.setValue(defaultVolume);
 
         backPaneBackgroundPR.setValue(defaultBackPaneBKGND);
         frontPaneBackgroundPR.setValue(defaultFrontPaneBKGND);
@@ -213,7 +229,7 @@ public class Theme {
     public void loadTheme(String srcPath) {
         try {
             //Try to read the configuration file
-            FileReader themeFileSrc = new FileReader(srcPath);
+            FileReader themeFileSrc = new FileReader(getClass().getResource(srcPath).toURI().toString());
             JSONObject jsonObject = new JSONObject(themeFileSrc);
 
             themeFileSrc.close();

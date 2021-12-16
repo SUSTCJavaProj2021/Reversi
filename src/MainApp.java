@@ -35,7 +35,7 @@ public class MainApp extends Application {
         //Initialize MainView
 
         //todo: Solve Theme loading issue.
-        theme = new Theme();
+        theme = new Theme(primaryStage);
         mainView = new MainView(gameSystem, theme);
 
         //Stage

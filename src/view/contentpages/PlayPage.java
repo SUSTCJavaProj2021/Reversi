@@ -1,7 +1,8 @@
 package view.contentpages;
 
 import component.TitleLabel;
-import component.selector.SelectorPage;
+import component.selector.Selector;
+import component.selector.SelectorPane;
 import controller.GameSystem;
 import controller.logger.Log0j;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -21,12 +22,10 @@ public class PlayPage implements Updatable {
     public static final double SELECTOR_WIDTH = 180;
 
     public final GridPane root;
-    public final StackPane viewPaneStack;
-    public final SelectorPage selectorPage;
+    public final SelectorPane playSelector;
 
     // Secondary views
-    public final GridPane localPlayPane;
-    public final SelectorPage localPlaySelector;
+    public final SelectorPane localPlaySelector;
     public final GridPane localPlayNewPane;
     public final GridPane localPlayLoadPane;
 
@@ -58,47 +57,31 @@ public class PlayPage implements Updatable {
         root = new GridPane();
         root.add(new TitleLabel(LiteralConstants.PlayPageTitle.toString(), theme), 0, 0);
         GridPane.setColumnSpan(root.getChildren().get(0), 2);
-
-        viewPaneStack = new StackPane();
-        theme.bindToFrontPane(viewPaneStack.backgroundProperty());
-        root.add(viewPaneStack, 0, 1);
+        playSelector = new SelectorPane(theme);
+        root.add(playSelector, 0, 1);
 
 
         //Initialize all secondary panes.
-        localPlayPane = new GridPane();
-        localPlaySelector = new SelectorPage(theme);
+        localPlaySelector = new SelectorPane(new TitleLabel("Play Local Game", theme), theme);
         localPlayNewPane = new GridPane();
         localPlayLoadPane = new GridPane();
-        initLocalPlayPane();
+        localPlaySelector.addPage("New Game", localPlayNewPane);
+        localPlaySelector.addPage("Load Game", localPlayLoadPane);
+        localPlaySelector.init();
 
         onlinePlayPane = new GridPane();
-        initOnlinePlayPane();
-        viewPaneStack.getChildren().addAll(localPlayPane, onlinePlayPane);
+        onlinePlayPane.add(new TitleLabel("Play Online Game", theme), 0, 0);
 
 
 
 
-        //Initialize the selector
-        selectorPage = new SelectorPage(null, theme);
-        selectorPage.addSelection("Local", localPlayPane);
-        selectorPage.addSelection("Online", onlinePlayPane);
+        //Initialize the Play Selector
 
-        GridPane.setRowSpan(selectorPage.root, 2);
-        root.add(selectorPage.root, 0, 1);
+        playSelector.addPage("Local", localPlaySelector);
+        playSelector.addPage("Online", onlinePlayPane);
+        playSelector.init();
 
-
-        //Setting
-        {
-            ColumnConstraints columnConstraints[] = new ColumnConstraints[2];
-            for (int i = 0; i < 2; i++) {
-                columnConstraints[i] = new ColumnConstraints();
-                columnConstraints[i].setHgrow(Priority.ALWAYS);
-                root.getColumnConstraints().add(columnConstraints[i]);
-            }
-            columnConstraints[0].setMinWidth(SELECTOR_WIDTH);
-            columnConstraints[0].setMaxWidth(SELECTOR_WIDTH);
-        }
-
+        root.add(playSelector, 0, 1);
 
 
         //Buttons need not only to be initialized, but also added to the pane.
@@ -110,17 +93,8 @@ public class PlayPage implements Updatable {
 
     }
 
-    //todo: complete the method
-    private void initLocalPlayPane() {
-        localPlayPane.add(new TitleLabel("Play Local Game", theme), 0, 0);
-        localPlaySelector.addSelection("New Game", localPlayNewPane);
-        localPlaySelector.addSelection("Load Game", localPlayLoadPane);
-    }
 
-    //todo: complete the method
-    private void initOnlinePlayPane() {
-        onlinePlayPane.add(new TitleLabel("Play Online Game", theme), 0, 0);
-    }
+
 
     private void initPlayLocalGameButton() {
         //TEST LOCAL GAME
