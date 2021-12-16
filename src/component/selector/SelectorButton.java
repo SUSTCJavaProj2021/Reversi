@@ -58,9 +58,9 @@ public class SelectorButton extends Button {
         setPrefSize(PREFERRED_WIDTH, PREFERRED_HEIGHT);
         setBackground(defaultBackground);
 
-        setTextFill(Color.WHITE);
         setAlignment(Pos.BASELINE_LEFT);
-        setFont(new Font("Segoe UI", FONT_SIZE));
+        theme.bindToMenuFontFamily(fontProperty());
+        theme.bindToMenuFontPaint(textFillProperty());
 
         if (icon != null) {
             setGraphic(icon);

@@ -1,4 +1,4 @@
-package model;
+package component.gamemodel;
 
 import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;

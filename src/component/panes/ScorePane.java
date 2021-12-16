@@ -4,76 +4,59 @@ import controller.GameController;
 import controller.SimpleGameController;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import view.Theme;
 import view.Updatable;
 
 
 public class ScorePane extends GridPane implements Updatable {
-    public static final int MIN_HEIGHT = 45;
-    public static final int PREF_HEIGHT = 70;
+    public static final int MIN_HEIGHT = 65;
+    public static final int PREF_HEIGHT = 100;
 
-    private Label playerName[];
-    private Label curPlayerLabel;
+    private final Label curPlayerLabel;
 
-    public GameController controller;
+    public final GameController controller;
 
-    public Theme theme;
+    private final Theme theme;
 
 
     public ScorePane(GameController controller, Theme theme) {
         super();
         this.controller = controller;
         this.theme = theme;
-        theme.bindToPaintBackground(backgroundProperty());
-        this.setMinHeight(MIN_HEIGHT);
-        this.setPrefHeight(PREF_HEIGHT);
+//        theme.bindToPaintBackground(backgroundProperty());
 
-        //Initialize Player Label
-        playerName = new Label[2];
-        for(int i = 0; i < 2; i++){
-            playerName[i] = new Label();
-//            theme.bindTextFontFamily(playerName[i].fontProperty());
-            theme.bindToTextFontPaint(playerName[i].textFillProperty());
-        }
-        playerName[0].textProperty().bind(controller.getWhitePlayer().nameProperty());
-        playerName[1].textProperty().bind(controller.getBlackPlayer().nameProperty());
+        setMinHeight(MIN_HEIGHT);
+        setPrefHeight(PREF_HEIGHT);
 
-        this.add(playerName[0], 0, 0);
-        this.add(playerName[1], 2, 0);
-
-        GridPane.setHalignment(playerName[0], HPos.RIGHT);
-        GridPane.setHalignment(playerName[1], HPos.LEFT);
-
-
-        //TODO: add floating info panel to show the status of the player
+        //todo: add floating info panel to show the status of the player
 
         //Initialize Turn Indicator
         curPlayerLabel = new Label();
         curPlayerLabel.setText(controller.getCurrentPlayer().nameProperty().getValue());
+        curPlayerLabel.setTextAlignment(TextAlignment.CENTER);
+        curPlayerLabel.setAlignment(Pos.CENTER);
 //        theme.bindTextFontFamily(curPlayerLabel.fontProperty());
         theme.bindToTextFontPaint(curPlayerLabel.textFillProperty());
-        this.add(curPlayerLabel, 1, 0);
+        theme.bindToTitleFontFamily(curPlayerLabel.fontProperty());
+        add(curPlayerLabel, 0, 0);
 
+//        curPlayerLabel.setBackground(new Background(new BackgroundFill(Color.GREEN,null,null)));
 
-        //Set adaptive Layout
-        ColumnConstraints[] columnConstraints = new ColumnConstraints[3];
+//        GridPane.setHgrow(this, Priority.ALWAYS);
 
-        for (int i = 0; i < 3; i++) {
-            columnConstraints[i] = new ColumnConstraints(5, Control.USE_COMPUTED_SIZE,
-                    Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.CENTER, true);
-            this.getColumnConstraints().add(i, columnConstraints[i]);
-        }
-
-        columnConstraints[0].setPercentWidth(35);
-        columnConstraints[1].setPercentWidth(50);
-        columnConstraints[2].setPercentWidth(35);
+        ColumnConstraints cs = new ColumnConstraints(0, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY, Priority.SOMETIMES, HPos.CENTER, true);
+        getColumnConstraints().add(cs);
     }
 
     @Override
-    public void update(){
+    public void update() {
         curPlayerLabel.setText(controller.getCurrentPlayer().nameProperty().getValue());
     }
 }

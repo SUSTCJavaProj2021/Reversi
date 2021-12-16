@@ -3,6 +3,7 @@ package component.selector;
 import controller.logger.Log0j;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.*;
 import res.icons.Icon;
 import view.Theme;
@@ -94,6 +95,7 @@ public class SelectorPane extends GridPane {
         add(viewCoverPane,1,0);
         GridPane.setHgrow(this,Priority.ALWAYS);
         GridPane.setVgrow(this, Priority.ALWAYS);
+
 
         Log0j.writeLog("SelectorPane Initialized.");
     }

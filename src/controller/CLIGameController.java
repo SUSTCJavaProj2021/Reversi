@@ -84,7 +84,7 @@ public class CLIGameController {
                 cnt += makeOneDirectMove(rowIndex, colIndex, i, j, currentPlayer == PlayerConstants.WHITE_PLAYER ? 1 : -1, MOVE_MODIFY) == MOVE_COMPLETE ? 1 : 0;
             }
         }
-        printBoard();
+//        printBoard();
         if (cnt == 0) {
             return MOVE_INVALID;
         }

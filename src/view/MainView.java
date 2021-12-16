@@ -18,8 +18,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
-import java.net.URISyntaxException;
-
 
 public class MainView extends GridPane {
     public static final double VIEWCOVER_CORNER_RADII = 10;
@@ -90,18 +88,7 @@ public class MainView extends GridPane {
 
         Log0j.writeLog("Main View initialized.");
 
-
-        try {
-            Media media = new Media(getClass().getResource("/res/bgm.mp3").toURI().toString());
-            MediaPlayer mediaPlayer = new MediaPlayer(media);
-            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-            mediaPlayer.setVolume(0.4);
-            mediaPlayer.play();
-            Log0j.writeLog("BGM Initialized.");
-            add(new MediaView(mediaPlayer), 1, 0);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            Log0j.writeLog("Failed to initialize BGM.");
-        }
+        add(new MediaView(theme.getBgmPlayer()), 0, 0);
+        theme.getBgmPlayer().play();
     }
 }

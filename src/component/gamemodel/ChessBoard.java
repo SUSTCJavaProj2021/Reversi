@@ -3,30 +3,36 @@ package component.gamemodel;
 import controller.BlockStatus;
 import controller.GameController;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Control;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import controller.logger.Log0j;
-import model.Chess;
 import view.Theme;
 import view.Updatable;
 
-public class ChessBoard extends GridPane implements Updatable {
+/**
+ * You should not in any way directly manipulate the contents of the ChessBoard instance.
+ */
+public class ChessBoard extends HBox implements Updatable {
     public static final double DEFAULT_BOARD_MIN_SIZE = 400;
     public static final double CHESS_SIZE_RATIO = 0.618;
 
-    public StackPane grid[][];
-    public int rowSize, colSize;
-    public GameController controller;
+    public final VBox vBoxCover;
+    public final GridPane grid;
+    public final BoardGridComponent gridBases[][];
+    public final int rowSize, colSize;
+    public final GameController controller;
     public final double cellMinSize;
     public final double boardSize;
 
-    public Theme theme;
+    private final Theme theme;
 
     public ChessBoard(GameController controller, Theme theme) {
         this(controller, theme, 0);
@@ -44,6 +50,7 @@ public class ChessBoard extends GridPane implements Updatable {
         this.controller = controller;
         this.rowSize = controller.getRowSize();
         this.colSize = controller.getColSize();
+        grid = new GridPane();
 
         if (prefBoardSize <= 0) {
             boardSize = DEFAULT_BOARD_MIN_SIZE;
@@ -53,60 +60,75 @@ public class ChessBoard extends GridPane implements Updatable {
 
         cellMinSize = boardSize / this.rowSize;
 
-        grid = new StackPane[rowSize][colSize];
+        gridBases = new BoardGridComponent[rowSize][colSize];
 
         for (int row = 0; row < this.rowSize; row++) {
-            grid[row] = new StackPane[this.colSize];
+            gridBases[row] = new BoardGridComponent[this.colSize];
             for (int col = 0; col < this.colSize; col++) {
 
                 final int tmpRow = row, tmpCol = col;
 
                 //Initialize Grids
-                grid[row][col] = new StackPane();
-                grid[row][col].setMinHeight(cellMinSize);
-                grid[row][col].setMinWidth(cellMinSize);
-                theme.bindToBorderPaint(grid[row][col].borderProperty());
+                gridBases[row][col] = new BoardGridComponent(theme);
+                gridBases[row][col].setMinHeight(cellMinSize);
+                gridBases[row][col].setMinWidth(cellMinSize);
+                theme.bindToBorderPaint(gridBases[row][col].borderProperty());
                 if ((row + col) % 2 == 0) {
-                    theme.bindToChessBoardPaint1(grid[row][col].backgroundProperty());
+                    theme.bindToChessBoardPaint1(gridBases[row][col].backgroundProperty());
                 } else {
-                    theme.bindToChessBoardPaint2(grid[row][col].backgroundProperty());
+                    theme.bindToChessBoardPaint2(gridBases[row][col].backgroundProperty());
                 }
 
-                this.add(grid[row][col], col, row);
+                grid.add(gridBases[row][col], col, row);
 
                 //Dynamic Chess Size
                 Chess chess = new Chess(15, Color.TRANSPARENT);
-                grid[row][col].getChildren().add(chess);
+                gridBases[row][col].getChildren().add(chess);
                 chess.radiusProperty().bind(Bindings.min(
-                        grid[row][col].widthProperty().divide(2).multiply(CHESS_SIZE_RATIO),
-                        grid[row][col].heightProperty().divide(2).multiply(CHESS_SIZE_RATIO)));
+                        gridBases[row][col].widthProperty().divide(2).multiply(CHESS_SIZE_RATIO),
+                        gridBases[row][col].heightProperty().divide(2).multiply(CHESS_SIZE_RATIO)));
             }
         }
         Log0j.writeLog("Grid background color all bound.");
 
         for (int row = 0; row < rowSize; row++) {
-            getRowConstraints().add(new RowConstraints(cellMinSize, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY,
+            grid.getRowConstraints().add(new RowConstraints(cellMinSize, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY,
                     Priority.SOMETIMES, VPos.CENTER, true));
         }
         for (int col = 0; col < colSize; col++) {
-            getColumnConstraints().add(new ColumnConstraints(cellMinSize, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY,
+            grid.getColumnConstraints().add(new ColumnConstraints(cellMinSize, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY,
                             Priority.SOMETIMES, HPos.CENTER, true));
         }
         Log0j.writeLog("Grid shape initialized.");
 
-        this.setMinWidth(boardSize);
-        this.setMinHeight(boardSize);
-        this.setPrefWidth(GridPane.USE_COMPUTED_SIZE);
-        this.setPrefHeight(GridPane.USE_COMPUTED_SIZE);
+        grid.setMinWidth(boardSize);
+        grid.setMinHeight(boardSize);
+        grid.setPrefWidth(GridPane.USE_COMPUTED_SIZE);
+        grid.setPrefHeight(GridPane.USE_COMPUTED_SIZE);
+
+
+        //Techniques to make the ChessBoard always square
+        vBoxCover = new VBox();
+        setAlignment(Pos.CENTER);
+        vBoxCover.setAlignment(Pos.CENTER);
+
+        final NumberBinding binding = Bindings.min(widthProperty(), heightProperty());
+        vBoxCover.prefWidthProperty().bind(binding);
+        vBoxCover.prefHeightProperty().bind(binding);
+        vBoxCover.setMaxSize(Control.USE_PREF_SIZE, Control.USE_PREF_SIZE);
+        vBoxCover.setFillWidth(true);
+        VBox.setVgrow(grid, Priority.ALWAYS);
+        vBoxCover.getChildren().add(grid);
+        getChildren().add(vBoxCover);
+        HBox.setHgrow(this, Priority.ALWAYS);
 
         update();
         bindToController();
-
     }
 
     public void bindToSize(DoubleProperty width ,DoubleProperty height){
-        prefWidthProperty().bind(width);
-        prefHeightProperty().bind(height);
+        this.prefWidthProperty().bind(width);
+        this.prefHeightProperty().bind(height);
     }
 
     @Override
@@ -114,12 +136,12 @@ public class ChessBoard extends GridPane implements Updatable {
         for (int row = 0; row < rowSize; row++) {
             for (int col = 0; col < colSize; col++) {
                 //Remove the previous chess.
-                if (grid[row][col].getChildren().size() > 1) {
-                    grid[row][col].getChildren().remove(1);
+                if (gridBases[row][col].getChildren().size() > 1) {
+                    gridBases[row][col].getChildren().remove(1);
                 }
 
                 BlockStatus currentPlayer = controller.getBlockStatus(row, col);
-                Chess chess = ((Chess) grid[row][col].getChildren().get(0));
+                Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
 
                 if (currentPlayer == BlockStatus.WHITE_PLAYER.WHITE_PLAYER) {
                     chess.setColor(Color.WHITE);
@@ -140,7 +162,7 @@ public class ChessBoard extends GridPane implements Updatable {
         for (int row = 0; row < rowSize; row++) {
             for (int col = 0; col < colSize; col++) {
                 final int tmpRow = row, tmpCol = col;
-                grid[row][col].setOnMouseClicked(new EventHandler<MouseEvent>() {
+                gridBases[row][col].setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent arg0) {
                         controller.onGridClick(tmpRow, tmpCol);

@@ -113,7 +113,7 @@ public class PlayPage implements Updatable {
                 Image iconImg = new Image("/res/icons/App.png");
                 Stage gameStage = new Stage();
                 gameStage.setScene(new Scene(gameLocalPage.root));
-                gameStage.setTitle("LocalPlay");
+                gameStage.setTitle("Local Game");
                 gameStage.getIcons().add(iconImg);
 
                 gameStage.setMinWidth(GamePageLocal.MIN_WIDTH);
@@ -143,7 +143,7 @@ public class PlayPage implements Updatable {
                     Image iconImg = new Image("/res/icons/App.png");
                     Stage gameStage = new Stage();
                     gameStage.setScene(new Scene(gameLocalPage.root));
-                    gameStage.setTitle("LocalPlay");
+                    gameStage.setTitle("Local Game");
                     gameStage.getIcons().add(iconImg);
                     gameStage.setMinWidth(GamePageLocal.MIN_WIDTH);
                     gameStage.setMinHeight(GamePageLocal.MIN_HEIGHT);

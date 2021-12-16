@@ -16,6 +16,8 @@ import view.Updatable;
 public class GamePageLocal implements Updatable {
     public static final double MIN_WIDTH = InfoPane.MIN_WIDTH * 2 + ChessBoard.DEFAULT_BOARD_MIN_SIZE;
     public static final double MIN_HEIGHT = ChessBoard.DEFAULT_BOARD_MIN_SIZE + ScorePane.MIN_HEIGHT;
+    public static final double DEFAULT_PREF_WIDTH = 915;
+    public static final double DEFAULT_PREF_HEIGHT = 611;
 
     public final BorderPane root;
     public final GameController controller;
@@ -47,6 +49,7 @@ public class GamePageLocal implements Updatable {
         Button btn = new Button("SetCheat!");
 
         root.setTop(scorePane);
+        BorderPane.setAlignment(scorePane, Pos.CENTER);
 
         //TEST CHEAT MODE
         {
@@ -64,6 +67,8 @@ public class GamePageLocal implements Updatable {
         //Last node added is on top
         root.setCenter(chessBoard);
         theme.bindToBackPane(root.backgroundProperty());
+        root.setPrefWidth(DEFAULT_PREF_WIDTH);
+        root.setPrefHeight(DEFAULT_PREF_HEIGHT);
 
     }
 

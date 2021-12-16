@@ -5,6 +5,8 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -12,6 +14,7 @@ import javafx.stage.Stage;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.net.URISyntaxException;
 
 public class Theme {
 
@@ -24,7 +27,10 @@ public class Theme {
     public static final int DEFAULT_MAIN_WINDOW_MIN_WIDTH = 600;
     public static final int DEFAULT_MAIN_WINDOW_MIN_HEIGHT = 450;
 
-    public static final double defaultVolume = 0.4;
+    public static final String defaultBGMSource = "/res/bgm.mp3";
+    public static final String defaultChessSoundSource = "/res/soundeffects/Chess.mp3";
+    public static final double defaultBGMVolume = 0.4;
+    public static final double defaultEffectVolume = 0.4;
 
     public static final Background defaultBackPaneBKGND = new Background(new BackgroundImage(new Image("/res/background.jpg"),
             BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT));
@@ -34,9 +40,9 @@ public class Theme {
 
     public static final Color defaultThemeColor = Color.rgb(29, 31, 44);
     public static final Paint defaultThemePaint = Color.rgb(29, 31, 44);
-    public static final Font defaultTitleFontFamily = new Font("Constantia", 25);
+    public static final Font defaultTitleFontFamily = new Font("Garamond", 25);
     public static final Paint defaultTitleFontPaint = Color.WHITE;
-    public static final Font defaultMenuFontFamily = new Font("Segoe UI", 16);
+    public static final Font defaultMenuFontFamily = new Font("Segoe UI", 14);
     public static final Paint defaultMenuFontPaint = Color.WHITE;
     public static final Font defaultTextFontFamily = new Font("Segoe UI", 16);
     public static final Paint defaultTextFontPaint = Color.WHITE;
@@ -58,7 +64,11 @@ public class Theme {
 
 
     //Audio related
-    public final DoubleProperty volumePR;
+    public MediaPlayer bgmPlayer;
+    public final StringProperty bgmSourcePR;
+    public final StringProperty chessSoundSourcePR;
+    public final DoubleProperty bgmVolumePR;
+    public final DoubleProperty effectVolumePR;
 
     //Theme related
     public final ObjectProperty<Background> backPaneBackgroundPR;
@@ -67,10 +77,13 @@ public class Theme {
 
     public final ObjectProperty<Color> themeColorPR;
     public final ObjectProperty<Paint> themePaintPR;
+
     public final ObjectProperty<Font> titleFontFamilyPR;
     public final ObjectProperty<Paint> titleFontPaintPR;
+
     public final ObjectProperty<Font> menuFontFamilyPR;
     public final ObjectProperty<Paint> menuFontPaintPR;
+
     public final ObjectProperty<Font> textFontFamilyPR;
     public final ObjectProperty<Paint> textFontPaintPR;
 
@@ -83,6 +96,7 @@ public class Theme {
     public final ObjectProperty<Background> chessBoardBackgroundPR;
 
 
+
     public final Stage primaryStage;
 
     //todo: finish chessboard paint default
@@ -92,7 +106,10 @@ public class Theme {
         mainWindowPrefWidth = new SimpleDoubleProperty();
         mainWindowPrefHeight = new SimpleDoubleProperty();
 
-        volumePR = new SimpleDoubleProperty();
+        bgmVolumePR = new SimpleDoubleProperty();
+        bgmSourcePR = new SimpleStringProperty();
+        chessSoundSourcePR = new SimpleStringProperty();
+        effectVolumePR = new SimpleDoubleProperty();
 
         backPaneBackgroundPR = new SimpleObjectProperty<>();
         frontPaneBackgroundPR = new SimpleObjectProperty<>();
@@ -117,14 +134,30 @@ public class Theme {
         initRelations();
         Log0j.writeLog("Theme initialized.");
 
+        //Audio Applied.
+
         loadTheme();
+
+        try {
+            Media media = new Media(getClass().getResource(bgmSourcePR.getValue()).toURI().toString());
+            bgmPlayer = new MediaPlayer(media);
+            bgmPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+            bgmPlayer.volumeProperty().bind(bgmVolumePR);
+            Log0j.writeLog("BGM Player Initialized.");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Log0j.writeLog("Failed to initialize BGM.");
+        }
     }
 
     public void applyDefaultTheme() {
         primaryStage.setWidth(DEFAULT_MAIN_WINDOW_PREF_WIDTH);
         primaryStage.setHeight(DEFAULT_MAIN_WINDOW_PREF_HEIGHT);
 
-        volumePR.setValue(defaultVolume);
+        bgmVolumePR.setValue(defaultBGMVolume);
+        bgmSourcePR.setValue(defaultBGMSource);
+        chessSoundSourcePR.setValue(defaultChessSoundSource);
+        effectVolumePR.setValue(defaultEffectVolume);
 
         backPaneBackgroundPR.setValue(defaultBackPaneBKGND);
         frontPaneBackgroundPR.setValue(defaultFrontPaneBKGND);
@@ -147,6 +180,7 @@ public class Theme {
         chessBoardBackgroundPR.setValue(defaultChessBoardBackground);
 
         Log0j.writeLog("Default Theme Applied.");
+
     }
 
     public void initRelations() {
@@ -168,6 +202,35 @@ public class Theme {
     public void bindToStageHeight(ReadOnlyDoubleProperty heightProperty) {
         mainWindowPrefHeight.bind(heightProperty);
     }
+
+    public MediaPlayer getBgmPlayer(){
+        return bgmPlayer;
+    }
+
+    public StringProperty getChessSoundSource(){
+        return chessSoundSourcePR;
+    }
+
+    public double getEffectVolume(){
+        return effectVolumePR.getValue();
+    }
+
+    public void bindBGMVolumeTo(DoubleProperty volumePR){
+        this.bgmVolumePR.bind(volumePR);
+    }
+
+    public void unbindBGMVolume(){
+        bgmVolumePR.unbind();
+    }
+
+    public void bindEffectVolumeTo(DoubleProperty volumePR){
+        this.effectVolumePR.bind(volumePR);
+    }
+
+    public void unbindEffectVolume(){
+        effectVolumePR.unbind();
+    }
+
 
     public void bindToBackPane(ObjectProperty<Background> background) {
         background.bind(Bindings.createObjectBinding(() -> {
@@ -231,6 +294,17 @@ public class Theme {
             return titleFontPaintPR.getValue();
         }, titleFontPaintPR));
     }
+    public void bindToMenuFontFamily(ObjectProperty<Font> fontFamily) {
+        fontFamily.bind(Bindings.createObjectBinding(() -> {
+            return menuFontFamilyPR.getValue();
+        }, menuFontFamilyPR));
+    }
+
+    public void bindToMenuFontPaint(ObjectProperty<Paint> fontPaint) {
+        fontPaint.bind(Bindings.createObjectBinding(() -> {
+            return menuFontPaintPR.getValue();
+        }, menuFontPaintPR));
+    }
 
     public void bindToTextFontFamily(ObjectProperty<Font> fontFamily) {
         fontFamily.bind(Bindings.createObjectBinding(() -> {
@@ -264,21 +338,25 @@ public class Theme {
 
 
     public void loadTheme() {
-        loadTheme("/res/theme.json");
+        try{
+            loadTheme(getClass().getResource("/res/theme.json").toURI().toString());
+        }catch (URISyntaxException e){
+            e.printStackTrace();
+            Log0j.writeLog("Error occurred because cannot found theme.json. No theme is changed.");
+        }
     }
 
     public void loadTheme(String srcPath) {
         try {
             //Try to read the configuration file
-            FileReader themeFileSrc = new FileReader(getClass().getResource(srcPath).toURI().toString());
+            FileReader themeFileSrc = new FileReader(srcPath);
             JSONObject jsonObject = new JSONObject(themeFileSrc);
 
             themeFileSrc.close();
             Log0j.writeLog("Theme loaded.");
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
-            Log0j.writeLog("Error Occurred. Resetting all data to default value.");
-            applyDefaultTheme();
+            Log0j.writeLog("Error occurred because theme source specified does not exist. No theme is changed.");
         }
     }
 
