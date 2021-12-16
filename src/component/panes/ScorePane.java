@@ -1,25 +1,31 @@
 package component.panes;
 
-import controller.SingleGameController;
+import controller.GameController;
+import controller.SimpleGameController;
+import javafx.beans.binding.Bindings;
 import javafx.geometry.HPos;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import view.Theme;
+import view.Updatable;
 
 
-public class ScorePane extends GridPane {
+public class ScorePane extends GridPane implements Updatable {
     public static final int MIN_HEIGHT = 45;
     public static final int PREF_HEIGHT = 70;
 
     private Label playerName[];
     private Label curPlayerLabel;
 
+    public GameController controller;
+
     public Theme theme;
 
 
-    public ScorePane(SingleGameController controller, Theme theme) {
+    public ScorePane(GameController controller, Theme theme) {
         super();
+        this.controller = controller;
         this.theme = theme;
         theme.bindToPaintBackground(backgroundProperty());
         this.setMinHeight(MIN_HEIGHT);
@@ -32,8 +38,8 @@ public class ScorePane extends GridPane {
 //            theme.bindTextFontFamily(playerName[i].fontProperty());
             theme.bindToTextFontPaint(playerName[i].textFillProperty());
         }
-        playerName[0].textProperty().bind(controller.getWhitePlayer().nameProperty);
-        playerName[1].textProperty().bind(controller.getBlackPlayer().nameProperty);
+        playerName[0].textProperty().bind(controller.getWhitePlayer().nameProperty());
+        playerName[1].textProperty().bind(controller.getBlackPlayer().nameProperty());
 
         this.add(playerName[0], 0, 0);
         this.add(playerName[1], 2, 0);
@@ -46,7 +52,7 @@ public class ScorePane extends GridPane {
 
         //Initialize Turn Indicator
         curPlayerLabel = new Label();
-        curPlayerLabel.textProperty().bind(controller.curPlayerNameProperty);
+        curPlayerLabel.setText(controller.getCurrentPlayer().nameProperty().getValue());
 //        theme.bindTextFontFamily(curPlayerLabel.fontProperty());
         theme.bindToTextFontPaint(curPlayerLabel.textFillProperty());
         this.add(curPlayerLabel, 1, 0);
@@ -54,13 +60,20 @@ public class ScorePane extends GridPane {
 
         //Set adaptive Layout
         ColumnConstraints[] columnConstraints = new ColumnConstraints[3];
+
         for (int i = 0; i < 3; i++) {
             columnConstraints[i] = new ColumnConstraints(5, Control.USE_COMPUTED_SIZE,
                     Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.CENTER, true);
             this.getColumnConstraints().add(i, columnConstraints[i]);
         }
+
         columnConstraints[0].setPercentWidth(35);
         columnConstraints[1].setPercentWidth(50);
         columnConstraints[2].setPercentWidth(35);
+    }
+
+    @Override
+    public void update(){
+        curPlayerLabel.setText(controller.getCurrentPlayer().nameProperty().getValue());
     }
 }

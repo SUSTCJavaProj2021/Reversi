@@ -1,21 +1,22 @@
 package view.contentpages;
 
 import component.TitleLabel;
-import controller.GameSystem;
+import controller.SimpleGameSystem;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.*;
 import res.literal.LiteralConstants;
 import view.Theme;
+import view.Updatable;
 
 public class SettingsPage implements Updatable {
     public final GridPane root;
 
-    public final GameSystem gameSystem;
+    public final SimpleGameSystem gameSystem;
     public final Theme theme;
 
-    public SettingsPage(GameSystem gameSystem, Theme theme) {
+    public SettingsPage(SimpleGameSystem gameSystem, Theme theme) {
         this.gameSystem = gameSystem;
         this.theme = theme;
         root = new GridPane();

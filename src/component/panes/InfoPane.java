@@ -13,7 +13,7 @@ public class InfoPane extends GridPane {
         super();
         this.theme = theme;
 
-        theme.bindToPaintBackground(backgroundProperty());
+        theme.bindToFrontPane(backgroundProperty());
         this.setMinWidth(MIN_WIDTH);
     }
 }

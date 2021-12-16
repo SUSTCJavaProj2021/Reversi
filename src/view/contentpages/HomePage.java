@@ -1,7 +1,7 @@
 package view.contentpages;
 
 import component.TitleLabel;
-import controller.GameSystem;
+import controller.SimpleGameSystem;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -19,11 +19,12 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 import res.literal.LiteralConstants;
 import view.Theme;
+import view.Updatable;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class HomePage implements Updatable{
+public class HomePage implements Updatable {
     public final GridPane root;
 
     public final GridPane displayPane;
@@ -37,7 +38,7 @@ public class HomePage implements Updatable{
 
     public Theme theme;
 
-    public HomePage(GameSystem gameSystem, Theme theme) {
+    public HomePage(SimpleGameSystem gameSystem, Theme theme) {
         this.theme = theme;
 
 

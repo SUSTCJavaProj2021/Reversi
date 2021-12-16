@@ -1,7 +1,7 @@
 package view.contentpages;
 
 import component.TitleLabel;
-import controller.GameSystem;
+import controller.SimpleGameSystem;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -10,14 +10,15 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import res.literal.LiteralConstants;
 import view.Theme;
+import view.Updatable;
 import view.prompts.LoadSystemPrompt;
 
-public class SaveAndLoadPage implements Updatable{
+public class SaveAndLoadPage implements Updatable {
     public final GridPane root;
-    public final GameSystem gameSystem;
+    public final SimpleGameSystem gameSystem;
     public final Theme theme;
 
-    public SaveAndLoadPage(GameSystem gameSystem, Theme theme) {
+    public SaveAndLoadPage(SimpleGameSystem gameSystem, Theme theme) {
         this.gameSystem = gameSystem;
         this.theme = theme;
         root = new GridPane();

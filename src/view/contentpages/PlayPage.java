@@ -1,9 +1,8 @@
 package view.contentpages;
 
 import component.TitleLabel;
-import component.selector.Selector;
 import component.selector.SelectorPane;
-import controller.GameSystem;
+import controller.SimpleGameSystem;
 import controller.logger.Log0j;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
@@ -16,6 +15,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import res.literal.LiteralConstants;
 import view.Theme;
+import view.Updatable;
 import view.gamepages.GamePageLocal;
 
 public class PlayPage implements Updatable {
@@ -35,11 +35,11 @@ public class PlayPage implements Updatable {
     public final Button newLocalGameButton;
     public final Button loadLocalGameButton;
 
-    public final GameSystem gameSystem;
+    public final SimpleGameSystem gameSystem;
     public final Theme theme;
 
 
-    public PlayPage(GameSystem gameSystem, Theme theme) {
+    public PlayPage(SimpleGameSystem gameSystem, Theme theme) {
         this.gameSystem = gameSystem;
         this.theme = theme;
 
@@ -62,7 +62,8 @@ public class PlayPage implements Updatable {
 
 
         //Initialize all secondary panes.
-        localPlaySelector = new SelectorPane(new TitleLabel("Play Local Game", theme), theme);
+        localPlaySelector = new SelectorPane(new TitleLabel("Local Play", theme), theme);
+        localPlaySelector.resetSelectorWidth(220);
         localPlayNewPane = new GridPane();
         localPlayLoadPane = new GridPane();
         localPlaySelector.addPage("New Game", localPlayNewPane);
@@ -77,11 +78,10 @@ public class PlayPage implements Updatable {
 
         //Initialize the Play Selector
 
-        playSelector.addPage("Local", localPlaySelector);
-        playSelector.addPage("Online", onlinePlayPane);
+        playSelector.addPage("Play Local Game", localPlaySelector);
+        playSelector.addPage("Play Online Game", onlinePlayPane);
         playSelector.init();
 
-        root.add(playSelector, 0, 1);
 
 
         //Buttons need not only to be initialized, but also added to the pane.
@@ -91,6 +91,11 @@ public class PlayPage implements Updatable {
         loadLocalGameButton = new Button(LiteralConstants.LoadGameText.toString());
         initLoadGameButton();
 
+
+        //TEST
+            localPlayNewPane.add(newLocalGameButton, 0, 0);
+            localPlayLoadPane.add(loadLocalGameButton, 0, 0);
+        //END TEST
     }
 
 

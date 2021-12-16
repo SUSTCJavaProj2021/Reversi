@@ -1,8 +1,4 @@
-import component.gamemodel.ChessBoard;
-import controller.Player;
-import controller.SingleGameController;
 import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Test extends Application{

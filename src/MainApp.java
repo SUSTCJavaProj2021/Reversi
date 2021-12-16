@@ -1,21 +1,13 @@
-import controller.GameSystem;
+import controller.SimpleGameSystem;
 import controller.logger.Log0j;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import view.MainView;
 import view.Theme;
-
-import java.net.URISyntaxException;
 
 public class MainApp extends Application {
     public static final int MAIN_WINDOW_PREF_WIDTH = 1280;
@@ -23,14 +15,14 @@ public class MainApp extends Application {
 
     public Stage primaryStage;
     public MainView mainView;
-    public GameSystem gameSystem;
+    public SimpleGameSystem gameSystem;
     public Theme theme;
 
     @Override
     public void start(Stage primaryStage) {
         //Initialize Game System
         this.primaryStage = primaryStage;
-        gameSystem = new GameSystem();
+        gameSystem = new SimpleGameSystem();
 
         //Initialize MainView
 

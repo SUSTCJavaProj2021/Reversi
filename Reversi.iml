@@ -11,5 +11,6 @@
     <orderEntry type="library" name="openjfx.javafx.base" level="project" />
     <orderEntry type="library" name="lib (2)" level="project" />
     <orderEntry type="library" name="json" level="project" />
+    <orderEntry type="library" name="json" level="project" />
   </component>
 </module>

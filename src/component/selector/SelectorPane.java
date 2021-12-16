@@ -89,9 +89,11 @@ public class SelectorPane extends GridPane {
         selectorColCNSTR.setMinWidth(SELECTOR_WIDTH);
         selectorColCNSTR.setMaxWidth(SELECTOR_WIDTH);
         getColumnConstraints().add(selectorColCNSTR);
+
         add(selector,0,0);
         add(viewCoverPane,1,0);
         GridPane.setHgrow(this,Priority.ALWAYS);
+        GridPane.setVgrow(this, Priority.ALWAYS);
 
         Log0j.writeLog("SelectorPane Initialized.");
     }
@@ -103,6 +105,11 @@ public class SelectorPane extends GridPane {
 
     public void addPage(String id, Node node) {
         addPage(id, node, null);
+    }
+
+    public void resetSelectorWidth(double width){
+        getColumnConstraints().get(0).setMinWidth(width);
+        getColumnConstraints().get(0).setMaxWidth(width);
     }
 
     public void init(){

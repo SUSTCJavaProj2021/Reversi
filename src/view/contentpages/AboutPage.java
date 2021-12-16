@@ -2,14 +2,13 @@ package view.contentpages;
 
 import component.TitleLabel;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import res.literal.LiteralConstants;
 import view.Theme;
+import view.Updatable;
 
-public class AboutPage implements Updatable{
+public class AboutPage implements Updatable {
     public final GridPane root;
 
     public final Theme theme;

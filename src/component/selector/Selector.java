@@ -56,7 +56,7 @@ public class Selector extends GridPane{
         hasBottom = false;
 
         setPrefWidth(SelectorButton.PREFERRED_WIDTH + 20);
-        setBackground(new Background(new BackgroundFill(Color.rgb(0,0,0,0.05), new CornerRadii(CORNER_RADII), null)));
+        //setBackground(new Background(new BackgroundFill(Color.rgb(0,0,0,0.05), new CornerRadii(CORNER_RADII), null)));
     }
 
     public Selector(Label title, Theme theme) {

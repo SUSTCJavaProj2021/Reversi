@@ -17,6 +17,7 @@ public class Theme {
 
     //Fields below are all default settings.
     //They are all base on experience.
+    public static final double DEFAULT_CORNER_RADII = 10;
 
     public static final int DEFAULT_MAIN_WINDOW_PREF_WIDTH = 1280;
     public static final int DEFAULT_MAIN_WINDOW_PREF_HEIGHT = 800;
@@ -40,6 +41,12 @@ public class Theme {
     public static final Font defaultTextFontFamily = new Font("Segoe UI", 16);
     public static final Paint defaultTextFontPaint = Color.WHITE;
 
+    public static final Paint defaultPlayerChessPaint1 = Color.WHITE;
+    public static final Paint defaultPlayerChessPaint2 = Color.BLACK;
+    public static final Paint defaultChessBoardPaint1 = Color.rgb(29, 31, 44);
+    public static final Paint defaultChessBoardPaint2 = Color.rgb(55, 58, 84);
+    public static final Paint defaultChessBoardGridPaint = Color.rgb(255, 255, 255, 0.50);
+    public static final Background defaultChessBoardBackground = new Background(new BackgroundFill(Color.TRANSPARENT, new CornerRadii(DEFAULT_CORNER_RADII), null));
 
     //Below are properties
 
@@ -68,11 +75,12 @@ public class Theme {
     public final ObjectProperty<Paint> textFontPaintPR;
 
     //Chessboard Color
-//    public final ObjectProperty<Paint> playerChessPaintPR1;
-//    public final ObjectProperty<Paint> playerChessPaintPR2;
-//    public final ObjectProperty<Paint> chessGridPaintPR1;
-//    public final ObjectProperty<Paint> chessGridPaintPR2;
-//    public final ObjectProperty<Background> chessBoardBackgroundPR;
+    public final ObjectProperty<Paint> playerChessPaintPR1;
+    public final ObjectProperty<Paint> playerChessPaintPR2;
+    public final ObjectProperty<Paint> chessBoardPaintPR1;
+    public final ObjectProperty<Paint> chessBoardPaintPR2;
+    public final ObjectProperty<Paint> chessBoardGridPaintPR;
+    public final ObjectProperty<Background> chessBoardBackgroundPR;
 
 
     public final Stage primaryStage;
@@ -97,6 +105,13 @@ public class Theme {
         menuFontPaintPR = new SimpleObjectProperty<>();
         textFontFamilyPR = new SimpleObjectProperty<>();
         textFontPaintPR = new SimpleObjectProperty<>();
+
+        playerChessPaintPR1 = new SimpleObjectProperty<>();
+        playerChessPaintPR2 = new SimpleObjectProperty<>();
+        chessBoardPaintPR1 = new SimpleObjectProperty<>();
+        chessBoardPaintPR2 = new SimpleObjectProperty<>();
+        chessBoardGridPaintPR = new SimpleObjectProperty<>();
+        chessBoardBackgroundPR = new SimpleObjectProperty<>();
 
         applyDefaultTheme();
         initRelations();
@@ -123,6 +138,14 @@ public class Theme {
         menuFontPaintPR.setValue(defaultMenuFontPaint);
         textFontFamilyPR.setValue(defaultTextFontFamily);
         textFontPaintPR.setValue(defaultTextFontPaint);
+
+        playerChessPaintPR1.setValue(defaultPlayerChessPaint1);
+        playerChessPaintPR2.setValue(defaultPlayerChessPaint2);
+        chessBoardPaintPR1.setValue(defaultChessBoardPaint1);
+        chessBoardPaintPR2.setValue(defaultChessBoardPaint2);
+        chessBoardGridPaintPR.setValue(defaultChessBoardGridPaint);
+        chessBoardBackgroundPR.setValue(defaultChessBoardBackground);
+
         Log0j.writeLog("Default Theme Applied.");
     }
 
@@ -133,16 +156,16 @@ public class Theme {
         Log0j.writeLog("Relation initialized.");
     }
 
-    public void bindToStage(Stage stage){
+    public void bindToStage(Stage stage) {
         bindToStageWidth(stage.widthProperty());
         bindToStageHeight(stage.heightProperty());
     }
 
-    public void bindToStageWidth(ReadOnlyDoubleProperty widthProperty){
+    public void bindToStageWidth(ReadOnlyDoubleProperty widthProperty) {
         mainWindowPrefWidth.bind(widthProperty);
     }
 
-    public void bindToStageHeight(ReadOnlyDoubleProperty heightProperty){
+    public void bindToStageHeight(ReadOnlyDoubleProperty heightProperty) {
         mainWindowPrefHeight.bind(heightProperty);
     }
 
@@ -219,6 +242,24 @@ public class Theme {
         fontPaint.bind(Bindings.createObjectBinding(() -> {
             return textFontPaintPR.getValue();
         }, textFontPaintPR));
+    }
+
+    public void bindToChessBoardPaint1(ObjectProperty<Background> background){
+        background.bind(Bindings.createObjectBinding(()->{
+            return new Background(new BackgroundFill(chessBoardPaintPR1.getValue(), null, null));
+        }, chessBoardPaintPR1));
+    }
+
+    public void bindToChessBoardPaint2(ObjectProperty<Background> background){
+        background.bind(Bindings.createObjectBinding(()->{
+            return new Background(new BackgroundFill(chessBoardPaintPR2.getValue(), null, null));
+        }, chessBoardPaintPR2));
+    }
+
+    public void bindToBorderPaint(ObjectProperty<Border> borderProperty){
+        borderProperty.bind(Bindings.createObjectBinding(()->{
+            return new Border(new BorderStroke(chessBoardGridPaintPR.getValue(), BorderStrokeStyle.SOLID, null, BorderWidths.DEFAULT));
+        }, chessBoardGridPaintPR));
     }
 
 

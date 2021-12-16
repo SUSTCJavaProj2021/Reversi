@@ -23,6 +23,7 @@ public class Chess extends Circle {
 
     public void setColor(Color color) {
         super.setFill(color);
+        this.color = color;
         if (!color.equals(Color.TRANSPARENT)) {
             DropShadow dropShadow = new DropShadow();
             dropShadow.setRadius(radiusProperty().doubleValue() + 5);

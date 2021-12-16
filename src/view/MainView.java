@@ -1,9 +1,7 @@
 package view;
 
 import component.selector.MainSelectorPane;
-import component.selector.Selector;
-import component.selector.SelectorPane;
-import controller.GameSystem;
+import controller.SimpleGameSystem;
 import controller.logger.Log0j;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -38,11 +36,11 @@ public class MainView extends GridPane {
     public SettingsPage settingsPage;
     public AboutPage aboutPage;
 
-    public GameSystem gameSystem;
+    public SimpleGameSystem gameSystem;
     public Theme theme;
 
 
-    public MainView(GameSystem gameSystem, Theme theme) {
+    public MainView(SimpleGameSystem gameSystem, Theme theme) {
         super();
         this.gameSystem = gameSystem;
         this.theme = theme;

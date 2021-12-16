@@ -3,20 +3,22 @@ package view.gamepages;
 import component.gamemodel.ChessBoard;
 import component.panes.InfoPane;
 import component.panes.ScorePane;
+import controller.GameController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.layout.*;
-import controller.SingleGameController;
+import javafx.scene.layout.BorderPane;
 import view.Theme;
+import view.Updatable;
 
-public class GamePageLocal {
-    public static final double MIN_WIDTH = InfoPane.MIN_WIDTH * 2 + ChessBoard.BOARD_SIZE;
-    public static final double MIN_HEIGHT = ChessBoard.BOARD_SIZE + ScorePane.MIN_HEIGHT;
+public class GamePageLocal implements Updatable {
+    public static final double MIN_WIDTH = InfoPane.MIN_WIDTH * 2 + ChessBoard.DEFAULT_BOARD_MIN_SIZE;
+    public static final double MIN_HEIGHT = ChessBoard.DEFAULT_BOARD_MIN_SIZE + ScorePane.MIN_HEIGHT;
 
     public final BorderPane root;
-    public final SingleGameController controller;
+    public final GameController controller;
 
     public final ChessBoard chessBoard;
     public final ScorePane scorePane;
@@ -25,26 +27,30 @@ public class GamePageLocal {
 
     public Theme theme;
 
-    public GamePageLocal(SingleGameController controller, Theme theme) {
+    public GamePageLocal(GameController controller, Theme theme) {
         this.theme = theme;
         this.controller = controller;
-        chessBoard = new ChessBoard(controller, theme);
         root = new BorderPane();
 
-        whitePlayerInfoPane = new InfoPane(controller.getWhitePlayer(),theme);
-        blackPlayerInfoPane = new InfoPane(controller.getBlackPlayer(),theme);
+        chessBoard = new ChessBoard(controller, theme);
+        controller.bindToGamePage(this);
+        BorderPane.setAlignment(chessBoard, Pos.CENTER);
+
+        whitePlayerInfoPane = new InfoPane(controller.getWhitePlayer(), theme);
+        blackPlayerInfoPane = new InfoPane(controller.getBlackPlayer(), theme);
 
         root.setLeft(whitePlayerInfoPane);
         root.setRight(blackPlayerInfoPane);
 
 
         scorePane = new ScorePane(controller, theme);
+        Button btn = new Button("SetCheat!");
+
         root.setTop(scorePane);
 
         //TEST CHEAT MODE
         {
             ToggleButton toggleButton = new ToggleButton("Test");
-            Button btn = new Button("SetCheat!");
             btn.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent actionEvent) {
@@ -54,26 +60,20 @@ public class GamePageLocal {
             root.setBottom(btn);
         }
 
-        root.setCenter(chessBoard);
 
+        //Last node added is on top
+        root.setCenter(chessBoard);
         theme.bindToBackPane(root.backgroundProperty());
 
+    }
 
+    @Override
+    public void update() {
+        chessBoard.update();
+        scorePane.update();
+    }
 
-        //Set Auto-sized Columns
-//        ColumnConstraints columnConstraints[] = new ColumnConstraints[2];
-//        RowConstraints rowConstraints[] = new RowConstraints[2];
-//        for (int i = 0; i < 2; i++) {
-//            columnConstraints[i] = new ColumnConstraints(5, Control.USE_COMPUTED_SIZE,
-//                    Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.CENTER, true);
-//            rowConstraints[i] = new RowConstraints(5, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY,
-//                    Priority.ALWAYS, VPos.CENTER, true);
-//            gamePane.getColumnConstraints().add(i, columnConstraints[i]);
-//            gamePane.getRowConstraints().add(i, rowConstraints[i]);
-//        }
-//        columnConstraints[0].setPercentWidth(25);
-//        columnConstraints[1].setPercentWidth(75);
-//        rowConstraints[0].setPercentHeight(8);
-//        rowConstraints[1].setPercentHeight(92);
+    public GamePageLocal outer() {
+        return this;
     }
 }

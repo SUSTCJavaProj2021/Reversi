@@ -1,5 +1,5 @@
 package controller;
 
 public enum BlockStatus {
-    WHITE_PLAYER, BLACK_PLAYER, UNOCCUPIED;
+    WHITE_PLAYER, BLACK_PLAYER, UNOCCUPIED, PREFERRED, BANNED;
 }
