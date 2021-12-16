@@ -5,7 +5,6 @@ import component.selector.SelectorPage;
 import controller.GameSystem;
 import controller.logger.Log0j;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -17,16 +16,25 @@ import javafx.stage.Stage;
 import res.literal.LiteralConstants;
 import view.Theme;
 import view.gamepages.GamePageLocal;
-import view.prompts.LoadGamePrompt;
 
-public class PlayPage implements Updatable{
+public class PlayPage implements Updatable {
     public static final double SELECTOR_WIDTH = 180;
 
     public final GridPane root;
+    public final StackPane viewPaneStack;
     public final SelectorPage selectorPage;
 
-    public Button newLocalGameButton;
-    public Button loadLocalGameButton;
+    // Secondary views
+    public final GridPane localPlayPane;
+    public final SelectorPage localPlaySelector;
+    public final GridPane localPlayNewPane;
+    public final GridPane localPlayLoadPane;
+
+    public final GridPane onlinePlayPane;
+
+
+    public final Button newLocalGameButton;
+    public final Button loadLocalGameButton;
 
     public final GameSystem gameSystem;
     public final Theme theme;
@@ -36,16 +44,50 @@ public class PlayPage implements Updatable{
         this.gameSystem = gameSystem;
         this.theme = theme;
 
+        /**
+         * Overall Root Structure:
+         *
+         * ----------------------
+         * Title (2 column spans)
+         * ---------------------
+         *          |
+         * Selector | viewStack
+         *          |
+         * ---------------------
+         */
         root = new GridPane();
         root.add(new TitleLabel(LiteralConstants.PlayPageTitle.toString(), theme), 0, 0);
         GridPane.setColumnSpan(root.getChildren().get(0), 2);
 
-        //Selector
+        viewPaneStack = new StackPane();
+        theme.bindToFrontPane(viewPaneStack.backgroundProperty());
+        root.add(viewPaneStack, 0, 1);
+
+
+        //Initialize all secondary panes.
+        localPlayPane = new GridPane();
+        localPlaySelector = new SelectorPage(theme);
+        localPlayNewPane = new GridPane();
+        localPlayLoadPane = new GridPane();
+        initLocalPlayPane();
+
+        onlinePlayPane = new GridPane();
+        initOnlinePlayPane();
+        viewPaneStack.getChildren().addAll(localPlayPane, onlinePlayPane);
+
+
+
+
+        //Initialize the selector
         selectorPage = new SelectorPage(null, theme);
+        selectorPage.addSelection("Local", localPlayPane);
+        selectorPage.addSelection("Online", onlinePlayPane);
 
         GridPane.setRowSpan(selectorPage.root, 2);
         root.add(selectorPage.root, 0, 1);
 
+
+        //Setting
         {
             ColumnConstraints columnConstraints[] = new ColumnConstraints[2];
             for (int i = 0; i < 2; i++) {
@@ -57,14 +99,31 @@ public class PlayPage implements Updatable{
             columnConstraints[0].setMaxWidth(SELECTOR_WIDTH);
         }
 
+
+
+        //Buttons need not only to be initialized, but also added to the pane.
+        newLocalGameButton = new Button(LiteralConstants.PlayLocalText.toString());
         initPlayLocalGameButton();
+
+        loadLocalGameButton = new Button(LiteralConstants.LoadGameText.toString());
         initLoadGameButton();
 
     }
 
+    //todo: complete the method
+    private void initLocalPlayPane() {
+        localPlayPane.add(new TitleLabel("Play Local Game", theme), 0, 0);
+        localPlaySelector.addSelection("New Game", localPlayNewPane);
+        localPlaySelector.addSelection("Load Game", localPlayLoadPane);
+    }
+
+    //todo: complete the method
+    private void initOnlinePlayPane() {
+        onlinePlayPane.add(new TitleLabel("Play Online Game", theme), 0, 0);
+    }
+
     private void initPlayLocalGameButton() {
         //TEST LOCAL GAME
-        newLocalGameButton = new Button(LiteralConstants.PlayLocalText.toString());
         newLocalGameButton.setPrefHeight(75);
         newLocalGameButton.setPrefWidth(300);
 
@@ -86,12 +145,10 @@ public class PlayPage implements Updatable{
             }
         });
         GridPane.setHalignment(newLocalGameButton, HPos.CENTER);
-        root.add(newLocalGameButton, 1, 1);
     }
 
     private void initLoadGameButton() {
-//TEST LOAD GAME
-        loadLocalGameButton = new Button(LiteralConstants.LoadGameText.toString());
+        //TEST LOAD GAME
         loadLocalGameButton.setPrefHeight(75);
         loadLocalGameButton.setPrefWidth(300);
 
@@ -101,9 +158,6 @@ public class PlayPage implements Updatable{
                 //Theoretically, a new prompt asking for choosing the saves should pop up.
                 //todo: change default index property
                 SimpleIntegerProperty indexProperty = new SimpleIntegerProperty(2);
-                Stage promptStage = new Stage();
-                promptStage.setScene(new Scene(new LoadGamePrompt(gameSystem, indexProperty).root));
-                promptStage.showAndWait();
 
                 if (indexProperty.intValue() != -1) {
                     GamePageLocal gameLocalPage = new GamePageLocal(gameSystem.loadGame(indexProperty.intValue(), false), theme);
@@ -120,7 +174,6 @@ public class PlayPage implements Updatable{
             }
         });
         GridPane.setHalignment(loadLocalGameButton, HPos.CENTER);
-        root.add(loadLocalGameButton, 1, 2);
     }
 
     @Override

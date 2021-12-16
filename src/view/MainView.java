@@ -28,7 +28,7 @@ public class MainView extends GridPane {
     public static final double SELECTOR_WIDTH = 180;
 
     public BorderPane viewCoverPane;
-    public StackPane viewPane;
+    public StackPane viewPaneStack;
 
     public SelectorPage selectorPage;
     public HomePage homePage;
@@ -55,20 +55,14 @@ public class MainView extends GridPane {
         aboutPage = new AboutPage(theme);
         Log0j.writeLog("Content pages loaded.");
 
-        homePage.root.setVisible(false);
-        playPage.root.setVisible(false);
-        statisticsPage.root.setVisible(false);
-        saveAndLoadPage.root.setVisible(false);
-        settingsPage.root.setVisible(false);
-        aboutPage.root.setVisible(false);
 
 
         //viewPane provides the ability to switch between pages.
-        viewPane = new StackPane();
-        viewPane.getChildren().addAll(aboutPage.root, settingsPage.root, saveAndLoadPage.root, statisticsPage.root, playPage.root, homePage.root);
+        viewPaneStack = new StackPane();
+        viewPaneStack.getChildren().addAll(aboutPage.root, settingsPage.root, saveAndLoadPage.root, statisticsPage.root, playPage.root, homePage.root);
 
-        GridPane.setHgrow(viewPane, Priority.ALWAYS);
-        GridPane.setVgrow(viewPane, Priority.ALWAYS);
+        GridPane.setHgrow(viewPaneStack, Priority.ALWAYS);
+        GridPane.setVgrow(viewPaneStack, Priority.ALWAYS);
         Log0j.writeLog("View Pane loaded.");
 
 
@@ -96,10 +90,10 @@ public class MainView extends GridPane {
             viewCoverPane.setLeft(vBox1);
             viewCoverPane.setRight(vBox2);
         }
-        viewCoverPane.setCenter(viewPane);
+        viewCoverPane.setCenter(viewPaneStack);
         GridPane.setHgrow(viewCoverPane, Priority.ALWAYS);
         GridPane.setVgrow(viewCoverPane, Priority.ALWAYS);
-        theme.bindFrontPane(viewCoverPane.backgroundProperty());
+        theme.bindToFrontPane(viewCoverPane.backgroundProperty());
         Log0j.writeLog("ViewCover Pane loaded.");
 
 
@@ -138,7 +132,7 @@ public class MainView extends GridPane {
         add(viewCoverPane, 1, 0);
 
 
-        theme.bindBackPane(backgroundProperty());
+        theme.bindToBackPane(backgroundProperty());
         {
             ColumnConstraints cs = new ColumnConstraints();
             cs.setMinWidth(SELECTOR_WIDTH);

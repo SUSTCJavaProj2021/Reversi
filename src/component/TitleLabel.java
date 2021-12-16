@@ -10,8 +10,8 @@ public class TitleLabel extends Label {
     public TitleLabel(String title, Theme theme) {
         super(title);
 
-        theme.bindTitleFontFamily(fontProperty());
-        theme.bindTitleFontPaint(textFillProperty());
+        theme.bindToTitleFontFamily(fontProperty());
+        theme.bindToTitleFontPaint(textFillProperty());
 
         setMinHeight(PREFERRED_HEIGHT);
         setPrefHeight(PREFERRED_HEIGHT);

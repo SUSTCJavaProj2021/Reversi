@@ -1,10 +1,7 @@
 package component.panes;
 
 import controller.Player;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import view.Theme;
 
 public class InfoPane extends GridPane {
@@ -16,7 +13,7 @@ public class InfoPane extends GridPane {
         super();
         this.theme = theme;
 
-        theme.bindPaintBackground(backgroundProperty());
+        theme.bindToPaintBackground(backgroundProperty());
         this.setMinWidth(MIN_WIDTH);
     }
 }

@@ -81,6 +81,10 @@ public class SelectorPage {
         }
     }
 
+    public void addSelection(String selectionText, Node node){
+        addSelection(selectionText, node, null);
+    }
+
     public void addSelection(String selectionText, Node node, ImageView icon) {
         SelectorButton button = new SelectorButton(selectionText, node, icon, theme);
         if (buttonList.size() != 0) {
@@ -94,6 +98,10 @@ public class SelectorPage {
         buttonList.add(button);
         selector.getChildren().add(button);
 
+        //Initialize
+        node.setVisible(false);
+
+        //Deal with actions
         button.setOnAction(ActionEvent -> {
             setCurrentSelection(button);
         });
@@ -107,7 +115,7 @@ public class SelectorPage {
             currentSelectedButton = button;
             currentSelectedButton.setSelected();
         }
-        Log0j.writeLog("Switched selection: " + currentSelectedButton.textProperty().getValue());
+//        Log0j.writeLog("Switched selection: " + currentSelectedButton.textProperty().getValue());
     }
 
 

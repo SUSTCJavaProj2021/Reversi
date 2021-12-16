@@ -5,7 +5,6 @@ import javafx.geometry.HPos;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import view.Theme;
 
 
@@ -22,7 +21,7 @@ public class ScorePane extends GridPane {
     public ScorePane(SingleGameController controller, Theme theme) {
         super();
         this.theme = theme;
-        theme.bindPaintBackground(backgroundProperty());
+        theme.bindToPaintBackground(backgroundProperty());
         this.setMinHeight(MIN_HEIGHT);
         this.setPrefHeight(PREF_HEIGHT);
 
@@ -31,7 +30,7 @@ public class ScorePane extends GridPane {
         for(int i = 0; i < 2; i++){
             playerName[i] = new Label();
 //            theme.bindTextFontFamily(playerName[i].fontProperty());
-            theme.bindTextFontPaint(playerName[i].textFillProperty());
+            theme.bindToTextFontPaint(playerName[i].textFillProperty());
         }
         playerName[0].textProperty().bind(controller.getWhitePlayer().nameProperty);
         playerName[1].textProperty().bind(controller.getBlackPlayer().nameProperty);
@@ -49,7 +48,7 @@ public class ScorePane extends GridPane {
         curPlayerLabel = new Label();
         curPlayerLabel.textProperty().bind(controller.curPlayerNameProperty);
 //        theme.bindTextFontFamily(curPlayerLabel.fontProperty());
-        theme.bindTextFontPaint(curPlayerLabel.textFillProperty());
+        theme.bindToTextFontPaint(curPlayerLabel.textFillProperty());
         this.add(curPlayerLabel, 1, 0);
 
 

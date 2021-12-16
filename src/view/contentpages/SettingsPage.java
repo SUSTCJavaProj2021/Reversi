@@ -2,15 +2,10 @@ package view.contentpages;
 
 import component.TitleLabel;
 import controller.GameSystem;
-import javafx.beans.binding.Bindings;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import res.literal.LiteralConstants;
 import view.Theme;
 
@@ -36,8 +31,8 @@ public class SettingsPage implements Updatable {
             theme.themeColorPR.bind(cp.valueProperty());
 
             Label label = new Label("ThemeColor");
-            theme.bindTextFontFamily(label.fontProperty());
-            theme.bindTextFontPaint(label.textFillProperty());
+            theme.bindToTextFontFamily(label.fontProperty());
+            theme.bindToTextFontPaint(label.textFillProperty());
 
             Separator s = new Separator();
             s.setOpacity(0);

@@ -92,6 +92,8 @@ public class HomePage implements Updatable{
         welcomeText2.setAlignment(Pos.CENTER_LEFT);
         welcomeText2.setTextFill(Color.WHITE);
         welcomeText2.setWrapText(true);
+
+        //Initialize the Clock
         {
             Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
                 welcomeText2.setText("It's " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("hh:MM:ss , LLLL dd")) + " now.\n" +

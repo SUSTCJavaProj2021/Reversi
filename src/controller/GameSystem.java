@@ -48,4 +48,12 @@ public class GameSystem {
         return gameList;
     }
 
+    public void save(){
+        saveTo("/save/DefaultSave.save");
+    }
+
+    public void saveTo(String srcPath){
+
+    }
+
 }

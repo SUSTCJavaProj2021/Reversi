@@ -8,7 +8,6 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import controller.SingleGameController;
 import view.Theme;
 
@@ -57,7 +56,7 @@ public class GamePageLocal {
 
         root.setCenter(chessBoard);
 
-        theme.bindBackPane(root.backgroundProperty());
+        theme.bindToBackPane(root.backgroundProperty());
 
 
 
