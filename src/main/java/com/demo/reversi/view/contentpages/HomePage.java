@@ -21,6 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -60,7 +61,11 @@ public class HomePage implements Updatable {
         winRateChart = new PieChart(WRChartData);
         winRateChart.setTitle("Poor win rate");
         winRateChart.setLegendSide(Side.LEFT);
-        winRateChart.getStylesheets().add("/res/chart.css");
+        try {
+            winRateChart.getStylesheets().add(theme.getClass().getResource("piechart.css").toURI().toString());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
 
         /*
          Why is that the color must be changed using stylesheet? wtf?

@@ -74,14 +74,11 @@ public class PlayPage implements Updatable {
         onlinePlayPane.add(new TitleLabel("Play Online Game", theme), 0, 0);
 
 
-
-
         //Initialize the Play Selector
 
         playSelector.addPage("Play Local Game", localPlaySelector);
         playSelector.addPage("Play Online Game", onlinePlayPane);
         playSelector.init();
-
 
 
         //Buttons need not only to be initialized, but also added to the pane.
@@ -93,12 +90,10 @@ public class PlayPage implements Updatable {
 
 
         //TEST
-            localPlayNewPane.add(newLocalGameButton, 0, 0);
-            localPlayLoadPane.add(loadLocalGameButton, 0, 0);
+        localPlayNewPane.add(newLocalGameButton, 0, 0);
+        localPlayLoadPane.add(loadLocalGameButton, 0, 0);
         //END TEST
     }
-
-
 
 
     private void initPlayLocalGameButton() {
@@ -113,11 +108,7 @@ public class PlayPage implements Updatable {
                 Stage gameStage = new Stage();
                 gameStage.setScene(new Scene(gameLocalPage.root));
                 gameStage.setTitle("Local Game");
-                try{
-                    gameStage.getIcons().add(Theme.getAppIcon());
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+                gameStage.getIcons().add(Theme.getAppIcon());
 
                 gameStage.setMinWidth(GamePageLocal.MIN_WIDTH);
                 gameStage.setMinHeight(GamePageLocal.MIN_HEIGHT);
@@ -146,11 +137,7 @@ public class PlayPage implements Updatable {
                     Stage gameStage = new Stage();
                     gameStage.setScene(new Scene(gameLocalPage.root));
                     gameStage.setTitle("Local Game");
-                    try{
-                        gameStage.getIcons().add(Theme.getAppIcon());
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
+                    gameStage.getIcons().add(Theme.getAppIcon());
                     gameStage.setMinWidth(GamePageLocal.MIN_WIDTH);
                     gameStage.setMinHeight(GamePageLocal.MIN_HEIGHT);
                     gameStage.show();
