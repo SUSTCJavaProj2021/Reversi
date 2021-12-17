@@ -87,8 +87,10 @@ public class MainView extends GridPane {
         add(mainSelectorPane, 0, 0);
 
         Log0j.writeLog("Main View initialized.");
-
-        add(new MediaView(theme.getBgmPlayer()), 0, 0);
-        theme.getBgmPlayer().play();
+        //todo: ?
+        if (theme.getBgmPlayer() != null) {
+            add(new MediaView(theme.getBgmPlayer()), 0, 0);
+            theme.getBgmPlayer().play();
+        }
     }
 }

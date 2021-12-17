@@ -62,7 +62,7 @@ public class BoardGridComponent extends StackPane {
             public void handle(MouseEvent event) {
                 setOpacity(OPACITY_SELECTED);
                 try{
-                    AudioClip clickSound = new AudioClip(getClass().getResource(theme.getChessSoundSource().getValue()).toURI().toString());
+                    AudioClip clickSound = new AudioClip(theme.getChessSoundSource().getValue().toUri().toString());
                     clickSound.setVolume(theme.getEffectVolume());
                     clickSound.play();
                 }catch (Exception e){

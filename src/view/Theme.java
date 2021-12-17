@@ -15,6 +15,8 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Theme {
 
@@ -27,8 +29,22 @@ public class Theme {
     public static final int DEFAULT_MAIN_WINDOW_MIN_WIDTH = 600;
     public static final int DEFAULT_MAIN_WINDOW_MIN_HEIGHT = 450;
 
-    public static final String defaultBGMSource = "/res/bgm.mp3";
-    public static final String defaultChessSoundSource = "/res/soundeffects/Chess.mp3";
+    public static Path defaultBGMSource;
+    public static Path defaultChessSoundSource;
+
+    static {
+        try {
+            defaultBGMSource = Paths.get(Paths.get(Theme.class.getResource("/res").toURI()).toString(), "bgm.mp3");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            defaultChessSoundSource = Paths.get(Paths.get(Theme.class.getResource("/res/soundeffects").toURI()).toString(), "Chess.mp3");
+        } catch (Exception e) {
+
+        }
+    }
+
     public static final double defaultBGMVolume = 0.4;
     public static final double defaultEffectVolume = 0.4;
 
@@ -65,10 +81,15 @@ public class Theme {
 
     //Audio related
     public MediaPlayer bgmPlayer;
-    public final StringProperty bgmSourcePR;
-    public final StringProperty chessSoundSourcePR;
+    public final ObjectProperty<Path> bgmSourcePR;
+    public final ObjectProperty<Path> chessSoundSourcePR;
     public final DoubleProperty bgmVolumePR;
     public final DoubleProperty effectVolumePR;
+
+    //Audio File Related
+    public final BooleanProperty bgmSourceMoved;
+    public final BooleanProperty chessSoundSourceMoved;
+
 
     //Theme related
     public final ObjectProperty<Background> backPaneBackgroundPR;
@@ -96,7 +117,6 @@ public class Theme {
     public final ObjectProperty<Background> chessBoardBackgroundPR;
 
 
-
     public final Stage primaryStage;
 
     //todo: finish chessboard paint default
@@ -107,9 +127,12 @@ public class Theme {
         mainWindowPrefHeight = new SimpleDoubleProperty();
 
         bgmVolumePR = new SimpleDoubleProperty();
-        bgmSourcePR = new SimpleStringProperty();
-        chessSoundSourcePR = new SimpleStringProperty();
+        bgmSourcePR = new SimpleObjectProperty<>();
+        chessSoundSourcePR = new SimpleObjectProperty<>();
         effectVolumePR = new SimpleDoubleProperty();
+
+        bgmSourceMoved = new SimpleBooleanProperty();
+        chessSoundSourceMoved = new SimpleBooleanProperty();
 
         backPaneBackgroundPR = new SimpleObjectProperty<>();
         frontPaneBackgroundPR = new SimpleObjectProperty<>();
@@ -139,12 +162,19 @@ public class Theme {
         loadTheme();
 
         try {
-            Media media = new Media(getClass().getResource(bgmSourcePR.getValue()).toURI().toString());
+            getClass();
+            Media media;
+            if (bgmSourceMoved.getValue()) {
+                media = new Media(bgmSourcePR.getValue().toUri().toString());
+            } else {
+                Log0j.writeLog("Default BGM Source initialized on path: \"" + defaultBGMSource.toString() + "\"");
+                media = new Media(defaultBGMSource.toUri().toString());
+            }
             bgmPlayer = new MediaPlayer(media);
             bgmPlayer.setCycleCount(MediaPlayer.INDEFINITE);
             bgmPlayer.volumeProperty().bind(bgmVolumePR);
             Log0j.writeLog("BGM Player Initialized.");
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             Log0j.writeLog("Failed to initialize BGM.");
         }
@@ -158,6 +188,9 @@ public class Theme {
         bgmSourcePR.setValue(defaultBGMSource);
         chessSoundSourcePR.setValue(defaultChessSoundSource);
         effectVolumePR.setValue(defaultEffectVolume);
+
+        bgmSourceMoved.setValue(false);
+        chessSoundSourceMoved.setValue(false);
 
         backPaneBackgroundPR.setValue(defaultBackPaneBKGND);
         frontPaneBackgroundPR.setValue(defaultFrontPaneBKGND);
@@ -203,31 +236,35 @@ public class Theme {
         mainWindowPrefHeight.bind(heightProperty);
     }
 
-    public MediaPlayer getBgmPlayer(){
+    public MediaPlayer getBgmPlayer() {
         return bgmPlayer;
     }
 
-    public StringProperty getChessSoundSource(){
+    public ObjectProperty<Path> getBgmSource() {
+        return bgmSourcePR;
+    }
+
+    public ObjectProperty<Path> getChessSoundSource() {
         return chessSoundSourcePR;
     }
 
-    public double getEffectVolume(){
+    public double getEffectVolume() {
         return effectVolumePR.getValue();
     }
 
-    public void bindBGMVolumeTo(DoubleProperty volumePR){
+    public void bindBGMVolumeTo(DoubleProperty volumePR) {
         this.bgmVolumePR.bind(volumePR);
     }
 
-    public void unbindBGMVolume(){
+    public void unbindBGMVolume() {
         bgmVolumePR.unbind();
     }
 
-    public void bindEffectVolumeTo(DoubleProperty volumePR){
+    public void bindEffectVolumeTo(DoubleProperty volumePR) {
         this.effectVolumePR.bind(volumePR);
     }
 
-    public void unbindEffectVolume(){
+    public void unbindEffectVolume() {
         effectVolumePR.unbind();
     }
 
@@ -294,6 +331,7 @@ public class Theme {
             return titleFontPaintPR.getValue();
         }, titleFontPaintPR));
     }
+
     public void bindToMenuFontFamily(ObjectProperty<Font> fontFamily) {
         fontFamily.bind(Bindings.createObjectBinding(() -> {
             return menuFontFamilyPR.getValue();
@@ -318,29 +356,29 @@ public class Theme {
         }, textFontPaintPR));
     }
 
-    public void bindToChessBoardPaint1(ObjectProperty<Background> background){
-        background.bind(Bindings.createObjectBinding(()->{
+    public void bindToChessBoardPaint1(ObjectProperty<Background> background) {
+        background.bind(Bindings.createObjectBinding(() -> {
             return new Background(new BackgroundFill(chessBoardPaintPR1.getValue(), null, null));
         }, chessBoardPaintPR1));
     }
 
-    public void bindToChessBoardPaint2(ObjectProperty<Background> background){
-        background.bind(Bindings.createObjectBinding(()->{
+    public void bindToChessBoardPaint2(ObjectProperty<Background> background) {
+        background.bind(Bindings.createObjectBinding(() -> {
             return new Background(new BackgroundFill(chessBoardPaintPR2.getValue(), null, null));
         }, chessBoardPaintPR2));
     }
 
-    public void bindToBorderPaint(ObjectProperty<Border> borderProperty){
-        borderProperty.bind(Bindings.createObjectBinding(()->{
+    public void bindToBorderPaint(ObjectProperty<Border> borderProperty) {
+        borderProperty.bind(Bindings.createObjectBinding(() -> {
             return new Border(new BorderStroke(chessBoardGridPaintPR.getValue(), BorderStrokeStyle.SOLID, null, BorderWidths.DEFAULT));
         }, chessBoardGridPaintPR));
     }
 
 
     public void loadTheme() {
-        try{
-            loadTheme(getClass().getResource("/res/theme.json").toURI().toString());
-        }catch (URISyntaxException e){
+        try {
+            loadTheme(getClass().getResourceAsStream("/res/theme.json"));
+        } catch (Exception e) {
             e.printStackTrace();
             Log0j.writeLog("Error occurred because cannot found theme.json. No theme is changed.");
         }
@@ -349,14 +387,23 @@ public class Theme {
     public void loadTheme(String srcPath) {
         try {
             //Try to read the configuration file
-            FileReader themeFileSrc = new FileReader(srcPath);
-            JSONObject jsonObject = new JSONObject(themeFileSrc);
-
-            themeFileSrc.close();
-            Log0j.writeLog("Theme loaded.");
-        } catch (IOException e) {
+            FileInputStream themeFileSrc = new FileInputStream(srcPath);
+            loadTheme(themeFileSrc);
+        } catch (Exception e) {
             e.printStackTrace();
-            Log0j.writeLog("Error occurred because theme source specified does not exist. No theme is changed.");
+            Log0j.writeLog("Error occurred during converting source file to file stream. No theme is changed.");
+        }
+    }
+
+    public void loadTheme(InputStream src) {
+        try {
+            //Try to read the configuration file
+            JSONObject jsonObject = new JSONObject(src);
+            src.close();
+            Log0j.writeLog("Theme loaded.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log0j.writeLog("Error occurred because an error occurred in input stream. No theme is changed.");
         }
     }
 
