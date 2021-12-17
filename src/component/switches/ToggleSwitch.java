@@ -9,18 +9,17 @@ public class ToggleSwitch extends HBox {
 
     private SimpleBooleanProperty isSwitchedOn;
 
-    public SimpleBooleanProperty getSwitchedOnProperty(){
-        return isSwitchedOn;
-    }
+
 
     private void init(){
 
     }
 
-
-
     public ToggleSwitch(){
 
     }
 
+    public SimpleBooleanProperty getSwitchedOnProperty(){
+        return isSwitchedOn;
+    }
 }

@@ -5,6 +5,8 @@ import controller.GameController;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -16,6 +18,9 @@ import javafx.scene.paint.Color;
 import controller.logger.Log0j;
 import view.Theme;
 import view.Updatable;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * You should not in any way directly manipulate the contents of the ChessBoard instance.
@@ -84,6 +89,7 @@ public class ChessBoard extends HBox implements Updatable {
                 //Dynamic Chess Size
                 Chess chess = new Chess(15, Color.TRANSPARENT);
                 gridBases[row][col].getChildren().add(chess);
+                StackPane.setAlignment(chess, Pos.CENTER);
                 chess.radiusProperty().bind(Bindings.min(
                         gridBases[row][col].widthProperty().divide(2).multiply(CHESS_SIZE_RATIO),
                         gridBases[row][col].heightProperty().divide(2).multiply(CHESS_SIZE_RATIO)));
@@ -97,7 +103,7 @@ public class ChessBoard extends HBox implements Updatable {
         }
         for (int col = 0; col < colSize; col++) {
             grid.getColumnConstraints().add(new ColumnConstraints(cellMinSize, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY,
-                            Priority.SOMETIMES, HPos.CENTER, true));
+                    Priority.SOMETIMES, HPos.CENTER, true));
         }
         Log0j.writeLog("Grid shape initialized.");
 
@@ -109,24 +115,33 @@ public class ChessBoard extends HBox implements Updatable {
 
         //Techniques to make the ChessBoard always square
         vBoxCover = new VBox();
-        setAlignment(Pos.CENTER);
         vBoxCover.setAlignment(Pos.CENTER);
+        setAlignment(Pos.CENTER);
 
         final NumberBinding binding = Bindings.min(widthProperty(), heightProperty());
-        vBoxCover.prefWidthProperty().bind(binding);
-        vBoxCover.prefHeightProperty().bind(binding);
+        /**
+         * Let me explain the strange constant 0.99 here:
+         * So when I was developing this chessboard, I found that it will start shaking
+         * after resized (if I bind its size properties directly to its parent container)
+         * However, adding a 0.99 will prevent this. I don't know why.
+         */
+        vBoxCover.prefHeightProperty().bind(binding.multiply(0.99));
+        vBoxCover.prefWidthProperty().bind(binding.multiply(0.99));
+
         vBoxCover.setMaxSize(Control.USE_PREF_SIZE, Control.USE_PREF_SIZE);
         vBoxCover.setFillWidth(true);
-        VBox.setVgrow(grid, Priority.ALWAYS);
+
         vBoxCover.getChildren().add(grid);
+        VBox.setVgrow(grid, Priority.ALWAYS);
+
         getChildren().add(vBoxCover);
-        HBox.setHgrow(this, Priority.ALWAYS);
+        HBox.setHgrow(vBoxCover, Priority.ALWAYS);
 
         update();
         bindToController();
     }
 
-    public void bindToSize(DoubleProperty width ,DoubleProperty height){
+    public void bindToSize(DoubleProperty width, DoubleProperty height) {
         this.prefWidthProperty().bind(width);
         this.prefHeightProperty().bind(height);
     }

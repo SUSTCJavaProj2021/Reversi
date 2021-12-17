@@ -29,11 +29,6 @@ public class SaveAndLoadPage implements Updatable {
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Stage loadPrompt = new Stage();
-                loadPrompt.setHeight(500);
-                loadPrompt.setWidth(800);
-                loadPrompt.setScene(new Scene(new LoadSystemPrompt(gameSystem).root));
-                loadPrompt.show();
             }
         });
 

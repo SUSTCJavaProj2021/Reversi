@@ -26,7 +26,7 @@ public class InfoPane extends GridPane {
         theme.bindToTextFontPaint(nameLabel.textFillProperty());
         this.add(nameLabel, 0, 0);
         this.getColumnConstraints().add(new ColumnConstraints(0, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY, Priority.SOMETIMES, HPos.CENTER, true));
-
+        GridPane.setHgrow(this, Priority.SOMETIMES);
 
         theme.bindToFrontPane(backgroundProperty());
     }

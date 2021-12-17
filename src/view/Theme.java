@@ -14,7 +14,6 @@ import javafx.stage.Stage;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -54,6 +53,9 @@ public class Theme {
     public static final Background defaultFrontPaneBKGND = new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.15),
             new CornerRadii(MainView.VIEWCOVER_CORNER_RADII), null));
 
+
+    public static final Paint defaultDarkModeColor = Color.rgb(0,0,0);
+    public static final Paint defaultLightModeColor = Color.rgb(255,255,255);
     public static final Color defaultThemeColor = Color.rgb(29, 31, 44);
     public static final Paint defaultThemePaint = Color.rgb(29, 31, 44);
     public static final Font defaultTitleFontFamily = new Font("Garamond", 25);
@@ -96,6 +98,12 @@ public class Theme {
     public final ObjectProperty<Background> frontPaneBackgroundPR;
 //    public final BooleanProperty isBackgroundPureColor;
 
+    /**
+     * If <code>modeSwitchPR</code> is set to true, then dark mode is applied.
+     */
+    public final BooleanProperty modeSwitchPR;
+    public final ObjectProperty<Paint> modePaintPR;
+
     public final ObjectProperty<Color> themeColorPR;
     public final ObjectProperty<Paint> themePaintPR;
 
@@ -136,6 +144,9 @@ public class Theme {
 
         backPaneBackgroundPR = new SimpleObjectProperty<>();
         frontPaneBackgroundPR = new SimpleObjectProperty<>();
+
+        modeSwitchPR = new SimpleBooleanProperty();
+        modePaintPR = new SimpleObjectProperty<>();
 
         themeColorPR = new SimpleObjectProperty<>();
         themePaintPR = new SimpleObjectProperty<>();
@@ -195,6 +206,9 @@ public class Theme {
         backPaneBackgroundPR.setValue(defaultBackPaneBKGND);
         frontPaneBackgroundPR.setValue(defaultFrontPaneBKGND);
 
+        modeSwitchPR.setValue(true);
+//        modeColorPR.setValue(defaultDarkModeColor);
+
         themeColorPR.setValue(defaultThemeColor);
 //        themePaintPR.setValue(defaultThemePaint);
 
@@ -217,6 +231,16 @@ public class Theme {
     }
 
     public void initRelations() {
+        //Bind to color mode.
+        modePaintPR.bind(Bindings.createObjectBinding(()->{
+            if(modeSwitchPR.getValue()){
+                return defaultDarkModeColor;
+            }
+            else{
+                return defaultLightModeColor;
+            }
+        }, modeSwitchPR));
+
         themePaintPR.bind(Bindings.createObjectBinding(() -> {
             return themeColorPR.getValue();
         }, themeColorPR));
@@ -305,18 +329,30 @@ public class Theme {
         frontPaneBackgroundPR.unbind();
     }
 
+    public BooleanProperty getModeSwitchPR(){
+        return modeSwitchPR;
+    }
+
+    public ObjectProperty<Paint> getModePaintPR(){
+        return modePaintPR;
+    }
+
+    public void bindToModePaint(ObjectProperty<Paint> paint){
+     paint.bind(Bindings.createObjectBinding(() -> {
+         return modePaintPR.getValue();
+     }, modePaintPR));
+    }
+
 
     public void bindToThemePaint(ObjectProperty<Paint> paint) {
         paint.bind(Bindings.createObjectBinding(() -> {
-            Paint newPaint = themePaintPR.getValue();
-            return newPaint;
+            return themePaintPR.getValue();
         }, themePaintPR));
     }
 
     public void bindToPaintBackground(ObjectProperty<Background> background) {
         background.bind(Bindings.createObjectBinding(() -> {
-            Background newBackground = new Background(new BackgroundFill(themePaintPR.getValue(), null, null));
-            return newBackground;
+            return new Background(new BackgroundFill(themePaintPR.getValue(), null, null));
         }, themePaintPR));
     }
 

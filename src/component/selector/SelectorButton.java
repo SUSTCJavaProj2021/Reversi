@@ -41,6 +41,7 @@ public class SelectorButton extends Button {
 
     public boolean isSelected;
 
+    private Theme theme;
     private Node node;
 
     public enum State {
@@ -49,6 +50,7 @@ public class SelectorButton extends Button {
 
     public SelectorButton(String text, Node node, ImageView icon, Theme theme) {
         super(text);
+        this.theme = theme;
         this.node = node;
         isSelected = false;
 
