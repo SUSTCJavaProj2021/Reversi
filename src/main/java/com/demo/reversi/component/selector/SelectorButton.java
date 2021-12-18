@@ -2,6 +2,9 @@ package com.demo.reversi.component.selector;
 
 import com.demo.reversi.themes.Theme;
 import javafx.animation.FadeTransition;
+import javafx.animation.Interpolator;
+import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -119,19 +122,62 @@ public class SelectorButton extends Button {
     public void setSelected() {
         isSelected = true;
         node.setVisible(true);
+        FadeTransition fadeIn = createFadeIn(node);
+        TranslateTransition slideUp = createTranslateSlideUp(node);
+        Platform.runLater(() -> {
+            fadeIn.play();
+            slideUp.play();
+        });
+
         setBackground(selectedBackground);
         setOpacity(OPACITY_SELECTED);
     }
 
+    private FadeTransition createFadeIn(Node node) {
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(100), node);
+        fadeOut.setFromValue(0.5);
+        fadeOut.setToValue(1.0);
+        fadeOut.setInterpolator(Interpolator.LINEAR);
+        return fadeOut;
+    }
+
+    private TranslateTransition createTranslateSlideUp(Node node) {
+        TranslateTransition slideUp = new TranslateTransition(Duration.millis(100), node);
+        slideUp.setFromY(node.getLayoutY() + 100);
+        slideUp.setToY(node.getLayoutY());
+        slideUp.setInterpolator(new Interpolator() {
+            @Override
+            protected double curve(double t) {
+                return Math.pow(t, 0.25);
+            }
+        });
+        return slideUp;
+    }
+
     public void setDeselected() {
         isSelected = false;
-        node.setVisible(false);
+
+        FadeTransition fadeOut = createFadeOut(node);
+        Platform.runLater(() -> {
+            fadeOut.play();
+            node.setVisible(false);
+        });
+
         setBackground(defaultBackground);
         FadeTransition ft = new FadeTransition(Duration.millis(TRANS_TIME_MILLIS), outer());
         ft.setFromValue(OPACITY_SELECTED);
         ft.setToValue(OPACITY_UNSELECTED);
         ft.play();
     }
+
+    private FadeTransition createFadeOut(Node node) {
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(100), node);
+        fadeOut.setFromValue(1.0);
+        fadeOut.setToValue(0.0);
+        fadeOut.setInterpolator(Interpolator.LINEAR);
+        return fadeOut;
+    }
+
 
     private SelectorButton outer() {
         return this;
