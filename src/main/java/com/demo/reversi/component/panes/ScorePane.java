@@ -50,11 +50,14 @@ public class ScorePane extends GridPane implements Updatable {
 
         //todo: change player color settings
         StackPane player1Indicator = new StackPane();
-        player1Indicator.setMinWidth(50);
+        player1Indicator.setMinWidth(PREF_HEIGHT);
         player1Indicator.setBackground(new Background(new BackgroundFill(Color.BLACK,new CornerRadii(15),null)));
+        player1Indicator.setOpacity(0.4);
         StackPane player2Indicator = new StackPane();
-        player2Indicator.setMinWidth(50);
+        player2Indicator.setMinWidth(PREF_HEIGHT);
         player2Indicator.setBackground(new Background(new BackgroundFill(Color.WHITE,new CornerRadii(15),null)));
+        player2Indicator.setOpacity(0.4);
+
         add(player1Indicator, 0, 0);
         GridPane.setVgrow(player1Indicator, Priority.SOMETIMES);
         add(player2Indicator, 2, 0);
