@@ -160,7 +160,9 @@ public class ChessBoard extends HBox implements Updatable {
                 Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
 
                 //todo: change it to be modifiable
-                chess.setChessOwner(readBlockStatus(positionPlayer));
+                Platform.runLater(()->{
+                    chess.setChessOwner(readBlockStatus(positionPlayer));
+                });
             }
 
         }
@@ -174,7 +176,9 @@ public class ChessBoard extends HBox implements Updatable {
          */
         BlockStatus positionPlayer = controller.getBlockStatus(row, col);
         Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
-        chess.setChessOwner(readBlockStatus(positionPlayer));
+        Platform.runLater(()->{
+            chess.setChessOwner(readBlockStatus(positionPlayer));
+        });
 
         Task<Void> tasks[] = new Task[8];
         int cnt = 0;
@@ -208,7 +212,9 @@ public class ChessBoard extends HBox implements Updatable {
             BlockStatus positionPlayer = controller.getBlockStatus(row, col);
             Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
             //todo: change it to be modifiable
-            chess.setChessOwnerDirected(readBlockStatus(positionPlayer), stepCol, stepRow);
+            Platform.runLater(() -> {
+                chess.setChessOwnerDirected(readBlockStatus(positionPlayer), stepCol, stepRow);
+            });
             try {
                 Thread.sleep(70);
             } catch (InterruptedException e) {
@@ -238,6 +244,7 @@ public class ChessBoard extends HBox implements Updatable {
                     @Override
                     public void handle(MouseEvent arg0) {
                         controller.onGridClick(tmpRow, tmpCol);
+
                     }
                 });
             }

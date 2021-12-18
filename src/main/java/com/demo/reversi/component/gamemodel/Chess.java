@@ -4,6 +4,7 @@ import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
 import javafx.animation.Interpolator;
+import javafx.animation.ParallelTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
@@ -75,7 +76,7 @@ public class Chess extends Circle implements Updatable {
     public void setChessOwner(ChessOwner owner) {
         ChessOwner oldValue = chessOwner.getValue();
         chessOwner.setValue(owner);
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             update(oldValue, null);
         });
     }
@@ -83,9 +84,7 @@ public class Chess extends Circle implements Updatable {
     public void setChessOwnerDirected(ChessOwner owner, int actualRowDir, int actualColDir) {
         ChessOwner oldValue = chessOwner.getValue();
         chessOwner.setValue(owner);
-        Platform.runLater(()->{
-            update(oldValue, new Point3D(-actualColDir, actualRowDir, 0));
-        });
+        update(oldValue, new Point3D(-actualColDir, actualRowDir, 0));
     }
 
     @Override
@@ -102,7 +101,7 @@ public class Chess extends Circle implements Updatable {
             case PLAYER1:
                 fillProperty().unbind();
                 if (oldOwner != ChessOwner.PLACEHOLDER && oldOwner != chessOwner.getValue()) {
-                    Platform.runLater(()->{
+                    Platform.runLater(() -> {
                         animateReverse(playerPaint1PR, axis);
                     });
                 } else {
@@ -113,7 +112,7 @@ public class Chess extends Circle implements Updatable {
             case PLAYER2:
                 fillProperty().unbind();
                 if (oldOwner != ChessOwner.PLACEHOLDER && oldOwner != chessOwner.getValue()) {
-                    Platform.runLater(()->{
+                    Platform.runLater(() -> {
                         animateReverse(playerPaint2PR(), axis);
                     });
                 } else {
@@ -168,13 +167,13 @@ public class Chess extends Circle implements Updatable {
                 }
             }
         });
-        rotator1.play();
-        scale1.play();
+        ParallelTransition pt = new ParallelTransition(rotator1,scale1);
+        pt.play();
     }
 
     //todo: test
     private RotateTransition createRotatorUp(Node node, int para, Point3D axis) {
-        RotateTransition rotator = new RotateTransition(Duration.millis(150), node);
+        RotateTransition rotator = new RotateTransition(Duration.millis(200), node);
         rotator.setAxis(axis);
         rotator.setFromAngle((para - 1) * 180);
         rotator.setToAngle(para * 180);
@@ -183,7 +182,7 @@ public class Chess extends Circle implements Updatable {
         return rotator;
     }
 
-    private ScaleTransition createScalar(Node node, double multiple){
+    private ScaleTransition createScalar(Node node, double multiple) {
         ScaleTransition scalar = new ScaleTransition(Duration.millis(200), node);
         scalar.setByX(multiple);
         scalar.setByY(multiple);

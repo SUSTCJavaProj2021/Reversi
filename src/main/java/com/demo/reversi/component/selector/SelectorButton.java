@@ -134,7 +134,7 @@ public class SelectorButton extends Button {
     }
 
     private FadeTransition createFadeIn(Node node) {
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(100), node);
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(TRANS_TIME_MILLIS), node);
         fadeOut.setFromValue(0.5);
         fadeOut.setToValue(1.0);
         fadeOut.setInterpolator(Interpolator.LINEAR);
@@ -142,7 +142,7 @@ public class SelectorButton extends Button {
     }
 
     private TranslateTransition createTranslateSlideUp(Node node) {
-        TranslateTransition slideUp = new TranslateTransition(Duration.millis(100), node);
+        TranslateTransition slideUp = new TranslateTransition(Duration.millis(TRANS_TIME_MILLIS), node);
         slideUp.setFromY(node.getLayoutY() + 100);
         slideUp.setToY(node.getLayoutY());
         slideUp.setInterpolator(new Interpolator() {
@@ -171,7 +171,7 @@ public class SelectorButton extends Button {
     }
 
     private FadeTransition createFadeOut(Node node) {
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(100), node);
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(TRANS_TIME_MILLIS), node);
         fadeOut.setFromValue(1.0);
         fadeOut.setToValue(0.0);
         fadeOut.setInterpolator(Interpolator.LINEAR);

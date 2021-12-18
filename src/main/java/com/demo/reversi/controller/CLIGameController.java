@@ -24,7 +24,6 @@ public class CLIGameController {
         board[5][5] = -1;
         board[6][6] = -1;
         board[7][7] = 1;
-
         //END TEST
 
 
