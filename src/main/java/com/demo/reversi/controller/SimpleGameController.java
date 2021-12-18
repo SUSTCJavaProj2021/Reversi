@@ -2,6 +2,7 @@ package com.demo.reversi.controller;
 
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.view.Updatable;
+import com.demo.reversi.view.gamepages.GamePageLocal;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
@@ -19,16 +20,16 @@ public class SimpleGameController implements GameController{
 
     public boolean isCheatMode;
 
-    public SimpleGameController(Player whitePlayer, Player blackPlayer, boolean isGameModifiable) {
+    public SimpleGameController(Player blackPlayer, Player whitePlayer, boolean isGameModifiable) {
         this.isGameModifiable = isGameModifiable;
-        this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
+        this.whitePlayer = whitePlayer;
 
         //TEST ONLY
-        controller = new CLIGameController(20,20);
+        controller = new CLIGameController(8,8);
 
         isCheatMode = false;
-        currentPlayerProperty = new SimpleObjectProperty<>(whitePlayer);
+        currentPlayerProperty = new SimpleObjectProperty<>(blackPlayer);
         updateCurrentPlayer();
     }
 
@@ -52,9 +53,8 @@ public class SimpleGameController implements GameController{
                 String.format("%s Clicked Grid (%d, %d)", controller.currentPlayer.toString(), rowIndex, colIndex));
 
         controller.makeMove(rowIndex, colIndex);
-
         updateCurrentPlayer();
-        forceUpdateGUI();
+        forceSourcedGUIUpdate(rowIndex, colIndex);
 
         return true;
     }
@@ -73,21 +73,6 @@ public class SimpleGameController implements GameController{
 
     public BlockStatus getBlockStatus(int rowIndex, int colIndex) {
         return controller.getBlockStatus(rowIndex, colIndex);
-    }
-
-    @Override
-    public void sortByTime() {
-
-    }
-
-    @Override
-    public void sortByPlayer() {
-
-    }
-
-    @Override
-    public void sortByName() {
-
     }
 
     @Override
@@ -144,11 +129,20 @@ public class SimpleGameController implements GameController{
     }
 
     @Override
-    public void forceUpdateGUI() {
+    public void forceGUIUpdate() {
 
         if(gamePage !=null){
-            Log0j.writeLog("Triggering GUI update.");
             gamePage.update();
+        }
+        else{
+            Log0j.writeLog("Cannot update because GUI pointer is null.");
+        }
+    }
+
+    @Override
+    public void forceSourcedGUIUpdate(int row, int col){
+        if(gamePage !=null){
+            ((GamePageLocal)gamePage).sourcedUpdate(row, col);
         }
         else{
             Log0j.writeLog("Cannot update because GUI pointer is null.");

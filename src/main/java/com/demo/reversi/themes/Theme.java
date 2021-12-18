@@ -36,7 +36,6 @@ public class Theme {
 
     static {
         try {
-            System.out.println(Theme.class.getResource("QAQ.txt"));
             defaultBGMSource = Paths.get(Theme.class.getResource("bgm.mp3").toURI());
         } catch (Exception e) {
             e.printStackTrace();
@@ -198,12 +197,11 @@ public class Theme {
         loadTheme();
 
         try {
-            getClass();
             Media media;
             if (bgmSourceMoved.getValue()) {
                 media = new Media(bgmSourcePR.getValue().toUri().toString());
             } else {
-                Log0j.writeLog("Default BGM Source initialized on path: \"" + defaultBGMSource.toString() + "\"");
+                Log0j.writeLog("Default BGM Source initialized on path: \"" + defaultBGMSource.toUri().toString() + "\"");
                 media = new Media(defaultBGMSource.toUri().toString());
             }
             bgmPlayer = new MediaPlayer(media);
@@ -442,7 +440,7 @@ public class Theme {
 
     public void loadTheme() {
         try {
-            loadTheme(getClass().getResourceAsStream("/res/theme.json"));
+            loadTheme(Paths.get(Theme.class.getResource("theme.json").toURI()).toUri().toString());
         } catch (Exception e) {
             e.printStackTrace();
             Log0j.writeLog("Error occurred because cannot found theme.json. No theme is changed.");
@@ -452,25 +450,15 @@ public class Theme {
     public void loadTheme(String srcPath) {
         try {
             //Try to read the configuration file
-            FileInputStream themeFileSrc = new FileInputStream(srcPath);
-            loadTheme(themeFileSrc);
+            Log0j.writeLog("Loading theme file from the following path: \"" + srcPath + "\"");
+            JSONObject jsonObject = new JSONObject(new File(srcPath));
+            Log0j.writeLog("Theme loaded.");
         } catch (Exception e) {
             e.printStackTrace();
             Log0j.writeLog("Error occurred during converting source file to file stream. No theme is changed.");
         }
     }
 
-    public void loadTheme(InputStream src) {
-        try {
-            //Try to read the configuration file
-            JSONObject jsonObject = new JSONObject(src);
-            src.close();
-            Log0j.writeLog("Theme loaded.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log0j.writeLog("Error occurred because an error occurred in input stream. No theme is changed.");
-        }
-    }
 
     public void saveTheme() {
 

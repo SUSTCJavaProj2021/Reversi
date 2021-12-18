@@ -26,7 +26,7 @@ public class SimpleGameSystem implements GameSystem {
     }
 
     public SimpleGameController startNewGame() {
-        return new SimpleGameController(new SimplePlayer("WHITE PLAYER 114"), new SimplePlayer("BLACK PLAYER 514"), true);
+        return new SimpleGameController(new SimplePlayer("BLACK PLAYER 114"), new SimplePlayer("WHITE PLAYER 514"), true);
     }
 
     @Override

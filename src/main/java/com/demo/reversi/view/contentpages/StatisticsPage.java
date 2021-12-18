@@ -27,4 +27,6 @@ public class StatisticsPage implements Updatable {
     public void update() {
 
     }
+
+
 }

@@ -15,7 +15,9 @@ public interface GameController {
 
     public boolean onGridClick(int row, int col);
 
-    public void forceUpdateGUI();
+    public void forceGUIUpdate();
+
+    public void forceSourcedGUIUpdate(int row, int col);
 
     public Player getWhitePlayer();
 
@@ -32,12 +34,6 @@ public interface GameController {
     public boolean saveGame();
 
     public BlockStatus getBlockStatus(int row, int col);
-
-    public void sortByTime();
-
-    public void sortByPlayer();
-
-    public void sortByName();
 
     public boolean save();
 

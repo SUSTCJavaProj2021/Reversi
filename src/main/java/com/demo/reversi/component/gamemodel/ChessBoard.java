@@ -5,9 +5,11 @@ import com.demo.reversi.controller.GameController;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.DoubleProperty;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -82,10 +84,14 @@ public class ChessBoard extends HBox implements Updatable {
                 grid.add(gridBases[row][col], col, row);
 
                 //Dynamic Chess Size
-                Chess chess = new Chess(15, Color.TRANSPARENT);
+                Chess chess = new Chess(15, theme, Chess.ChessOwner.PLACEHOLDER);
+                chess.playerPaint1PR().setValue(Color.BLACK);
+                chess.playerPaint2PR().setValue(Color.WHITE);
+
                 gridBases[row][col].getChildren().add(chess);
                 StackPane.setAlignment(chess, Pos.CENTER);
-                chess.radiusProperty().bind(Bindings.min(
+
+                chess.chessSizePR.bind(Bindings.min(
                         gridBases[row][col].widthProperty().divide(2).multiply(CHESS_SIZE_RATIO),
                         gridBases[row][col].heightProperty().divide(2).multiply(CHESS_SIZE_RATIO)));
             }
@@ -145,25 +151,81 @@ public class ChessBoard extends HBox implements Updatable {
     public void update() {
         for (int row = 0; row < rowSize; row++) {
             for (int col = 0; col < colSize; col++) {
-                //Remove the previous chess.
-                if (gridBases[row][col].getChildren().size() > 1) {
-                    gridBases[row][col].getChildren().remove(1);
-                }
 
-                BlockStatus currentPlayer = controller.getBlockStatus(row, col);
+                /**
+                 * Remove the previous chess.
+                 */
+
+                BlockStatus positionPlayer = controller.getBlockStatus(row, col);
                 Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
 
-                if (currentPlayer == BlockStatus.WHITE_PLAYER.WHITE_PLAYER) {
-                    chess.setColor(Color.WHITE);
-                } else if (currentPlayer == BlockStatus.BLACK_PLAYER.BLACK_PLAYER) {
-                    chess.setColor(Color.BLACK);
-                } else {
-                    chess.setColor(Color.TRANSPARENT);
-                }
+                //todo: change it to be modifiable
+                chess.setChessOwner(readBlockStatus(positionPlayer));
             }
 
         }
         Log0j.writeLog("Board Updated.");
+    }
+
+    public void sourcedUpdate(int row, int col) {
+
+        /**
+         * Set the current chess
+         */
+        BlockStatus positionPlayer = controller.getBlockStatus(row, col);
+        Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
+        chess.setChessOwner(readBlockStatus(positionPlayer));
+
+        Task<Void> tasks[] = new Task[8];
+        int cnt = 0;
+        for (int stepRow = -1; stepRow <= 1; stepRow++) {
+            for (int stepCol = -1; stepCol <= 1; stepCol++) {
+                if (stepCol == 0 && stepRow == 0) {
+                    continue;
+                }
+                final int stepR = stepRow, stepC = stepCol;
+                tasks[cnt] = new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        updateByDirection(row, col, stepR, stepC);
+                        return null;
+                    }
+                };
+                cnt++;
+            }
+        }
+        for (int i = 0; i < 8; i++) {
+            new Thread(tasks[i]).start();
+        }
+    }
+
+    private void updateByDirection(int rowIndex, int colIndex, int stepRow, int stepCol) {
+        int row = rowIndex, col = colIndex;
+        while (row + stepRow >= 0 && row + stepRow < rowSize && col + stepCol >= 0 && col + stepCol < colSize) {
+            row += stepRow;
+            col += stepCol;
+
+            BlockStatus positionPlayer = controller.getBlockStatus(row, col);
+            Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
+            //todo: change it to be modifiable
+            chess.setChessOwnerDirected(readBlockStatus(positionPlayer), stepCol, stepRow);
+            try {
+                Thread.sleep(70);
+            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
+    public Chess.ChessOwner readBlockStatus(BlockStatus blockStatus) {
+        if (blockStatus == BlockStatus.BLACK_PLAYER) {
+            return Chess.ChessOwner.PLAYER1;
+        } else if (blockStatus == BlockStatus.WHITE_PLAYER) {
+            return Chess.ChessOwner.PLAYER2;
+        } else {
+            return Chess.ChessOwner.PLACEHOLDER;
+        }
     }
 
     // Below are color updaters

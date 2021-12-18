@@ -14,19 +14,29 @@ public class CLIGameController {
         this.colSize = colSize;
 
         board = new int[rowSize][colSize];
-        board[rowSize / 2 - 1][colSize / 2 - 1] = board[rowSize / 2][colSize / 2] = 1;
-        board[rowSize / 2 - 1][colSize / 2] = board[rowSize / 2][colSize / 2 - 1] = -1;
+        board[rowSize / 2 - 1][colSize / 2 - 1] = board[rowSize / 2][colSize / 2] = -1;
+        board[rowSize / 2 - 1][colSize / 2] = board[rowSize / 2][colSize / 2 - 1] = 1;
+
+        //TEST
+        board[1][1] = -1;
+        board[2][2] = -1;
+        board[4][4] = -1;
+        board[5][5] = -1;
+        board[6][6] = -1;
+        board[7][7] = 1;
+
+        //END TEST
 
 
-        currentPlayer = PlayerConstants.WHITE_PLAYER;
+        currentPlayer = PlayerConstants.BLACK_PLAYER;
 
     }
 
     public BlockStatus getBlockStatus(int rowIndex, int colIndex) {
         if (board[rowIndex][colIndex] == 1) {
-            return BlockStatus.WHITE_PLAYER;
-        } else if (board[rowIndex][colIndex] == -1) {
             return BlockStatus.BLACK_PLAYER;
+        } else if (board[rowIndex][colIndex] == -1) {
+            return BlockStatus.WHITE_PLAYER;
         } else {
             return BlockStatus.UNOCCUPIED;
         }
@@ -55,7 +65,7 @@ public class CLIGameController {
                 if (i == 0 && j == 0) {
                     continue;
                 }
-                if (makeOneDirectMove(rowIndex, colIndex, i, j, currentPlayer == PlayerConstants.WHITE_PLAYER ? 1 : -1, MOVE_DETECT_ONLY) == MOVE_VALID) {
+                if (makeOneDirectMove(rowIndex, colIndex, i, j, currentPlayer == PlayerConstants.BLACK_PLAYER ? 1 : -1, MOVE_DETECT_ONLY) == MOVE_VALID) {
                     return MOVE_VALID;
                 }
             }
@@ -80,14 +90,14 @@ public class CLIGameController {
                 if (i == 0 && j == 0) {
                     continue;
                 }
-                cnt += makeOneDirectMove(rowIndex, colIndex, i, j, currentPlayer == PlayerConstants.WHITE_PLAYER ? 1 : -1, MOVE_MODIFY) == MOVE_COMPLETE ? 1 : 0;
+                cnt += makeOneDirectMove(rowIndex, colIndex, i, j, currentPlayer == PlayerConstants.BLACK_PLAYER ? 1 : -1, MOVE_MODIFY) == MOVE_COMPLETE ? 1 : 0;
             }
         }
-//        printBoard();
         if (cnt == 0) {
             return MOVE_INVALID;
         }
-        board[rowIndex][colIndex] = currentPlayer == PlayerConstants.WHITE_PLAYER ? 1 : -1;
+        board[rowIndex][colIndex] = currentPlayer == PlayerConstants.BLACK_PLAYER ? 1 : -1;
+        printBoard();
         makeTurn();
         for (int i = 0; i < rowSize; i++) {
             for (int j = 0; j < colSize; j++) {

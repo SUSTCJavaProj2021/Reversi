@@ -30,4 +30,5 @@ public class InfoPane extends GridPane {
 
         theme.bindToFrontPane(backgroundProperty());
     }
+
 }

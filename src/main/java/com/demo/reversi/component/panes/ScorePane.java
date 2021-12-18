@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
 
@@ -41,14 +42,28 @@ public class ScorePane extends GridPane implements Updatable {
 //        theme.bindTextFontFamily(curPlayerLabel.fontProperty());
         theme.bindToTextFontPaint(curPlayerLabel.textFillProperty());
         theme.bindToTitleFontFamily(curPlayerLabel.fontProperty());
-        add(curPlayerLabel, 0, 0);
+        add(curPlayerLabel, 1, 0);
 
 //        curPlayerLabel.setBackground(new Background(new BackgroundFill(Color.GREEN,null,null)));
 
 //        GridPane.setHgrow(this, Priority.ALWAYS);
 
+        //todo: change player color settings
+        StackPane player1Indicator = new StackPane();
+        player1Indicator.setMinWidth(50);
+        player1Indicator.setBackground(new Background(new BackgroundFill(Color.BLACK,new CornerRadii(15),null)));
+        StackPane player2Indicator = new StackPane();
+        player2Indicator.setMinWidth(50);
+        player2Indicator.setBackground(new Background(new BackgroundFill(Color.WHITE,new CornerRadii(15),null)));
+        add(player1Indicator, 0, 0);
+        GridPane.setVgrow(player1Indicator, Priority.SOMETIMES);
+        add(player2Indicator, 2, 0);
+        GridPane.setVgrow(player2Indicator, Priority.SOMETIMES);
+
         ColumnConstraints cs = new ColumnConstraints(0, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY, Priority.SOMETIMES, HPos.CENTER, true);
+        getColumnConstraints().add(new ColumnConstraints());
         getColumnConstraints().add(cs);
+        getColumnConstraints().add(new ColumnConstraints());
     }
 
     @Override

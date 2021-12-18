@@ -44,8 +44,8 @@ public class GamePageLocal implements Updatable {
         whitePlayerInfoPane = new InfoPane(controller.getWhitePlayer(), theme);
         blackPlayerInfoPane = new InfoPane(controller.getBlackPlayer(), theme);
 
-        root.setLeft(whitePlayerInfoPane);
-        root.setRight(blackPlayerInfoPane);
+        root.setLeft(blackPlayerInfoPane);
+        root.setRight(whitePlayerInfoPane);
 
 
         scorePane = new ScorePane(controller, theme);
@@ -63,9 +63,9 @@ public class GamePageLocal implements Updatable {
                 controller.setCheatMode(true);
             }
         });
-        settingsPane.add(btn,0,0);
+        settingsPane.add(btn, 0, 0);
 
-        settingsPane.getColumnConstraints().add(new ColumnConstraints(0,  Control.USE_COMPUTED_SIZE,Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.CENTER, true));
+        settingsPane.getColumnConstraints().add(new ColumnConstraints(0, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.CENTER, true));
         //Set up settings pane
         root.setBottom(settingsPane);
         BorderPane.setAlignment(settingsPane, Pos.CENTER);
@@ -82,8 +82,19 @@ public class GamePageLocal implements Updatable {
     @Override
     public void update() {
         chessBoard.update();
-        scorePane.update();
+        updateNoChessBoard();
     }
+
+    public void sourcedUpdate(int row, int col) {
+        chessBoard.sourcedUpdate(row, col);
+        updateNoChessBoard();
+    }
+
+    public void updateNoChessBoard() {
+        scorePane.update();
+        //todo: add updates
+    }
+
 
     public GamePageLocal outer() {
         return this;
