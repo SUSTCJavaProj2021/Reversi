@@ -7,7 +7,10 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 /**
@@ -20,8 +23,7 @@ public class SmoothishScrollPane extends ScrollPane {
     private final static double BASE_MODIFIER = 1;
 
     /**
-     * @param content
-     *            Item to be wrapped in the ScrollPane.
+     * @param content Item to be wrapped in the ScrollPane.
      */
     public SmoothishScrollPane(Node content) {
         // ease-of-access for inner class
@@ -52,8 +54,7 @@ public class SmoothishScrollPane extends ScrollPane {
     }
 
     /**
-     * @param t
-     *            Transition to check.
+     * @param t Transition to check.
      * @return {@code true} if transition is playing.
      */
     private static boolean playing(Transition t) {
@@ -61,10 +62,8 @@ public class SmoothishScrollPane extends ScrollPane {
     }
 
     /**
-     * @param d1
-     *            Value 1
-     * @param d2
-     *            Value 2.
+     * @param d1 Value 1
+     * @param d2 Value 2.
      * @return {@code true} if values signs are matching.
      */
     private static boolean sameSign(double d1, double d2) {

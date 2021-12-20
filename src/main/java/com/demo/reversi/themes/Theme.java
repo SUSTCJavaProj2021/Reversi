@@ -2,8 +2,13 @@ package com.demo.reversi.themes;
 
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.view.MainView;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
+import javafx.event.ActionEvent;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.media.Media;
@@ -12,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -33,25 +39,34 @@ public class Theme {
 
     public static Path defaultMainViewBGMSource;
     public static Path defaultGamePageBGMSource;
+    public static Path defaultGameFinishBGMSource;
     public static Path defaultChessSoundSource;
+
     static {
         try {
-            defaultMainViewBGMSource = Paths.get(Theme.class.getResource("bgm.mp3").toURI());
-            Log0j.writeLog("Main View BGM loaded.");
+            defaultMainViewBGMSource = Paths.get(Theme.class.getResource("MainViewBGM.mp3").toURI());
+            Log0j.writeLog("Main View BGM loaded on path: " + defaultMainViewBGMSource);
         } catch (Exception e) {
             Log0j.writeLog("Main View BGM loading failed. Check your path.");
             e.printStackTrace();
         }
-        try{
-            defaultGamePageBGMSource = Paths.get(Theme.class.getResource("").toURI());
-            Log0j.writeLog("Game Page BGM loaded.");
-        }catch (Exception e){
+        try {
+            defaultGamePageBGMSource = Paths.get(Theme.class.getResource("GamePageBGM.mp3").toURI());
+            Log0j.writeLog("Game Page BGM loaded on path: " + defaultGamePageBGMSource);
+        } catch (Exception e) {
             Log0j.writeLog("Game Page BGM loading failed. Check your path.");
             e.printStackTrace();
         }
         try {
+            defaultGameFinishBGMSource = Paths.get(Theme.class.getResource("GameFinishBGM.mp3").toURI());
+            Log0j.writeLog("Game Finish BGM loaded on path: " + defaultGameFinishBGMSource);
+        } catch (Exception e) {
+            Log0j.writeLog("Game Finish BGM loading failed. Check your path.");
+            e.printStackTrace();
+        }
+        try {
             defaultChessSoundSource = Paths.get(Paths.get(Theme.class.getResource("soundeffects/").toURI()).toString(), "Chess.mp3");
-            Log0j.writeLog("Chess sound loaded.");
+            Log0j.writeLog("Chess sound loaded on path : " + defaultChessSoundSource);
         } catch (Exception e) {
             Log0j.writeLog("Chess sound loading failed. Check your path.");
             e.printStackTrace();
@@ -63,10 +78,11 @@ public class Theme {
 
 
     public static Path defaultBackgroundSource;
+
     static {
         try {
             defaultBackgroundSource = Paths.get(Theme.class.getResource("background.jpg").toURI());
-            Log0j.writeLog("Correctedly loaded default background source from " + defaultBackgroundSource.toUri().toString());
+            Log0j.writeLog("Correctly loaded default background source from " + defaultBackgroundSource.toUri().toString());
         } catch (URISyntaxException e) {
             Log0j.writeLog("Default background loading failed. Check your path.");
             e.printStackTrace();
@@ -81,17 +97,18 @@ public class Theme {
             new CornerRadii(MainView.VIEWCOVER_CORNER_RADII), null));
 
     public static Path defaultChessSource;
-    static{
-        try{
+
+    static {
+        try {
             defaultChessSource = Paths.get(Theme.class.getResource("Chess.png").toURI());
-        }catch(URISyntaxException | NullPointerException e){
+        } catch (URISyntaxException | NullPointerException e) {
             Log0j.writeLog("Failed to load default chess component. Chess will be initialized using circles.");
             e.printStackTrace();
         }
     }
 
-    public static final Paint defaultDarkModeColor = Color.rgb(32,32,32);
-    public static final Paint defaultLightModeColor = Color.rgb(240,240,240);
+    public static final Paint defaultDarkModeColor = Color.rgb(32, 32, 32);
+    public static final Paint defaultLightModeColor = Color.rgb(240, 240, 240);
     public static final Color defaultThemeColor = Color.rgb(29, 31, 44);
     public static final Paint defaultThemePaint = Color.rgb(29, 31, 44);
     public static final Font defaultTitleFontFamily = new Font("Garamond", 25);
@@ -119,10 +136,11 @@ public class Theme {
 //    public int mainWindowMinHeight;
 
     public static Image appIcon;
-    static{
-        try{
+
+    static {
+        try {
             appIcon = new Image(Theme.class.getResource("icons/App.png").toURI().toString());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -131,6 +149,7 @@ public class Theme {
     public MediaPlayer bgmPlayer;
     public final ObjectProperty<Path> mainViewBGMSourcePR;
     public final ObjectProperty<Path> gamePageBGMSourcePR;
+    public final ObjectProperty<Path> gameFinishBGMSourcePR;
     private int gameCnt;
     public final ObjectProperty<Path> chessSoundSourcePR;
     public final DoubleProperty bgmVolumePR;
@@ -187,6 +206,7 @@ public class Theme {
         bgmVolumePR = new SimpleDoubleProperty();
         mainViewBGMSourcePR = new SimpleObjectProperty<>();
         gamePageBGMSourcePR = new SimpleObjectProperty<>();
+        gameFinishBGMSourcePR = new SimpleObjectProperty<>();
         gameCnt = 0;
         chessSoundSourcePR = new SimpleObjectProperty<>();
         effectVolumePR = new SimpleDoubleProperty();
@@ -227,7 +247,8 @@ public class Theme {
 
         try {
             Media media;
-            if (bgmSourceMoved.getValue()) {
+            //todo: modify this
+            if (!bgmSourceMoved.getValue()) {
                 media = new Media(mainViewBGMSourcePR.getValue().toUri().toString());
             } else {
                 Log0j.writeLog("Default BGM Source initialized on path: " + defaultMainViewBGMSource.toUri().toString());
@@ -249,10 +270,12 @@ public class Theme {
         primaryStage.setHeight(DEFAULT_MAIN_WINDOW_PREF_HEIGHT);
 
         bgmVolumePR.setValue(defaultBGMVolume);
+        effectVolumePR.setValue(defaultEffectVolume);
+
         mainViewBGMSourcePR.setValue(defaultMainViewBGMSource);
         gamePageBGMSourcePR.setValue(defaultGamePageBGMSource);
+        gameFinishBGMSourcePR.setValue(defaultGameFinishBGMSource);
         chessSoundSourcePR.setValue(defaultChessSoundSource);
-        effectVolumePR.setValue(defaultEffectVolume);
 
         bgmSourceMoved.setValue(false);
         chessSoundSourceMoved.setValue(false);
@@ -288,34 +311,34 @@ public class Theme {
     public void initRelations() {
 
         //Bind mode switch to dynamically change color.
-        modePaintPR.bind(Bindings.createObjectBinding(()->{
-            if(modeSwitchPR.getValue()){
+        modePaintPR.bind(Bindings.createObjectBinding(() -> {
+            if (modeSwitchPR.getValue()) {
                 return defaultDarkModeColor;
-            }
-            else{
+            } else {
                 return defaultLightModeColor;
             }
         }, modeSwitchPR));
 
-        modeRevPaintPR.bind(Bindings.createObjectBinding(()->{
-            if(modeSwitchPR.getValue()){
+        modeRevPaintPR.bind(Bindings.createObjectBinding(() -> {
+            if (modeSwitchPR.getValue()) {
                 return defaultLightModeColor;
-            }
-            else{
+            } else {
                 return defaultDarkModeColor;
             }
         }, modeSwitchPR));
+
+        titleFontPaintPR.bind(modeRevPaintPR);
+        menuFontPaintPR.bind(modeRevPaintPR);
+        textFontPaintPR.bind(modeRevPaintPR);
 
         //Bind theme paint to theme color
-        themePaintPR.bind(Bindings.createObjectBinding(() -> {
-            return themeColorPR.getValue();
-        }, themeColorPR));
+        themePaintPR.bind(Bindings.createObjectBinding(themeColorPR::getValue, themeColorPR));
 
 
         Log0j.writeLog("Relation initialized.");
     }
 
-    public static Image getAppIcon(){
+    public static Image getAppIcon() {
         return appIcon;
     }
 
@@ -336,9 +359,63 @@ public class Theme {
         return bgmPlayer;
     }
 
-    public ObjectProperty<Path> getBgmSource() {
+    public ObjectProperty<Path> getMainViewBgmSource() {
         return mainViewBGMSourcePR;
     }
+
+    public ObjectProperty<Path> getGamePageBGMSource() {
+        return gamePageBGMSourcePR;
+    }
+
+    public void registerGame() {
+        if (gameCnt == 0) {
+            Platform.runLater(() -> {
+                setBGMPlayerContent(gamePageBGMSourcePR.getValue());
+            });
+        }
+        gameCnt++;
+    }
+
+    public void unregisterGame() {
+        gameCnt--;
+        if (gameCnt == 0) {
+            Platform.runLater(() -> {
+                setBGMPlayerContent(mainViewBGMSourcePR.getValue());
+            });
+        }
+    }
+
+    public ObjectProperty<Path> gameFinishBGMSourcePR(){
+        return gameFinishBGMSourcePR;
+    }
+
+    public void setBGMPlayerContent(Path path) {
+        //Unbind the previous bgm player volume first.
+        Platform.runLater(bgmPlayer.volumeProperty()::unbind);
+
+        Timeline fadeOutTimeline = new Timeline(
+                new KeyFrame(Duration.millis(500),
+                        new KeyValue(bgmPlayer.volumeProperty(), 0)));
+
+        fadeOutTimeline.setOnFinished(ActionEvent1 -> {
+            bgmPlayer.stop();
+            bgmPlayer = new MediaPlayer(new Media(path.toUri().toString()));
+            bgmPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+            bgmPlayer.setVolume(0);
+            Timeline fadeInTimeline = new Timeline(
+                    new KeyFrame(Duration.millis(500),
+                            new KeyValue(bgmPlayer.volumeProperty(), bgmVolumePR.getValue())));
+            fadeInTimeline.setOnFinished(ActionEvent2 -> {
+                bgmPlayer.volumeProperty().bind(bgmVolumePR);
+            });
+            Platform.runLater(() -> {
+                fadeInTimeline.play();
+                bgmPlayer.play();
+            });
+        });
+        Platform.runLater(fadeOutTimeline::play);
+    }
+
 
     public ObjectProperty<Path> getChessSoundSource() {
         return chessSoundSourcePR;
@@ -389,39 +466,39 @@ public class Theme {
         frontPaneBackgroundPR.unbind();
     }
 
-    public BooleanProperty modeSwitchPR(){
+    public BooleanProperty modeSwitchPR() {
         return modeSwitchPR;
     }
 
-    public ObjectProperty<Paint> modePaintPR(){
+    public ObjectProperty<Paint> modePaintPR() {
         return modePaintPR;
     }
 
-    public ObjectProperty<Paint> modeRevPaintPR(){
+    public ObjectProperty<Paint> modeRevPaintPR() {
         return modePaintPR();
     }
 
-    public void bindToModePaint(ObjectProperty<Paint> paint){
-     paint.bind(Bindings.createObjectBinding(modePaintPR::getValue, modePaintPR));
+    public void bindToModePaint(ObjectProperty<Paint> paint) {
+        paint.bind(Bindings.createObjectBinding(modePaintPR::getValue, modePaintPR));
     }
 
-    public void bindToModePaintBackground(ObjectProperty<Background> background){
-        background.bind(Bindings.createObjectBinding(()->{
-            return new Background(new BackgroundFill(modePaintPR.getValue(),null,null));
+    public void bindToModePaintBackground(ObjectProperty<Background> background) {
+        background.bind(Bindings.createObjectBinding(() -> {
+            return new Background(new BackgroundFill(modePaintPR.getValue(), null, null));
         }, modePaintPR));
     }
 
-    public void bindToModeRevPaint(ObjectProperty<Paint> paint){
+    public void bindToModeRevPaint(ObjectProperty<Paint> paint) {
         paint.bind(Bindings.createObjectBinding(modeRevPaintPR::getValue, modePaintPR));
     }
 
-    public void bindToModeRevPaintBackground(ObjectProperty<Background> background){
-        background.bind(Bindings.createObjectBinding(()->{
-            return new Background(new BackgroundFill(modeRevPaintPR.getValue(),null,null));
+    public void bindToModeRevPaintBackground(ObjectProperty<Background> background) {
+        background.bind(Bindings.createObjectBinding(() -> {
+            return new Background(new BackgroundFill(modeRevPaintPR.getValue(), null, null));
         }, modeRevPaintPR));
     }
 
-    public ObjectProperty<Color> themeColorPR(){
+    public ObjectProperty<Color> themeColorPR() {
         return themeColorPR;
     }
 

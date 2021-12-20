@@ -24,7 +24,7 @@ import javafx.scene.paint.Color;
  */
 public class ChessBoard extends HBox implements Updatable {
     public static final double DEFAULT_BOARD_MIN_SIZE = 400;
-    public static final double CHESS_SIZE_RATIO = 0.618;
+    public static final double CHESS_SIZE_RATIO = 0.800;
 
     public final VBox vBoxCover;
     public final GridPane grid;

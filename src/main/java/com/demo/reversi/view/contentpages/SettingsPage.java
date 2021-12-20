@@ -11,6 +11,7 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
@@ -31,7 +32,6 @@ public class SettingsPage implements Updatable {
         contentWrapper = new GridPane();
         scrollPane = new SmoothishScrollPane(contentWrapper);
         configWrapper = new GridPane();
-
 
         {
             {
@@ -62,15 +62,15 @@ public class SettingsPage implements Updatable {
 
     }
 
-    public void initContent(){
+    public void initContent() {
         initThemeColorPicker();
     }
 
-    public void initConfig(){
-        contentWrapper.add(new MetroButton("WTF", theme), 0,0);
+    public void initConfig() {
+        contentWrapper.add(new MetroButton("Click to do nothing", theme), 0, 0);
     }
 
-    public void initThemeColorPicker(){
+    public void initThemeColorPicker() {
         HBox container = new HBox();
         container.setPrefWidth(Control.USE_COMPUTED_SIZE);
         container.setPrefHeight(PREF_CONTAINER_HEIGHT);

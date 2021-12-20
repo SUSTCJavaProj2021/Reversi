@@ -8,6 +8,7 @@ import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
 import com.demo.reversi.view.gamepages.GamePageLocal;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -114,7 +115,11 @@ public class PlayPage implements Updatable {
                 gameStage.setMinHeight(GamePageLocal.MIN_HEIGHT);
 
                 gameStage.show();
+                Platform.runLater(theme::registerGame);
                 Log0j.writeLog("LocalPlay (New Game) initialized.");
+                gameStage.setOnCloseRequest(ActionEvent->{
+                    Platform.runLater(theme::unregisterGame);
+                });
             }
         });
         GridPane.setHalignment(newLocalGameButton, HPos.CENTER);
@@ -128,7 +133,7 @@ public class PlayPage implements Updatable {
         loadLocalGameButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                //Theoretically, a new prompt asking for choosing the saves should pop up.
+
                 //todo: change default index property
                 SimpleIntegerProperty indexProperty = new SimpleIntegerProperty(2);
 

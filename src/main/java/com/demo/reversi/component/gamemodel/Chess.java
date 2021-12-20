@@ -12,8 +12,11 @@ import javafx.beans.property.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.effect.Bloom;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.StackPane;
 import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -23,13 +26,16 @@ import javafx.util.Duration;
 /**
  * This Chess shall support three modes: Transparent Mode, Black Mode, White Mode.
  */
-public class Chess extends Circle implements Updatable {
+public class Chess extends StackPane implements Updatable {
 
     public enum ChessOwner {
         PLAYER1, PLAYER2, AI, PLACEHOLDER;
     }
-
+    public static final double TRANS_TIME_MILLIS = 150;
     public static final Color placeHolderColor = Color.TRANSPARENT;
+
+    public final Circle chessInnerCircle;
+    public final Circle chessOuterCircle;
 
     public final DoubleProperty chessSizePR;
     public final ObjectProperty<Paint> playerPaint1PR;
@@ -41,10 +47,21 @@ public class Chess extends Circle implements Updatable {
 
 
     public Chess(double radius, Theme theme, ChessOwner chessOwner) {
-        super(radius);
         this.theme = theme;
         chessSizePR = new SimpleDoubleProperty(radius);
-        radiusProperty().bind(chessSizePR);
+        chessInnerCircle = new Circle(radius * 0.75);
+        chessOuterCircle = new Circle(radius);
+        getChildren().addAll(chessOuterCircle, chessInnerCircle);
+        StackPane.setAlignment(chessInnerCircle, Pos.CENTER);
+        StackPane.setAlignment(chessOuterCircle, Pos.CENTER);
+        /**
+         * Binding chess properties
+         */
+        chessOuterCircle.radiusProperty().bind(chessSizePR);
+        chessInnerCircle.radiusProperty().bind(chessSizePR.multiply(0.90));
+        chessOuterCircle.strokeWidthProperty().bind(chessSizePR.multiply(0.05));
+        chessOuterCircle.setFill(Color.TRANSPARENT);
+
 
         playerPaint1PR = new SimpleObjectProperty<>();
         playerPaint2PR = new SimpleObjectProperty<>();
@@ -93,36 +110,42 @@ public class Chess extends Circle implements Updatable {
     }
 
     /**
-     * @param oldOwner
+     * @param oldOwner Old owner of the chess
      * @param axis     rotation axis
      */
     public void update(ChessOwner oldOwner, Point3D axis) {
         switch (chessOwner.getValue()) {
             case PLAYER1:
-                fillProperty().unbind();
+                chessOuterCircle.strokeProperty().unbind();
+                chessInnerCircle.fillProperty().unbind();
                 if (oldOwner != ChessOwner.PLACEHOLDER && oldOwner != chessOwner.getValue()) {
                     Platform.runLater(() -> {
                         animateReverse(playerPaint1PR, axis);
                     });
                 } else {
-                    fillProperty().bind(playerPaint1PR);
+                    chessOuterCircle.strokeProperty().bind(playerPaint1PR);
+                    chessInnerCircle.fillProperty().bind(playerPaint1PR);
                 }
                 break;
 
             case PLAYER2:
-                fillProperty().unbind();
+                chessOuterCircle.strokeProperty().unbind();
+                chessInnerCircle.fillProperty().unbind();
                 if (oldOwner != ChessOwner.PLACEHOLDER && oldOwner != chessOwner.getValue()) {
                     Platform.runLater(() -> {
                         animateReverse(playerPaint2PR(), axis);
                     });
                 } else {
-                    fillProperty().bind(playerPaint2PR);
+                    chessOuterCircle.strokeProperty().bind(playerPaint2PR);
+                    chessInnerCircle.fillProperty().bind(playerPaint2PR);
                 }
                 break;
 
             case PLACEHOLDER:
-                fillProperty().unbind();
-                setFill(placeHolderColor);
+                chessOuterCircle.strokeProperty().unbind();
+                chessInnerCircle.fillProperty().unbind();
+                chessOuterCircle.setStroke(placeHolderColor);
+                chessInnerCircle.setFill(placeHolderColor);
                 break;
 
             case AI:
@@ -130,13 +153,13 @@ public class Chess extends Circle implements Updatable {
 
         if (!chessOwner.getValue().equals(ChessOwner.PLACEHOLDER)) {
             DropShadow dropShadow = new DropShadow();
-            dropShadow.setRadius(radiusProperty().doubleValue() + 5);
+            dropShadow.setRadius(chessSizePR.doubleValue() + 5);
             dropShadow.setOffsetX(3.0);
             dropShadow.setOffsetY(3.0);
             dropShadow.setColor(Color.rgb(0, 0, 0, 0.45));
-            setEffect(dropShadow);
+            chessOuterCircle.setEffect(dropShadow);
         } else {
-            setEffect(null);
+            chessOuterCircle.setEffect(null);
         }
     }
 
@@ -146,11 +169,12 @@ public class Chess extends Circle implements Updatable {
         }
         RotateTransition rotator1 = createRotatorUp(this, 1, axis);
         RotateTransition rotator2 = createRotatorUp(this, 2, axis);
-        ScaleTransition scale1 = createScalar(this, 1.001);
+        ScaleTransition scale1 = createScalar(this, 1);
         rotator1.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                fillProperty().bind(newPaint);
+                chessOuterCircle.strokeProperty().bind(newPaint);
+                chessInnerCircle.fillProperty().bind(newPaint);
                 rotator2.play();
             }
         });
@@ -167,23 +191,28 @@ public class Chess extends Circle implements Updatable {
                 }
             }
         });
-        ParallelTransition pt = new ParallelTransition(rotator1,scale1);
-        pt.play();
+        ParallelTransition pt = new ParallelTransition(rotator1, scale1);
+        Platform.runLater(pt::play);
     }
 
     //todo: test
     private RotateTransition createRotatorUp(Node node, int para, Point3D axis) {
-        RotateTransition rotator = new RotateTransition(Duration.millis(200), node);
+        RotateTransition rotator = new RotateTransition(Duration.millis(TRANS_TIME_MILLIS), node);
         rotator.setAxis(axis);
-        rotator.setFromAngle((para - 1) * 180);
-        rotator.setToAngle(para * 180);
-        rotator.setInterpolator(Interpolator.LINEAR);
+        rotator.setFromAngle((para - 1) * 90);
+        rotator.setToAngle(para * 90);
+        rotator.setInterpolator(new Interpolator() {
+            @Override
+            protected double curve(double t) {
+                return Math.pow(t, 0.25);
+            }
+        });
         rotator.setCycleCount(1);
         return rotator;
     }
 
     private ScaleTransition createScalar(Node node, double multiple) {
-        ScaleTransition scalar = new ScaleTransition(Duration.millis(200), node);
+        ScaleTransition scalar = new ScaleTransition(Duration.millis(TRANS_TIME_MILLIS), node);
         scalar.setByX(multiple);
         scalar.setByY(multiple);
         scalar.setCycleCount(2);
