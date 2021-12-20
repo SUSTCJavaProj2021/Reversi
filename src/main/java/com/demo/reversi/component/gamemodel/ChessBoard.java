@@ -154,6 +154,7 @@ public class ChessBoard extends HBox implements Updatable {
 
                 /**
                  * Remove the previous chess.
+                 * A little reminder: the first child of the gridBase should be the Chess itself.
                  */
 
                 GridStatus positionPlayer = controller.getGridStatus(row, col);

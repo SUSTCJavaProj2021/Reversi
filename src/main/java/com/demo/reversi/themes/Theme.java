@@ -90,7 +90,7 @@ public class Theme {
      * In-game bgm volumes
      */
     public static final double defaultBGMVolume = 0.4;
-    public static final double defaultEffectVolume = 0.4;
+    public static final double defaultEffectVolume = 1.0;
 
 
     /**

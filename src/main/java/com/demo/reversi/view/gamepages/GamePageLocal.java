@@ -26,8 +26,6 @@ public class GamePageLocal implements Updatable {
 
     public final ChessBoard chessBoard;
     public final ScorePane scorePane;
-    public final ExtendedInfoPane whitePlayerExtendedInfoPane;
-    public final ExtendedInfoPane blackPlayerExtendedInfoPane;
     public final GridPane settingsPane;
 
     public Theme theme;
@@ -40,12 +38,6 @@ public class GamePageLocal implements Updatable {
         chessBoard = new ChessBoard(controller, theme);
         controller.bindToGamePage(this);
         BorderPane.setAlignment(chessBoard, Pos.CENTER);
-
-        whitePlayerExtendedInfoPane = new ExtendedInfoPane(controller.getWhitePlayer(), theme);
-        blackPlayerExtendedInfoPane = new ExtendedInfoPane(controller.getBlackPlayer(), theme);
-
-        root.setLeft(blackPlayerExtendedInfoPane);
-        root.setRight(whitePlayerExtendedInfoPane);
 
 
         scorePane = new ScorePane(controller, theme);
