@@ -3,7 +3,7 @@ package com.demo.reversi.view.gamepages;
 import com.demo.reversi.component.gamemodel.ChessBoard;
 import com.demo.reversi.component.panes.ExtendedInfoPane;
 import com.demo.reversi.component.panes.ScorePane;
-import com.demo.reversi.controller.GameController;
+import com.demo.reversi.controller.GameControllerLayer;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
 import javafx.event.ActionEvent;
@@ -22,7 +22,7 @@ public class GamePageLocal implements Updatable {
     public static final double DEFAULT_PREF_HEIGHT = 611;
 
     public final BorderPane root;
-    public final GameController controller;
+    public final GameControllerLayer controller;
 
     public final ChessBoard chessBoard;
     public final ScorePane scorePane;
@@ -32,7 +32,7 @@ public class GamePageLocal implements Updatable {
 
     public Theme theme;
 
-    public GamePageLocal(GameController controller, Theme theme) {
+    public GamePageLocal(GameControllerLayer controller, Theme theme) {
         this.theme = theme;
         this.controller = controller;
         root = new BorderPane();

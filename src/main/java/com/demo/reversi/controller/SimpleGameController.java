@@ -6,13 +6,13 @@ import com.demo.reversi.view.gamepages.GamePageLocal;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class SimpleGameController implements GameController{
+public class SimpleGameController implements GameControllerLayer {
     public boolean isGameModifiable;
 
-    public final Player whitePlayer;
-    public final Player blackPlayer;
-    public Player currentPlayer;
-    public ObjectProperty<Player> currentPlayerProperty;
+    public final PlayerLayer whitePlayer;
+    public final PlayerLayer blackPlayer;
+    public PlayerLayer currentPlayer;
+    public ObjectProperty<PlayerLayer> currentPlayerProperty;
 
     public CLIGameController controller;
 
@@ -20,7 +20,7 @@ public class SimpleGameController implements GameController{
 
     public boolean isCheatMode;
 
-    public SimpleGameController(Player blackPlayer, Player whitePlayer, boolean isGameModifiable) {
+    public SimpleGameController(PlayerLayer blackPlayer, PlayerLayer whitePlayer, boolean isGameModifiable) {
         this.isGameModifiable = isGameModifiable;
         this.blackPlayer = blackPlayer;
         this.whitePlayer = whitePlayer;
@@ -76,22 +76,22 @@ public class SimpleGameController implements GameController{
     }
 
     @Override
-    public Player getWhitePlayer() {
+    public PlayerLayer getWhitePlayer() {
         return whitePlayer;
     }
 
     @Override
-    public Player getBlackPlayer() {
+    public PlayerLayer getBlackPlayer() {
         return blackPlayer;
     }
 
     @Override
-    public Player getCurrentPlayer() {
+    public PlayerLayer getCurrentPlayer() {
         return currentPlayer;
     }
 
     @Override
-    public ObjectProperty<Player> currentPlayerProperty(){
+    public ObjectProperty<PlayerLayer> currentPlayerProperty(){
         return currentPlayerProperty;
     }
 

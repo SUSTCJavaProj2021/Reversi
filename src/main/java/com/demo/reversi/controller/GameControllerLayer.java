@@ -3,7 +3,7 @@ package com.demo.reversi.controller;
 import com.demo.reversi.view.Updatable;
 import javafx.beans.property.ObjectProperty;
 
-public interface GameController {
+public interface GameControllerLayer {
 
     public boolean bindToGamePage(Updatable gamePage);
 
@@ -19,13 +19,13 @@ public interface GameController {
 
     public void forceSourcedGUIUpdate(int row, int col);
 
-    public Player getWhitePlayer();
+    public PlayerLayer getWhitePlayer();
 
-    public Player getBlackPlayer();
+    public PlayerLayer getBlackPlayer();
 
-    public Player getCurrentPlayer();
+    public PlayerLayer getCurrentPlayer();
 
-    public ObjectProperty<Player> currentPlayerProperty();
+    public ObjectProperty<PlayerLayer> currentPlayerProperty();
 
     public boolean setCheatMode(boolean isEnabled);
 

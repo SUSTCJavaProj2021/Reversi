@@ -2,22 +2,22 @@ package com.demo.reversi.controller;
 
 import java.util.List;
 
-public interface GameSystem {
+public interface GameSystemLayer {
 
     //todo: return type should be ArrayList<Game>
-    public void queryPlayerGames(Player player);
+    public void queryPlayerGames(PlayerLayer player);
 
     public boolean addPlayer();
 
     public boolean delPlayer();
 
-    public GameController startNewGame();
+    public GameControllerLayer startNewGame();
 
-    public GameController loadGame(int index, boolean isReadOnly);
+    public GameControllerLayer loadGame(int index, boolean isReadOnly);
 
     public boolean updateRanking();
 
-    public List<GameController> getAllExistingGames();
+    public List<GameControllerLayer> getAllExistingGames();
 
     public boolean save();
 

@@ -1,6 +1,6 @@
 package com.demo.reversi.component.panes;
 
-import com.demo.reversi.controller.Player;
+import com.demo.reversi.controller.PlayerLayer;
 import com.demo.reversi.themes.Theme;
 import javafx.geometry.HPos;
 import javafx.scene.control.Control;
@@ -14,7 +14,7 @@ public class ExtendedInfoPane extends GridPane {
 
     public Theme theme;
 
-    public ExtendedInfoPane(Player player, Theme theme) {
+    public ExtendedInfoPane(PlayerLayer player, Theme theme) {
         super();
         this.theme = theme;
         this.setMinWidth(MIN_WIDTH);

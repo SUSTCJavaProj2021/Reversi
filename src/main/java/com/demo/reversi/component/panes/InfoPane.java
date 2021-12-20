@@ -1,13 +1,12 @@
 package com.demo.reversi.component.panes;
 
-import com.demo.reversi.controller.Player;
+import com.demo.reversi.controller.PlayerLayer;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
 import javafx.beans.property.*;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
 
 public class InfoPane extends GridPane implements Updatable {
@@ -27,7 +26,7 @@ public class InfoPane extends GridPane implements Updatable {
 
     private final Theme theme;
 
-    public InfoPane(Player player, Theme theme, ObjectProperty<Paint> playerColor){
+    public InfoPane(PlayerLayer player, Theme theme, ObjectProperty<Paint> playerColor){
         this.theme = theme;
         playerColorPR = new SimpleObjectProperty<>();
         playerColorPR.bind(playerColor);

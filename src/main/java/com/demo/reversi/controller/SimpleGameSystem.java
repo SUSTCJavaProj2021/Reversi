@@ -5,13 +5,13 @@ import com.demo.reversi.logger.Log0j;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimpleGameSystem implements GameSystem {
+public class SimpleGameSystem implements GameSystemLayer {
     public SimpleGameSystem() {
 
     }
 
     @Override
-    public void queryPlayerGames(Player player) {
+    public void queryPlayerGames(PlayerLayer player) {
 
     }
 
@@ -30,7 +30,7 @@ public class SimpleGameSystem implements GameSystem {
     }
 
     @Override
-    public GameController loadGame(int index, boolean isReadOnly) {
+    public GameControllerLayer loadGame(int index, boolean isReadOnly) {
         SimpleGameController simpleGameController = new SimpleGameController(new SimplePlayer("LOAD TEST 1"), new SimplePlayer("LOAD TEST 2"), !isReadOnly);
         Log0j.writeLog("loadGame method test: New GameController Created: " + simpleGameController);
         return simpleGameController;
@@ -42,8 +42,8 @@ public class SimpleGameSystem implements GameSystem {
     }
 
     @Override
-    public List<GameController> getAllExistingGames() {
-        ArrayList<GameController> gameList = new ArrayList<GameController>(0);
+    public List<GameControllerLayer> getAllExistingGames() {
+        ArrayList<GameControllerLayer> gameList = new ArrayList<GameControllerLayer>(0);
         for (int i = 0; i < 10; i++) {
             gameList.add(new SimpleGameController(new SimplePlayer("TEST PLAYER " + i * 2), new SimplePlayer("TEST PLAYER" + (i * 2 + 1)), false));
         }

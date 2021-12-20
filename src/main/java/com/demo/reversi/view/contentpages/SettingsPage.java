@@ -11,9 +11,7 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 
 public class SettingsPage implements Updatable {
     public static final double PREF_CONTAINER_HEIGHT = 100;

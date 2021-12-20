@@ -1,7 +1,7 @@
 package com.demo.reversi.component.panes;
 
-import com.demo.reversi.controller.GameController;
-import com.demo.reversi.controller.Player;
+import com.demo.reversi.controller.GameControllerLayer;
+import com.demo.reversi.controller.PlayerLayer;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
 import javafx.beans.property.ObjectProperty;
@@ -19,16 +19,16 @@ public class ScorePane extends GridPane implements Updatable {
     public static final int MIN_HEIGHT = 65;
     public static final int PREF_HEIGHT = 100;
 
-    public final ObjectProperty<Player> currentPlayerProperty;
+    public final ObjectProperty<PlayerLayer> currentPlayerProperty;
 
     private final Label curPlayerLabel;
 
-    public final GameController controller;
+    public final GameControllerLayer controller;
 
     private final Theme theme;
 
 
-    public ScorePane(GameController controller, Theme theme) {
+    public ScorePane(GameControllerLayer controller, Theme theme) {
         super();
         this.controller = controller;
         this.theme = theme;

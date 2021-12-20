@@ -1,7 +1,7 @@
 package com.demo.reversi.component.gamemodel;
 
 import com.demo.reversi.controller.GridStatus;
-import com.demo.reversi.controller.GameController;
+import com.demo.reversi.controller.GameControllerLayer;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
@@ -30,13 +30,13 @@ public class ChessBoard extends HBox implements Updatable {
     public final GridPane grid;
     public final BoardGridComponent gridBases[][];
     public final int rowSize, colSize;
-    public final GameController controller;
+    public final GameControllerLayer controller;
     public final double cellMinSize;
     public final double boardSize;
 
     private final Theme theme;
 
-    public ChessBoard(GameController controller, Theme theme) {
+    public ChessBoard(GameControllerLayer controller, Theme theme) {
         this(controller, theme, 0);
     }
 
@@ -47,7 +47,7 @@ public class ChessBoard extends HBox implements Updatable {
      * @param theme         the specific board theme
      * @param prefBoardSize the preferred board size
      */
-    public ChessBoard(GameController controller, Theme theme, double prefBoardSize) {
+    public ChessBoard(GameControllerLayer controller, Theme theme, double prefBoardSize) {
         this.theme = theme;
         this.controller = controller;
         this.rowSize = controller.getRowSize();
