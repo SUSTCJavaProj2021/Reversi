@@ -8,7 +8,6 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
-import javafx.event.ActionEvent;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.media.Media;
@@ -21,7 +20,6 @@ import javafx.util.Duration;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,6 +28,9 @@ public class Theme {
 
     //Fields below are all default settings.
     //They are all base on experience.
+    /**
+     * Main-stage-related parameters
+     */
     public static final double DEFAULT_CORNER_RADII = 10;
 
     public static final int DEFAULT_MAIN_WINDOW_PREF_WIDTH = 1280;
@@ -37,53 +38,71 @@ public class Theme {
     public static final int DEFAULT_MAIN_WINDOW_MIN_WIDTH = 600;
     public static final int DEFAULT_MAIN_WINDOW_MIN_HEIGHT = 450;
 
+
+    /**
+     * In-game bgm sources
+     */
     public static Path defaultMainViewBGMSource;
     public static Path defaultGamePageBGMSource;
     public static Path defaultGameFinishBGMSource;
     public static Path defaultChessSoundSource;
+    public static Path defaultGridSoundSource;
 
     static {
         try {
             defaultMainViewBGMSource = Paths.get(Theme.class.getResource("MainViewBGM.mp3").toURI());
             Log0j.writeLog("Main View BGM loaded on path: " + defaultMainViewBGMSource);
-        } catch (Exception e) {
+        } catch (NullPointerException | URISyntaxException e) {
             Log0j.writeLog("Main View BGM loading failed. Check your path.");
             e.printStackTrace();
         }
         try {
             defaultGamePageBGMSource = Paths.get(Theme.class.getResource("GamePageBGM.mp3").toURI());
             Log0j.writeLog("Game Page BGM loaded on path: " + defaultGamePageBGMSource);
-        } catch (Exception e) {
+        } catch (NullPointerException | URISyntaxException e) {
             Log0j.writeLog("Game Page BGM loading failed. Check your path.");
             e.printStackTrace();
         }
         try {
             defaultGameFinishBGMSource = Paths.get(Theme.class.getResource("GameFinishBGM.mp3").toURI());
             Log0j.writeLog("Game Finish BGM loaded on path: " + defaultGameFinishBGMSource);
-        } catch (Exception e) {
+        } catch (NullPointerException | URISyntaxException e) {
             Log0j.writeLog("Game Finish BGM loading failed. Check your path.");
             e.printStackTrace();
         }
         try {
             defaultChessSoundSource = Paths.get(Paths.get(Theme.class.getResource("soundeffects/").toURI()).toString(), "Chess.mp3");
             Log0j.writeLog("Chess sound loaded on path : " + defaultChessSoundSource);
-        } catch (Exception e) {
+        } catch (NullPointerException | URISyntaxException e) {
             Log0j.writeLog("Chess sound loading failed. Check your path.");
+            e.printStackTrace();
+        }
+        try {
+            defaultGridSoundSource = Paths.get(Paths.get(Theme.class.getResource("soundeffects/").toURI()).toString(), "Grid.mp3");
+            Log0j.writeLog("Grid sound loaded on path : " + defaultGridSoundSource);
+        } catch (NullPointerException | URISyntaxException e) {
+            Log0j.writeLog("Grid sound loading failed. Check your path.");
             e.printStackTrace();
         }
     }
 
+    /**
+     * In-game bgm volumes
+     */
     public static final double defaultBGMVolume = 0.4;
     public static final double defaultEffectVolume = 0.4;
 
 
+    /**
+     * Main-View background
+     */
     public static Path defaultBackgroundSource;
 
     static {
         try {
-            defaultBackgroundSource = Paths.get(Theme.class.getResource("background.jpg").toURI());
+            defaultBackgroundSource = Paths.get(Theme.class.getResource("Background.jpg").toURI());
             Log0j.writeLog("Correctly loaded default background source from " + defaultBackgroundSource.toUri().toString());
-        } catch (URISyntaxException e) {
+        } catch (NullPointerException | URISyntaxException e) {
             Log0j.writeLog("Default background loading failed. Check your path.");
             e.printStackTrace();
         }
@@ -92,32 +111,55 @@ public class Theme {
     public static final Background defaultBackPaneBKGND = new Background(
             new BackgroundImage(new Image(defaultBackgroundSource.toUri().toString()),
                     BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT));
-
+    /**
+     * Main-View FrontPane background
+     */
     public static final Background defaultFrontPaneBKGND = new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.15),
             new CornerRadii(MainView.VIEWCOVER_CORNER_RADII), null));
 
+    /**
+     * Custom chess (currently not used)
+     */
     public static Path defaultChessSource;
 
     static {
         try {
             defaultChessSource = Paths.get(Theme.class.getResource("Chess.png").toURI());
-        } catch (URISyntaxException | NullPointerException e) {
+        } catch (NullPointerException | URISyntaxException e) {
             Log0j.writeLog("Failed to load default chess component. Chess will be initialized using circles.");
             e.printStackTrace();
         }
     }
 
+
+    /**
+     * Mode colors
+     */
     public static final Paint defaultDarkModeColor = Color.rgb(32, 32, 32);
     public static final Paint defaultLightModeColor = Color.rgb(240, 240, 240);
+
+    /**
+     * Theme colors & paints
+     * Theme Paint is by default bound to Theme Color
+     */
     public static final Color defaultThemeColor = Color.rgb(29, 31, 44);
     public static final Paint defaultThemePaint = Color.rgb(29, 31, 44);
+
+    /**
+     * Fonts: Title, Menu, Text
+     */
     public static final Font defaultTitleFontFamily = new Font("Garamond", 25);
     public static final Paint defaultTitleFontPaint = Color.WHITE;
+    public static final Font defaultInfoTitleFontFamily = new Font("Garamond", 19);
+    public static final Paint defaultInfoTitleFontPaint = Color.WHITE;
     public static final Font defaultMenuFontFamily = new Font("Segoe UI", 14);
     public static final Paint defaultMenuFontPaint = Color.WHITE;
     public static final Font defaultTextFontFamily = new Font("Segoe UI", 16);
     public static final Paint defaultTextFontPaint = Color.WHITE;
 
+    /**
+     * In-game settings: Chess Paint, ChessBoard Grid Paint, etc.
+     */
     public static final Paint defaultPlayerChessPaint1 = Color.WHITE;
     public static final Paint defaultPlayerChessPaint2 = Color.BLACK;
     public static final Paint defaultChessBoardPaint1 = Color.rgb(29, 31, 44);
@@ -126,38 +168,57 @@ public class Theme {
     public static final Background defaultChessBoardBackground = new Background(new BackgroundFill(Color.TRANSPARENT, new CornerRadii(DEFAULT_CORNER_RADII), null));
 
     /**
-     * Below are properties
+     * Players
      */
+    public static Image defaultPlayerIcon;
 
+    static {
+        try {
+            defaultPlayerIcon = new Image(Theme.class.getResource("PlayerIcon.png").toURI().toString());
+        } catch (NullPointerException | URISyntaxException e) {
+            e.printStackTrace();
+            Log0j.writeLog("Cannot load default player icon.");
+        }
+    }
+
+    /**
+     * App's Icon
+     */
+    public static Image appIcon;
+
+    static {
+        try {
+            appIcon = new Image(Theme.class.getResource("icons/App.png").toURI().toString());
+        } catch (NullPointerException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * Below are properties that will be used for real-time previews
+     */
     //Stage related
     public final SimpleDoubleProperty mainWindowPrefWidth;
     public final SimpleDoubleProperty mainWindowPrefHeight;
 //    public int mainWindowMinWidth;
 //    public int mainWindowMinHeight;
 
-    public static Image appIcon;
-
-    static {
-        try {
-            appIcon = new Image(Theme.class.getResource("icons/App.png").toURI().toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     //Audio related
     public MediaPlayer bgmPlayer;
+    public MediaPlayer lastBGM;
     public final ObjectProperty<Path> mainViewBGMSourcePR;
     public final ObjectProperty<Path> gamePageBGMSourcePR;
     public final ObjectProperty<Path> gameFinishBGMSourcePR;
     private int gameCnt;
     public final ObjectProperty<Path> chessSoundSourcePR;
+    public final ObjectProperty<Path> gridSoundSourcePR;
     public final DoubleProperty bgmVolumePR;
     public final DoubleProperty effectVolumePR;
 
     //Audio File Related
     public final BooleanProperty bgmSourceMoved;
-    public final BooleanProperty chessSoundSourceMoved;
 
 
     //Theme related
@@ -178,6 +239,9 @@ public class Theme {
 
     public final ObjectProperty<Font> titleFontFamilyPR;
     public final ObjectProperty<Paint> titleFontPaintPR;
+
+    public final ObjectProperty<Font> infoTitleFontFamilyPR;
+    public final ObjectProperty<Paint> infoTitleFontPaintPR;
 
     public final ObjectProperty<Font> menuFontFamilyPR;
     public final ObjectProperty<Paint> menuFontPaintPR;
@@ -209,10 +273,10 @@ public class Theme {
         gameFinishBGMSourcePR = new SimpleObjectProperty<>();
         gameCnt = 0;
         chessSoundSourcePR = new SimpleObjectProperty<>();
+        gridSoundSourcePR = new SimpleObjectProperty<>();
         effectVolumePR = new SimpleDoubleProperty();
 
         bgmSourceMoved = new SimpleBooleanProperty();
-        chessSoundSourceMoved = new SimpleBooleanProperty();
 
         backPaneBackgroundPR = new SimpleObjectProperty<>();
         frontPaneBackgroundPR = new SimpleObjectProperty<>();
@@ -225,6 +289,8 @@ public class Theme {
         themePaintPR = new SimpleObjectProperty<>();
         titleFontFamilyPR = new SimpleObjectProperty<>();
         titleFontPaintPR = new SimpleObjectProperty<>();
+        infoTitleFontFamilyPR = new SimpleObjectProperty<>();
+        infoTitleFontPaintPR = new SimpleObjectProperty<>();
         menuFontFamilyPR = new SimpleObjectProperty<>();
         menuFontPaintPR = new SimpleObjectProperty<>();
         textFontFamilyPR = new SimpleObjectProperty<>();
@@ -245,6 +311,9 @@ public class Theme {
 
         loadTheme();
 
+    }
+
+    public void initMedia() {
         try {
             Media media;
             //todo: modify this
@@ -276,9 +345,9 @@ public class Theme {
         gamePageBGMSourcePR.setValue(defaultGamePageBGMSource);
         gameFinishBGMSourcePR.setValue(defaultGameFinishBGMSource);
         chessSoundSourcePR.setValue(defaultChessSoundSource);
+        gridSoundSourcePR.setValue(defaultGridSoundSource);
 
         bgmSourceMoved.setValue(false);
-        chessSoundSourceMoved.setValue(false);
 
         backPaneBackgroundPR.setValue(defaultBackPaneBKGND);
         frontPaneBackgroundPR.setValue(defaultFrontPaneBKGND);
@@ -292,6 +361,8 @@ public class Theme {
 
         titleFontFamilyPR.setValue(defaultTitleFontFamily);
         titleFontPaintPR.setValue(defaultTitleFontPaint);
+        infoTitleFontFamilyPR.setValue(defaultInfoTitleFontFamily);
+        infoTitleFontPaintPR.setValue(defaultInfoTitleFontPaint);
         menuFontFamilyPR.setValue(defaultMenuFontFamily);
         menuFontPaintPR.setValue(defaultMenuFontPaint);
         textFontFamilyPR.setValue(defaultTextFontFamily);
@@ -304,6 +375,7 @@ public class Theme {
         chessBoardGridPaintPR.setValue(defaultChessBoardGridPaint);
         chessBoardBackgroundPR.setValue(defaultChessBoardBackground);
 
+        initMedia();
         Log0j.writeLog("Default Theme Applied.");
 
     }
@@ -328,8 +400,10 @@ public class Theme {
         }, modeSwitchPR));
 
         titleFontPaintPR.bind(modeRevPaintPR);
+        infoTitleFontPaintPR.bind(modeRevPaintPR);
         menuFontPaintPR.bind(modeRevPaintPR);
         textFontPaintPR.bind(modeRevPaintPR);
+
 
         //Bind theme paint to theme color
         themePaintPR.bind(Bindings.createObjectBinding(themeColorPR::getValue, themeColorPR));
@@ -370,7 +444,7 @@ public class Theme {
     public void registerGame() {
         if (gameCnt == 0) {
             Platform.runLater(() -> {
-                setBGMPlayerContent(gamePageBGMSourcePR.getValue());
+                setBGMPlayerContent(gamePageBGMSourcePR.getValue(), 400);
             });
         }
         gameCnt++;
@@ -380,45 +454,108 @@ public class Theme {
         gameCnt--;
         if (gameCnt == 0) {
             Platform.runLater(() -> {
-                setBGMPlayerContent(mainViewBGMSourcePR.getValue());
+                setBGMPlayerContent(mainViewBGMSourcePR.getValue(), 0);
             });
         }
     }
 
-    public ObjectProperty<Path> gameFinishBGMSourcePR(){
+    public void bgmPlayerInterrupt(long delayDurationMillis) {
+        //First unbind all connections
+        bgmPlayer.volumeProperty().unbind();
+        lastBGM = bgmPlayer;
+
+
+        bgmPlayer = new MediaPlayer(new Media(gameFinishBGMSourcePR.getValue().toUri().toString()));
+        bgmPlayer.setVolume(bgmVolumePR.getValue());
+        try {
+            Thread.sleep(delayDurationMillis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        fadeInBGM(bgmPlayer);
+    }
+
+    /**
+     * You must first call bgmPlayerInterrupt().
+     */
+    public void bgmPlayerResume(long delayDurationMillis) {
+        if (lastBGM == null) {
+            Log0j.writeLog("Invalid bgm resume call.");
+        } else {
+            Platform.runLater(bgmPlayer.volumeProperty()::unbind);
+
+            Timeline fadeOutTimeline = new Timeline(
+                    new KeyFrame(Duration.millis(100),
+                            new KeyValue(bgmPlayer.volumeProperty(), 0)));
+
+            fadeOutTimeline.setOnFinished(ActionEvent1 -> {
+                bgmPlayer.stop();
+                try {
+                    Thread.sleep(delayDurationMillis);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    Log0j.writeLog("BGM delaying failed. Normally this shouldn't happen.");
+                }
+                bgmPlayer = lastBGM;
+                bgmPlayer.setVolume(0);
+                fadeInBGM(bgmPlayer);
+            });
+        }
+    }
+
+    public ObjectProperty<Path> gameFinishBGMSourcePR() {
         return gameFinishBGMSourcePR;
     }
 
-    public void setBGMPlayerContent(Path path) {
+    /**
+     * Load the specific music to the player
+     *
+     * @param path music path
+     */
+    public void setBGMPlayerContent(Path path, long delayDurationMillis) {
         //Unbind the previous bgm player volume first.
         Platform.runLater(bgmPlayer.volumeProperty()::unbind);
 
         Timeline fadeOutTimeline = new Timeline(
-                new KeyFrame(Duration.millis(500),
+                new KeyFrame(Duration.millis(100),
                         new KeyValue(bgmPlayer.volumeProperty(), 0)));
 
         fadeOutTimeline.setOnFinished(ActionEvent1 -> {
             bgmPlayer.stop();
+            try {
+                Thread.sleep(delayDurationMillis);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                Log0j.writeLog("BGM delaying failed. Normally this shouldn't happen.");
+            }
             bgmPlayer = new MediaPlayer(new Media(path.toUri().toString()));
             bgmPlayer.setCycleCount(MediaPlayer.INDEFINITE);
             bgmPlayer.setVolume(0);
-            Timeline fadeInTimeline = new Timeline(
-                    new KeyFrame(Duration.millis(500),
-                            new KeyValue(bgmPlayer.volumeProperty(), bgmVolumePR.getValue())));
-            fadeInTimeline.setOnFinished(ActionEvent2 -> {
-                bgmPlayer.volumeProperty().bind(bgmVolumePR);
-            });
-            Platform.runLater(() -> {
-                fadeInTimeline.play();
-                bgmPlayer.play();
-            });
+            fadeInBGM(bgmPlayer);
         });
         Platform.runLater(fadeOutTimeline::play);
     }
 
+    public void fadeInBGM(MediaPlayer bgmPlayer){
+        Timeline fadeInTimeline = new Timeline(
+                new KeyFrame(Duration.millis(300),
+                        new KeyValue(bgmPlayer.volumeProperty(), bgmVolumePR.getValue())));
+        fadeInTimeline.setOnFinished(ActionEvent2 -> {
+            bgmPlayer.volumeProperty().bind(bgmVolumePR);
+        });
+        Platform.runLater(() -> {
+            fadeInTimeline.play();
+            bgmPlayer.play();
+        });
+    }
 
-    public ObjectProperty<Path> getChessSoundSource() {
+
+    public ObjectProperty<Path> chessSoundSourcePR() {
         return chessSoundSourcePR;
+    }
+
+    public ObjectProperty<Path> gridSoundSourcePR() {
+        return gridSoundSourcePR;
     }
 
     public double getEffectVolume() {
@@ -443,11 +580,11 @@ public class Theme {
 
 
     public void bindToBackPane(ObjectProperty<Background> background) {
-        background.bind(Bindings.createObjectBinding(backPaneBackgroundPR::getValue, backPaneBackgroundPR));
+        background.bind(backPaneBackgroundPR);
     }
 
     public void bindBackPanePRTo(ObjectProperty<Background> background) {
-        backPaneBackgroundPR.bind(Bindings.createObjectBinding(background::getValue, background));
+        backPaneBackgroundPR.bind(background);
     }
 
     public void unbindBackPane() {
@@ -455,7 +592,7 @@ public class Theme {
     }
 
     public void bindToFrontPane(ObjectProperty<Background> background) {
-        background.bind(Bindings.createObjectBinding(frontPaneBackgroundPR::getValue, frontPaneBackgroundPR));
+        background.bind(frontPaneBackgroundPR);
     }
 
     public void bindFrontPanePRTo(ObjectProperty<Background> background) {
@@ -485,25 +622,25 @@ public class Theme {
     public void bindToModePaintBackground(ObjectProperty<Background> background) {
         background.bind(Bindings.createObjectBinding(() -> {
             return new Background(new BackgroundFill(modePaintPR.getValue(), null, null));
-        }, modePaintPR));
+        }, modeSwitchPR));
     }
 
     public void bindToModeRevPaint(ObjectProperty<Paint> paint) {
-        paint.bind(Bindings.createObjectBinding(modeRevPaintPR::getValue, modePaintPR));
+        paint.bind(Bindings.createObjectBinding(modeRevPaintPR::getValue, modeSwitchPR));
     }
 
     public void bindToModeRevPaintBackground(ObjectProperty<Background> background) {
         background.bind(Bindings.createObjectBinding(() -> {
             return new Background(new BackgroundFill(modeRevPaintPR.getValue(), null, null));
-        }, modeRevPaintPR));
+        }, modeSwitchPR));
     }
 
     public ObjectProperty<Color> themeColorPR() {
         return themeColorPR;
     }
 
-    public void bindToThemePaint(ObjectProperty<Paint> paint) {
-        paint.bind(Bindings.createObjectBinding(themePaintPR::getValue, themePaintPR));
+    public ObjectProperty<Paint> themePaintPR() {
+        return themePaintPR;
     }
 
     public void bindToPaintBackground(ObjectProperty<Background> background) {
@@ -512,28 +649,38 @@ public class Theme {
         }, themePaintPR));
     }
 
-    public void bindToTitleFontFamily(ObjectProperty<Font> fontFamily) {
-        fontFamily.bind(Bindings.createObjectBinding(titleFontFamilyPR::getValue, titleFontFamilyPR));
+    public ObjectProperty<Font> titleFontFamilyPR() {
+        return titleFontFamilyPR;
     }
 
-    public void bindToTitleFontPaint(ObjectProperty<Paint> fontPaint) {
-        fontPaint.bind(Bindings.createObjectBinding(titleFontPaintPR::getValue, titleFontPaintPR));
+    public ObjectProperty<Paint> titleFontPaintPR() {
+        return titleFontPaintPR;
     }
 
-    public void bindToMenuFontFamily(ObjectProperty<Font> fontFamily) {
-        fontFamily.bind(Bindings.createObjectBinding(menuFontFamilyPR::getValue, menuFontFamilyPR));
+
+    public ObjectProperty<Font> infoTitleFontFamilyPR() {
+        return infoTitleFontFamilyPR;
     }
 
-    public void bindToMenuFontPaint(ObjectProperty<Paint> fontPaint) {
-        fontPaint.bind(Bindings.createObjectBinding(menuFontPaintPR::getValue, menuFontPaintPR));
+    public ObjectProperty<Paint> infoTitleFontPaintPR() {
+        return infoTitleFontPaintPR;
     }
 
-    public void bindToTextFontFamily(ObjectProperty<Font> fontFamily) {
-        fontFamily.bind(Bindings.createObjectBinding(textFontFamilyPR::getValue, textFontFamilyPR));
+    public ObjectProperty<Font> menuFontFamilyPR() {
+        return menuFontFamilyPR;
     }
 
-    public void bindToTextFontPaint(ObjectProperty<Paint> fontPaint) {
-        fontPaint.bind(Bindings.createObjectBinding(textFontPaintPR::getValue, textFontPaintPR));
+    public ObjectProperty<Paint> menuFontPaintPR() {
+        return menuFontPaintPR;
+    }
+
+    public ObjectProperty<Font> textFontFamilyPR() {
+        return textFontFamilyPR;
+    }
+
+
+    public ObjectProperty<Paint> textFontPaintPR() {
+        return textFontPaintPR;
     }
 
     public void bindToChessBoardPaint1(ObjectProperty<Background> background) {

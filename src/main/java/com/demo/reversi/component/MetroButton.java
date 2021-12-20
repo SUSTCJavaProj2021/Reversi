@@ -47,8 +47,8 @@ public class MetroButton extends Button {
         setPrefSize(PREFERRED_WIDTH, PREFERRED_HEIGHT);
 
 
-        theme.bindToMenuFontFamily(fontProperty());
-        theme.bindToMenuFontPaint(textFillProperty());
+        fontProperty().bind(theme.menuFontFamilyPR());
+        textFillProperty().bind(theme.menuFontPaintPR());
 
         //Initialize default background
         if(theme.modeSwitchPR().getValue()){

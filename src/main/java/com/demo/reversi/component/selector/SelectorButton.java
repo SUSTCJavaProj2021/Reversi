@@ -63,8 +63,8 @@ public class SelectorButton extends Button {
         setBackground(defaultBackground);
 
         setAlignment(Pos.BASELINE_LEFT);
-        theme.bindToMenuFontFamily(fontProperty());
-        theme.bindToMenuFontPaint(textFillProperty());
+        fontProperty().bind(theme.menuFontFamilyPR());
+        textFillProperty().bind(theme.menuFontPaintPR());
 
         if (icon != null) {
             setGraphic(icon);

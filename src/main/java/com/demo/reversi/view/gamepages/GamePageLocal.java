@@ -1,7 +1,7 @@
 package com.demo.reversi.view.gamepages;
 
 import com.demo.reversi.component.gamemodel.ChessBoard;
-import com.demo.reversi.component.panes.InfoPane;
+import com.demo.reversi.component.panes.ExtendedInfoPane;
 import com.demo.reversi.component.panes.ScorePane;
 import com.demo.reversi.controller.GameController;
 import com.demo.reversi.themes.Theme;
@@ -16,7 +16,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.*;
 
 public class GamePageLocal implements Updatable {
-    public static final double MIN_WIDTH = InfoPane.MIN_WIDTH * 2 + ChessBoard.DEFAULT_BOARD_MIN_SIZE;
+    public static final double MIN_WIDTH = ExtendedInfoPane.MIN_WIDTH * 2 + ChessBoard.DEFAULT_BOARD_MIN_SIZE;
     public static final double MIN_HEIGHT = ChessBoard.DEFAULT_BOARD_MIN_SIZE + ScorePane.MIN_HEIGHT;
     public static final double DEFAULT_PREF_WIDTH = 915;
     public static final double DEFAULT_PREF_HEIGHT = 611;
@@ -26,8 +26,8 @@ public class GamePageLocal implements Updatable {
 
     public final ChessBoard chessBoard;
     public final ScorePane scorePane;
-    public final InfoPane whitePlayerInfoPane;
-    public final InfoPane blackPlayerInfoPane;
+    public final ExtendedInfoPane whitePlayerExtendedInfoPane;
+    public final ExtendedInfoPane blackPlayerExtendedInfoPane;
     public final GridPane settingsPane;
 
     public Theme theme;
@@ -41,11 +41,11 @@ public class GamePageLocal implements Updatable {
         controller.bindToGamePage(this);
         BorderPane.setAlignment(chessBoard, Pos.CENTER);
 
-        whitePlayerInfoPane = new InfoPane(controller.getWhitePlayer(), theme);
-        blackPlayerInfoPane = new InfoPane(controller.getBlackPlayer(), theme);
+        whitePlayerExtendedInfoPane = new ExtendedInfoPane(controller.getWhitePlayer(), theme);
+        blackPlayerExtendedInfoPane = new ExtendedInfoPane(controller.getBlackPlayer(), theme);
 
-        root.setLeft(blackPlayerInfoPane);
-        root.setRight(whitePlayerInfoPane);
+        root.setLeft(blackPlayerExtendedInfoPane);
+        root.setRight(whitePlayerExtendedInfoPane);
 
 
         scorePane = new ScorePane(controller, theme);

@@ -79,8 +79,8 @@ public class SettingsPage implements Updatable {
         theme.themeColorPR().bind(cp.valueProperty());
 
         Label label = new Label("ThemeColor");
-        theme.bindToTextFontFamily(label.fontProperty());
-        theme.bindToTextFontPaint(label.textFillProperty());
+        label.fontProperty().bind(theme.textFontFamilyPR());
+        label.textFillProperty().bind(theme.textFontPaintPR());
 
         Separator s = new Separator();
         s.setOpacity(0);

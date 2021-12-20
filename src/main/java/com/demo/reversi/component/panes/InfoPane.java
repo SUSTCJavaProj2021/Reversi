@@ -2,33 +2,50 @@ package com.demo.reversi.component.panes;
 
 import com.demo.reversi.controller.Player;
 import com.demo.reversi.themes.Theme;
-import javafx.geometry.HPos;
-import javafx.scene.control.Control;
+import com.demo.reversi.view.Updatable;
+import javafx.beans.property.*;
 import javafx.scene.control.Label;
-import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Paint;
 
-public class InfoPane extends GridPane {
-    public static final int MIN_WIDTH = 200;
+public class InfoPane extends GridPane implements Updatable {
+    public static final double PREF_HEIGHT = 60;
+    public static final double PREF_WIDTH = 150;
+    public static final double OPACITY_ACTIVATED = 1.0;
+    public static final double OPACITY_DEFAULT = 0.8;
 
-    public Theme theme;
+    public final Label playerNameLabel;
+    public final ObjectProperty<Image> playerIcon;
+    public final ObjectProperty<Paint> playerColorPR;
+    public final BooleanProperty isActivated;
 
-    public InfoPane(Player player, Theme theme) {
-        super();
+    public BooleanProperty isActivatedProperty(){
+        return isActivated;
+    }
+
+    private final Theme theme;
+
+    public InfoPane(Player player, Theme theme, ObjectProperty<Paint> playerColor){
         this.theme = theme;
-        this.setMinWidth(MIN_WIDTH);
+        playerColorPR = new SimpleObjectProperty<>();
+        playerColorPR.bind(playerColor);
+        playerNameLabel = new Label();
+        playerNameLabel.textProperty().bind(player.nameProperty());
+        playerNameLabel.fontProperty().bind(theme.infoTitleFontFamilyPR());
+        playerNameLabel.textFillProperty().bind(theme.infoTitleFontPaintPR());
+        isActivated = new SimpleBooleanProperty(false);
+        playerIcon = new SimpleObjectProperty<>();
 
-        Label nameLabel = new Label();
-        nameLabel.textProperty().bind(player.nameProperty());
-        nameLabel.setWrapText(true);
-        theme.bindToTextFontFamily(nameLabel.fontProperty());
-        theme.bindToTextFontPaint(nameLabel.textFillProperty());
-        this.add(nameLabel, 0, 0);
-        this.getColumnConstraints().add(new ColumnConstraints(0, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY, Priority.SOMETIMES, HPos.CENTER, true));
-        GridPane.setHgrow(this, Priority.SOMETIMES);
 
-        theme.bindToFrontPane(backgroundProperty());
+        //For test
+        playerIcon.setValue(Theme.defaultPlayerIcon);
+    }
+
+    @Override
+    public void update(){
+
     }
 
 }

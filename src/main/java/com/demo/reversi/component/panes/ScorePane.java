@@ -46,8 +46,8 @@ public class ScorePane extends GridPane implements Updatable {
         curPlayerLabel.setTextAlignment(TextAlignment.CENTER);
         curPlayerLabel.setAlignment(Pos.CENTER);
 //        theme.bindTextFontFamily(curPlayerLabel.fontProperty());
-        theme.bindToTextFontPaint(curPlayerLabel.textFillProperty());
-        theme.bindToTitleFontFamily(curPlayerLabel.fontProperty());
+        curPlayerLabel.textFillProperty().bind(theme.textFontPaintPR());
+        curPlayerLabel.fontProperty().bind(theme.titleFontFamilyPR());
         add(curPlayerLabel, 1, 0);
 
 //        curPlayerLabel.setBackground(new Background(new BackgroundFill(Color.GREEN,null,null)));

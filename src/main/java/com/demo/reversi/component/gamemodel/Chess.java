@@ -14,7 +14,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.effect.Bloom;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.StackPane;
 import javafx.scene.media.AudioClip;
@@ -31,6 +30,7 @@ public class Chess extends StackPane implements Updatable {
     public enum ChessOwner {
         PLAYER1, PLAYER2, AI, PLACEHOLDER;
     }
+
     public static final double TRANS_TIME_MILLIS = 150;
     public static final Color placeHolderColor = Color.TRANSPARENT;
 
@@ -51,16 +51,20 @@ public class Chess extends StackPane implements Updatable {
         chessSizePR = new SimpleDoubleProperty(radius);
         chessInnerCircle = new Circle(radius * 0.75);
         chessOuterCircle = new Circle(radius);
+
         getChildren().addAll(chessOuterCircle, chessInnerCircle);
         StackPane.setAlignment(chessInnerCircle, Pos.CENTER);
         StackPane.setAlignment(chessOuterCircle, Pos.CENTER);
         /**
          * Binding chess properties
          */
+        chessInnerCircle.radiusProperty().bind(chessSizePR);
         chessOuterCircle.radiusProperty().bind(chessSizePR);
-        chessInnerCircle.radiusProperty().bind(chessSizePR.multiply(0.90));
-        chessOuterCircle.strokeWidthProperty().bind(chessSizePR.multiply(0.05));
-        chessOuterCircle.setFill(Color.TRANSPARENT);
+//        chessOuterCircle.strokeWidthProperty().bind(chessSizePR.multiply(0.02));
+//        chessOuterCircle.setFill(Color.TRANSPARENT);
+
+//        chessOuterCircle.centerXProperty().bind(chessInnerCircle.centerXProperty().add(12));
+//        chessOuterCircle.centerYProperty().bind(chessInnerCircle.centerYProperty().add(12));
 
 
         playerPaint1PR = new SimpleObjectProperty<>();
@@ -116,36 +120,38 @@ public class Chess extends StackPane implements Updatable {
     public void update(ChessOwner oldOwner, Point3D axis) {
         switch (chessOwner.getValue()) {
             case PLAYER1:
-                chessOuterCircle.strokeProperty().unbind();
+                //Change fill
                 chessInnerCircle.fillProperty().unbind();
+                chessOuterCircle.fillProperty().unbind();
                 if (oldOwner != ChessOwner.PLACEHOLDER && oldOwner != chessOwner.getValue()) {
                     Platform.runLater(() -> {
-                        animateReverse(playerPaint1PR, axis);
+                        animateReverse(playerPaint1PR, playerPaint1PR, axis);
                     });
                 } else {
-                    chessOuterCircle.strokeProperty().bind(playerPaint1PR);
                     chessInnerCircle.fillProperty().bind(playerPaint1PR);
+                    chessOuterCircle.fillProperty().bind(playerPaint1PR);
                 }
                 break;
 
             case PLAYER2:
-                chessOuterCircle.strokeProperty().unbind();
+                //Change fill
                 chessInnerCircle.fillProperty().unbind();
+                chessOuterCircle.fillProperty().unbind();
                 if (oldOwner != ChessOwner.PLACEHOLDER && oldOwner != chessOwner.getValue()) {
                     Platform.runLater(() -> {
-                        animateReverse(playerPaint2PR(), axis);
+                        animateReverse(playerPaint2PR, playerPaint2PR, axis);
                     });
                 } else {
-                    chessOuterCircle.strokeProperty().bind(playerPaint2PR);
                     chessInnerCircle.fillProperty().bind(playerPaint2PR);
+                    chessOuterCircle.fillProperty().bind(playerPaint2PR);
                 }
                 break;
 
             case PLACEHOLDER:
-                chessOuterCircle.strokeProperty().unbind();
                 chessInnerCircle.fillProperty().unbind();
-                chessOuterCircle.setStroke(placeHolderColor);
+                chessOuterCircle.fillProperty().unbind();
                 chessInnerCircle.setFill(placeHolderColor);
+                chessOuterCircle.setFill(placeHolderColor);
                 break;
 
             case AI:
@@ -163,7 +169,7 @@ public class Chess extends StackPane implements Updatable {
         }
     }
 
-    public void animateReverse(ObjectProperty<Paint> newPaint, Point3D axis) {
+    public void animateReverse(ObjectProperty<Paint> newPaint1, ObjectProperty<Paint> newPaint2, Point3D axis) {
         if (axis == null) {
             axis = new Point3D(1, 1, 0);
         }
@@ -173,16 +179,19 @@ public class Chess extends StackPane implements Updatable {
         rotator1.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                chessOuterCircle.strokeProperty().bind(newPaint);
-                chessInnerCircle.fillProperty().bind(newPaint);
+                chessInnerCircle.fillProperty().bind(newPaint1);
+                chessOuterCircle.fillProperty().bind(newPaint2);
                 rotator2.play();
             }
         });
         rotator2.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                /**
+                 * Play chess dropping sound.
+                 */
                 try {
-                    AudioClip clickSound = new AudioClip(theme.getChessSoundSource().getValue().toUri().toString());
+                    AudioClip clickSound = new AudioClip(theme.chessSoundSourcePR().getValue().toUri().toString());
                     clickSound.setVolume(theme.getEffectVolume());
                     clickSound.play();
                 } catch (Exception e) {
