@@ -31,13 +31,13 @@ public class CLIGameController {
 
     }
 
-    public BlockStatus getBlockStatus(int rowIndex, int colIndex) {
+    public GridStatus getBlockStatus(int rowIndex, int colIndex) {
         if (board[rowIndex][colIndex] == 1) {
-            return BlockStatus.BLACK_PLAYER;
+            return GridStatus.BLACK_PLAYER;
         } else if (board[rowIndex][colIndex] == -1) {
-            return BlockStatus.WHITE_PLAYER;
+            return GridStatus.WHITE_PLAYER;
         } else {
-            return BlockStatus.UNOCCUPIED;
+            return GridStatus.UNOCCUPIED;
         }
     }
 
@@ -59,6 +59,9 @@ public class CLIGameController {
      */
     public boolean checkMove(int rowIndex, int colIndex) {
         // TODO: Check the position.
+        if(board[rowIndex][colIndex]!=0){
+            return MOVE_INVALID;
+        }
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 if (i == 0 && j == 0) {
@@ -78,6 +81,10 @@ public class CLIGameController {
      * @return MOVE_INVALID, MOVE_COMPLETE
      */
     public boolean makeMove(int rowIndex, int colIndex) {
+        if(board[rowIndex][colIndex]!=0){
+            return MOVE_INVALID;
+        }
+
         // TODO: Judge moves, then make the move.
 
         // TODO: If the game is currently undoing moves, cancel all the moves before.
@@ -96,7 +103,7 @@ public class CLIGameController {
             return MOVE_INVALID;
         }
         board[rowIndex][colIndex] = currentPlayer == PlayerConstants.BLACK_PLAYER ? 1 : -1;
-        printBoard();
+//        printBoard();
         makeTurn();
         for (int i = 0; i < rowSize; i++) {
             for (int j = 0; j < colSize; j++) {

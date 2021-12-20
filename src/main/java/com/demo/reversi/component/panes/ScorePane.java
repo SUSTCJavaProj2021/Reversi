@@ -1,8 +1,11 @@
 package com.demo.reversi.component.panes;
 
 import com.demo.reversi.controller.GameController;
+import com.demo.reversi.controller.Player;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.Control;
@@ -16,6 +19,8 @@ public class ScorePane extends GridPane implements Updatable {
     public static final int MIN_HEIGHT = 65;
     public static final int PREF_HEIGHT = 100;
 
+    public final ObjectProperty<Player> currentPlayerProperty;
+
     private final Label curPlayerLabel;
 
     public final GameController controller;
@@ -27,6 +32,7 @@ public class ScorePane extends GridPane implements Updatable {
         super();
         this.controller = controller;
         this.theme = theme;
+        currentPlayerProperty = new SimpleObjectProperty<>();
 //        theme.bindToPaintBackground(backgroundProperty());
 
         setMinHeight(MIN_HEIGHT);
@@ -53,6 +59,7 @@ public class ScorePane extends GridPane implements Updatable {
         player1Indicator.setMinWidth(PREF_HEIGHT);
         player1Indicator.setBackground(new Background(new BackgroundFill(Color.BLACK,new CornerRadii(15),null)));
         player1Indicator.setOpacity(0.4);
+
         StackPane player2Indicator = new StackPane();
         player2Indicator.setMinWidth(PREF_HEIGHT);
         player2Indicator.setBackground(new Background(new BackgroundFill(Color.WHITE,new CornerRadii(15),null)));

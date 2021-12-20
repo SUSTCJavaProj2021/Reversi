@@ -3,6 +3,7 @@ package com.demo.reversi.component.gamemodel;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
@@ -31,7 +32,9 @@ public class BoardGridComponent extends StackPane {
                 ft.setFromValue(OPACITY_UNSELECTED);
                 ft.setToValue(OPACITY_SELECTED);
                 ft.setCycleCount(1);
-                ft.play();
+                Platform.runLater(()->{
+                        ft.play();
+                });
             }
         });
 
@@ -42,7 +45,9 @@ public class BoardGridComponent extends StackPane {
                 ft.setFromValue(OPACITY_SELECTED);
                 ft.setToValue(OPACITY_UNSELECTED);
                 ft.setCycleCount(1);
-                ft.play();
+                Platform.runLater(()->{
+                        ft.play();
+                });
             }
         });
 

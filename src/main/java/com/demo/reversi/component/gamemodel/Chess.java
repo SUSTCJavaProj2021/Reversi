@@ -31,7 +31,6 @@ public class Chess extends Circle implements Updatable {
 
     public static final Color placeHolderColor = Color.TRANSPARENT;
 
-
     public final DoubleProperty chessSizePR;
     public final ObjectProperty<Paint> playerPaint1PR;
     public final ObjectProperty<Paint> playerPaint2PR;
@@ -65,6 +64,7 @@ public class Chess extends Circle implements Updatable {
 //                }
 //            }
 //        });
+//      getStyleClass().add("ring");
 
         update(ChessOwner.PLACEHOLDER, null);
     }

@@ -33,7 +33,7 @@ public interface GameController {
 
     public boolean saveGame();
 
-    public BlockStatus getBlockStatus(int row, int col);
+    public GridStatus getGridStatus(int row, int col);
 
     public boolean save();
 

@@ -1,6 +1,9 @@
 package com.demo.reversi.component;
 
+import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
+import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -8,6 +11,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.media.AudioClip;
+import javafx.util.Duration;
 
 public class MetroButton extends Button {
 
@@ -20,9 +25,9 @@ public class MetroButton extends Button {
     public static final double ICON_GAP = 10;
     public static final double ICON_HEIGHT_RATIO = 0.52;
 
-    public static final double OPACITY_DEFAULT = 0.6;
-    public static final double OPACITY_PRESSED = 0.75;
-    public static final double OPACITY_SELECTED = 1.0;
+    public static double OPACITY_DEFAULT;
+    public static double OPACITY_PRESSED;
+    public static double OPACITY_SELECTED;
 
     public static final double TRANS_TIME_MILLIS = 100;
 
@@ -46,40 +51,70 @@ public class MetroButton extends Button {
         theme.bindToMenuFontPaint(textFillProperty());
 
         //Initialize default background
-        setBackground(new Background(new BackgroundFill(Theme.defaultDarkModeColor, new CornerRadii(CORNER_RADII), null)));
+        if(theme.modeSwitchPR().getValue()){
+            OPACITY_DEFAULT = 1.0;
+            OPACITY_SELECTED = 0.90;
+            OPACITY_PRESSED = 1.0;
+            setBackground(new Background(new BackgroundFill(Theme.defaultDarkModeColor, new CornerRadii(CORNER_RADII), null)));
+        }else{
+            OPACITY_DEFAULT = 1.0;
+            OPACITY_SELECTED = 0.85;
+            OPACITY_PRESSED = 0.75;
+            setBackground(new Background(new BackgroundFill(Theme.defaultLightModeColor, new CornerRadii(CORNER_RADII), null)));
+        }
 
         //Bind to background
         backgroundProperty().bind(Bindings.createObjectBinding(() -> {
-            return new Background(new BackgroundFill(theme.getModePaintPR().getValue(), new CornerRadii(CORNER_RADII), null));
-        }, theme.getModePaintPR()));
+            if(theme.modeSwitchPR().getValue()){
+                OPACITY_DEFAULT = 1.0;
+                OPACITY_SELECTED = 0.80;
+                OPACITY_PRESSED = 1.0;
+                return new Background(new BackgroundFill(Theme.defaultDarkModeColor, new CornerRadii(CORNER_RADII), null));
+            }else{
+                OPACITY_DEFAULT = 1.0;
+                OPACITY_SELECTED = 0.85;
+                OPACITY_PRESSED = 0.75;
+                return new Background(new BackgroundFill(Theme.defaultLightModeColor, new CornerRadii(CORNER_RADII), null));
+            }
+        }, theme.modeSwitchPR()));
+
 
         //Unselected
         setOpacity(OPACITY_DEFAULT);
+        init();
+    }
 
-        setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                setOpacity(OPACITY_SELECTED);
-            }
+    private void init(){
+        setOnMouseEntered(event -> {
+            FadeTransition ft = new FadeTransition(Duration.millis(TRANS_TIME_MILLIS), outer());
+            ft.setFromValue(OPACITY_DEFAULT);
+            ft.setToValue(OPACITY_SELECTED);
+            ft.setCycleCount(1);
+            Platform.runLater(()->{
+                ft.play();
+            });
         });
 
-        setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                setOpacity(OPACITY_DEFAULT);
-            }
+        setOnMouseExited(event -> {
+            FadeTransition ft = new FadeTransition(Duration.millis(TRANS_TIME_MILLIS), outer());
+            ft.setFromValue(OPACITY_SELECTED);
+            ft.setToValue(OPACITY_DEFAULT);
+            ft.setCycleCount(1);
+            Platform.runLater(() -> {
+                ft.play();
+            });
         });
 
         setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(MouseEvent mouseEvent) {
+            public void handle(MouseEvent event) {
                 setOpacity(OPACITY_PRESSED);
             }
         });
 
         setOnMouseReleased(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(MouseEvent mouseEvent) {
+            public void handle(MouseEvent event) {
                 setOpacity(OPACITY_SELECTED);
             }
         });

@@ -1,6 +1,6 @@
 package com.demo.reversi.component.gamemodel;
 
-import com.demo.reversi.controller.BlockStatus;
+import com.demo.reversi.controller.GridStatus;
 import com.demo.reversi.controller.GameController;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
@@ -156,7 +156,7 @@ public class ChessBoard extends HBox implements Updatable {
                  * Remove the previous chess.
                  */
 
-                BlockStatus positionPlayer = controller.getBlockStatus(row, col);
+                GridStatus positionPlayer = controller.getGridStatus(row, col);
                 Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
 
                 //todo: change it to be modifiable
@@ -174,7 +174,7 @@ public class ChessBoard extends HBox implements Updatable {
         /**
          * Set the current chess
          */
-        BlockStatus positionPlayer = controller.getBlockStatus(row, col);
+        GridStatus positionPlayer = controller.getGridStatus(row, col);
         Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
         Platform.runLater(()->{
             chess.setChessOwner(readBlockStatus(positionPlayer));
@@ -209,7 +209,7 @@ public class ChessBoard extends HBox implements Updatable {
             row += stepRow;
             col += stepCol;
 
-            BlockStatus positionPlayer = controller.getBlockStatus(row, col);
+            GridStatus positionPlayer = controller.getGridStatus(row, col);
             Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
             //todo: change it to be modifiable
             Platform.runLater(() -> {
@@ -224,10 +224,10 @@ public class ChessBoard extends HBox implements Updatable {
         }
     }
 
-    public Chess.ChessOwner readBlockStatus(BlockStatus blockStatus) {
-        if (blockStatus == BlockStatus.BLACK_PLAYER) {
+    public Chess.ChessOwner readBlockStatus(GridStatus gridStatus) {
+        if (gridStatus == GridStatus.BLACK_PLAYER) {
             return Chess.ChessOwner.PLAYER1;
-        } else if (blockStatus == BlockStatus.WHITE_PLAYER) {
+        } else if (gridStatus == GridStatus.WHITE_PLAYER) {
             return Chess.ChessOwner.PLAYER2;
         } else {
             return Chess.ChessOwner.PLACEHOLDER;
@@ -250,5 +250,9 @@ public class ChessBoard extends HBox implements Updatable {
             }
         }
         Log0j.writeLog("Bind to controller: " + controller);
+    }
+
+    public void performFinalJudge(){
+
     }
 }

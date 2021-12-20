@@ -55,7 +55,7 @@ public class MainView extends GridPane {
 
         //todo: switch to SelectorPane
         //Initialize Main Icon
-        Image img = new Image(theme.getClass().getResource("icons/App.png").toURI().toString());
+        Image img = new Image(Theme.appIcon.getUrl());
         ImageView imageView = new ImageView(img);
         imageView.setPreserveRatio(true);
         imageView.setFitHeight(40);
@@ -89,9 +89,13 @@ public class MainView extends GridPane {
 
         Log0j.writeLog("Main View initialized.");
         //todo: ?
-        if (theme.getBgmPlayer() != null) {
-            add(new MediaView(theme.getBgmPlayer()), 0, 0);
-            theme.getBgmPlayer().play();
+        if (theme.getBGMPlayer() != null) {
+            add(new MediaView(theme.getBGMPlayer()), 0, 0);
+            theme.getBGMPlayer().play();
+            Log0j.writeLog("BGM loaded to Main View. Attention: Controls are still embedded in class Theme.");
+        }
+        else{
+            Log0j.writeLog("Background BGM isn't loaded because the pointer to BGMPlayer is null.");
         }
     }
 }

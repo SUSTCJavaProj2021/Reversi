@@ -71,7 +71,7 @@ public class SimpleGameController implements GameController{
         currentPlayerProperty().setValue(currentPlayer);
     }
 
-    public BlockStatus getBlockStatus(int rowIndex, int colIndex) {
+    public GridStatus getGridStatus(int rowIndex, int colIndex) {
         return controller.getBlockStatus(rowIndex, colIndex);
     }
 

@@ -5,12 +5,14 @@ import com.demo.reversi.res.icons.Icon;
 import com.demo.reversi.themes.Theme;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 import java.net.URISyntaxException;
 
 public class SelectorPane extends GridPane {
-//    public static final double VIEWCOVER_CORNER_RADII = 10;
+    public static final double VIEWCOVER_CORNER_RADII = 10;
     public static final double VIEWCOVER_HORIZONTAL_DIST = 20;
     public static final double VIEWCOVER_VERTICAL_DIST = 20;
     public static final double SELECTOR_WIDTH = 180;
@@ -33,6 +35,8 @@ public class SelectorPane extends GridPane {
 
     public SelectorPane(Label titleLabel, Theme theme) {
         this.theme = theme;
+
+        //Initialize background
 
         //Initialize view cover
         viewCoverPane = new BorderPane();
@@ -97,6 +101,7 @@ public class SelectorPane extends GridPane {
         GridPane.setHgrow(this,Priority.ALWAYS);
         GridPane.setVgrow(this, Priority.ALWAYS);
 
+        //
 
         Log0j.writeLog("SelectorPane Initialized.");
     }
