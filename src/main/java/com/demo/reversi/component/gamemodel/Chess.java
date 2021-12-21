@@ -3,10 +3,7 @@ package com.demo.reversi.component.gamemodel;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
-import javafx.animation.Interpolator;
-import javafx.animation.ParallelTransition;
-import javafx.animation.RotateTransition;
-import javafx.animation.ScaleTransition;
+import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.event.ActionEvent;
@@ -180,7 +177,6 @@ public class Chess extends StackPane implements Updatable {
             @Override
             public void handle(ActionEvent event) {
                 chessInnerCircle.fillProperty().bind(newPaint1);
-                rotator2.play();
             }
         });
         rotator2.setOnFinished(new EventHandler<ActionEvent>() {
@@ -199,7 +195,7 @@ public class Chess extends StackPane implements Updatable {
                 }
             }
         });
-        ParallelTransition pt = new ParallelTransition(rotator1, scale1);
+        ParallelTransition firstTransition = new ParallelTransition(rotator1, scale1);
         Platform.runLater(() -> {
             /**
              * Play chess up sound.
@@ -213,7 +209,8 @@ public class Chess extends StackPane implements Updatable {
                 Log0j.writeLog("Not able to play chess up sound.");
             }
         });
-        Platform.runLater(pt::play);
+        SequentialTransition transition = new SequentialTransition(firstTransition, rotator2);
+        Platform.runLater(transition::play);
     }
 
     //todo: test

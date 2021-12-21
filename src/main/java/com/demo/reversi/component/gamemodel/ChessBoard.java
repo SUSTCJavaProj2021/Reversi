@@ -5,6 +5,8 @@ import com.demo.reversi.controller.GameControllerLayer;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
@@ -18,6 +20,7 @@ import javafx.scene.control.Control;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
 /**
  * You should not in any way directly manipulate the contents of the ChessBoard instance.
@@ -179,93 +182,6 @@ public class ChessBoard extends HBox implements Updatable {
         });
     }
 
-    /**
-     * You should make sure that the board is valid.
-     */
-    public void judgeBoard() {
-        int Player1Count = 0;
-        int Player2Count = 0;
-        for (int row = 0; row < rowSize; row++) {
-            for (int col = 0; col < colSize; col++) {
-                GridStatus positionPlayer = controller.getGridStatus(row, col);
-                if (positionPlayer == GridStatus.PLAYER_1) {
-                    Player1Count++;
-                } else if (positionPlayer == GridStatus.PLAYER_2) {
-                    Player2Count++;
-                }
-            }
-        }
-        Log0j.writeLog("Player 1 counted: " + Player1Count);
-        Log0j.writeLog("Player 2 counted: " + Player2Count);
-
-        for (int row = 0; row < rowSize; row++) {
-            for (int col = 0; col < colSize; col++) {
-                Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
-                chess.setChessOwner(Chess.ChessOwner.PLACEHOLDER);
-            }
-        }
-
-        /**
-         * Listing Player 1 Chess
-         */
-        {
-            int cursorR = rowSize - 1, cursorC = colSize - 1;
-            int stepC = -1;
-            while (Player1Count-- > 0) {
-                Chess chess = ((Chess) gridBases[cursorR][cursorC].getChildren().get(0));
-                Log0j.writeLog("Performing chess list: Coordinate: (" + cursorR + ", " + cursorC + ")");
-                Platform.runLater(() -> {
-                    chess.setChessOwnerForceAnimated(Chess.ChessOwner.PLAYER1);
-                });
-                try {
-                    Thread.sleep(CHESS_REVERSE_GAP_TIME);
-                } catch (InterruptedException e) {
-//                e.printStackTrace();
-//                Thread.currentThread().interrupt();
-                }
-                if (cursorC + stepC >= colSize || cursorC + stepC < 0) {
-                    if (cursorR - 1 < 0) {
-                        break;
-                    }
-                    cursorR--;
-                    stepC = -stepC;
-                } else {
-                    cursorC += stepC;
-                }
-            }
-        }
-        Log0j.writeLog("Player 1 chess all listed.");
-
-        /**
-         * Listing Player 2 Chess
-         */
-        {
-            int cursorR = 0, cursorC = 0;
-            int stepC = 1;
-            while (Player2Count-- > 0) {
-                Chess chess = ((Chess) gridBases[cursorR][cursorC].getChildren().get(0));
-                Log0j.writeLog("Performing chess list: Coordinate: (" + cursorR + ", " + cursorC + ")");
-                Platform.runLater(() -> {
-                    chess.setChessOwnerForceAnimated(Chess.ChessOwner.PLAYER2);
-                });
-                try {
-                    Thread.sleep(CHESS_REVERSE_GAP_TIME);
-                } catch (InterruptedException e) {
-//                e.printStackTrace();
-//                Thread.currentThread().interrupt();
-                }
-                if (cursorC + stepC >= colSize || cursorC + stepC < 0) {
-                    if (cursorR + 1 >= rowSize) {
-                        break;
-                    }
-                    cursorR++;
-                    stepC = -stepC;
-                } else {
-                    cursorC += stepC;
-                }
-            }
-        }
-    }
 
     public void sourcedUpdate(int row, int col) {
 
@@ -274,9 +190,7 @@ public class ChessBoard extends HBox implements Updatable {
          */
         GridStatus positionPlayer = controller.getGridStatus(row, col);
         Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
-        Platform.runLater(() -> {
-            chess.setChessOwner(readBlockStatus(positionPlayer));
-        });
+        chess.setChessOwner(readBlockStatus(positionPlayer));
 
         Task<Void> tasks[] = new Task[8];
         int cnt = 0;
@@ -309,15 +223,93 @@ public class ChessBoard extends HBox implements Updatable {
 
             GridStatus positionPlayer = controller.getGridStatus(row, col);
             Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
+
             //todo: change it to be modifiable
-            Platform.runLater(() -> {
-                chess.setChessOwnerDirected(readBlockStatus(positionPlayer), stepCol, stepRow);
-            });
+            chess.setChessOwnerDirected(readBlockStatus(positionPlayer), stepCol, stepRow);
+
             try {
                 Thread.sleep(CHESS_REVERSE_GAP_TIME);
             } catch (InterruptedException e) {
 //                e.printStackTrace();
 //                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
+    /**
+     * You should make sure that the board is valid.
+     */
+    public void judgeBoard() {
+        int Player1Count = 0;
+        int Player2Count = 0;
+        for (int row = 0; row < rowSize; row++) {
+            for (int col = 0; col < colSize; col++) {
+                GridStatus positionPlayer = controller.getGridStatus(row, col);
+                if (positionPlayer == GridStatus.PLAYER_1) {
+                    Player1Count++;
+                } else if (positionPlayer == GridStatus.PLAYER_2) {
+                    Player2Count++;
+                }
+            }
+        }
+        Log0j.writeLog("Player 1 counted: " + Player1Count);
+        Log0j.writeLog("Player 2 counted: " + Player2Count);
+
+        for (int row = 0; row < rowSize; row++) {
+            for (int col = 0; col < colSize; col++) {
+                Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
+                chess.setChessOwner(Chess.ChessOwner.PLACEHOLDER);
+            }
+        }
+
+        /**
+         * Listing Player 1 Chess
+         */
+        final int cnt1 = Player1Count;
+        new Thread(new Task<Void>() {
+            @Override
+            protected Void call() {
+                placePlayerChess(cnt1, Chess.ChessOwner.PLAYER1, rowSize - 1, colSize - 1, -1, -1);
+                return null;
+            }
+        }).start();
+
+        /**
+         * Listing Player 2 Chess
+         */
+        final int cnt2 = Player2Count;
+        new Thread(new Task<Void>() {
+            @Override
+            protected Void call() {
+                placePlayerChess(cnt2, Chess.ChessOwner.PLAYER2, 0, 0, 1, 1);
+                return null;
+            }
+        }).start();
+    }
+
+    private void placePlayerChess(int cnt, Chess.ChessOwner player, int startRow, int startCol, int stepR, int stepC) {
+        int cursorR = startRow, cursorC = startCol;
+        while (cnt-- > 0) {
+            Chess chess = ((Chess) gridBases[cursorR][cursorC].getChildren().get(0));
+            Log0j.writeLog("Performing chess list: Coordinate: (" + cursorR + ", " + cursorC + ")");
+
+            chess.setChessOwnerForceAnimated(player);
+
+            try {
+                Thread.sleep(CHESS_REVERSE_GAP_TIME);
+            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//                Thread.currentThread().interrupt();
+            }
+
+            if (cursorC + stepC >= colSize || cursorC + stepC < 0) {
+                if (cursorR + stepR >= rowSize || cursorR + stepR < 0) {
+                    break;
+                }
+                cursorR += stepR;
+                stepC = -stepC;
+            } else {
+                cursorC += stepC;
             }
         }
     }
