@@ -177,7 +177,7 @@ public class CLIGameController {
     }
 
     public void printBoard() {
-        Log0j.writeLog("Printing Board:");
+        Log0j.writeInfo("Printing Board:");
         for (int i = 0; i < rowSize; i++) {
             for (int j = 0; j < colSize; j++) {
                 System.out.printf("%2d", board[i][j]);

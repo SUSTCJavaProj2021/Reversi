@@ -1,8 +1,10 @@
 package com.demo.reversi.view.gamepages;
 
+import com.demo.reversi.controller.GameControllerLayer;
+import com.demo.reversi.themes.Theme;
 import javafx.scene.layout.GridPane;
 
-public class PreviewPane extends GridPane {
+public class GameDemoPane extends GridPane {
     //todo: set the following animations:
     /**
      * Animation list:
@@ -22,6 +24,9 @@ public class PreviewPane extends GridPane {
      * ----------------------
      *
      */
+    public GameDemoPane(GameControllerLayer gameController, Theme theme){
+
+    }
 
 
 

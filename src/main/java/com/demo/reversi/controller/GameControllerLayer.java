@@ -19,9 +19,11 @@ public interface GameControllerLayer {
 
     public void forceSourcedGUIUpdate(int row, int col);
 
-    public PlayerLayer getWhitePlayer();
+    public void restartGame();
 
-    public PlayerLayer getBlackPlayer();
+    public PlayerLayer getPlayer2();
+
+    public PlayerLayer getPlayer1();
 
     public PlayerLayer getCurrentPlayer();
 

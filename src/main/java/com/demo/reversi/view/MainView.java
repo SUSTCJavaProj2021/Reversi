@@ -50,7 +50,7 @@ public class MainView extends GridPane {
         saveAndLoadPage = new SaveAndLoadPage(gameSystem, theme);
         settingsPage = new SettingsPage(gameSystem, theme);
         aboutPage = new AboutPage(theme);
-        Log0j.writeLog("Content pages loaded.");
+        Log0j.writeInfo("Content pages loaded.");
 
 
         //todo: switch to SelectorPane
@@ -78,7 +78,7 @@ public class MainView extends GridPane {
 
         //Initialize Content Selector
 
-        Log0j.writeLog("Selector Actions initialized.");
+        Log0j.writeInfo("Selector Actions initialized.");
 
 
         //Initialize Main View
@@ -86,15 +86,15 @@ public class MainView extends GridPane {
         backgroundProperty().bind(theme.backPanePR());
         add(mainSelectorPane, 0, 0);
 
-        Log0j.writeLog("Main View initialized.");
+        Log0j.writeInfo("Main View initialized.");
         //todo: ?
         if (theme.getBGMPlayer() != null) {
             add(new MediaView(theme.getBGMPlayer()), 0, 0);
             theme.getBGMPlayer().play();
-            Log0j.writeLog("BGM loaded to Main View. Attention: Controls are still embedded in class Theme.");
+            Log0j.writeInfo("BGM loaded to Main View. Attention: Controls are still embedded in class Theme.");
         }
         else{
-            Log0j.writeLog("Background BGM isn't loaded because the pointer to BGMPlayer is null.");
+            Log0j.writeInfo("Background BGM isn't loaded because the pointer to BGMPlayer is null.");
         }
     }
 }

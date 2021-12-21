@@ -9,8 +9,8 @@ import javafx.beans.property.SimpleObjectProperty;
 public class SimpleGameController implements GameControllerLayer {
     public boolean isGameModifiable;
 
-    public final PlayerLayer whitePlayer;
-    public final PlayerLayer blackPlayer;
+    public final PlayerLayer player1;
+    public final PlayerLayer player2;
     public PlayerLayer currentPlayer;
     public ObjectProperty<PlayerLayer> currentPlayerProperty;
 
@@ -20,16 +20,16 @@ public class SimpleGameController implements GameControllerLayer {
 
     public boolean isCheatMode;
 
-    public SimpleGameController(PlayerLayer blackPlayer, PlayerLayer whitePlayer, boolean isGameModifiable) {
+    public SimpleGameController(PlayerLayer player1, PlayerLayer player2, boolean isGameModifiable) {
         this.isGameModifiable = isGameModifiable;
-        this.blackPlayer = blackPlayer;
-        this.whitePlayer = whitePlayer;
+        this.player1 = player1;
+        this.player2 = player2;
 
         //TEST ONLY
         controller = new CLIGameController(8,8);
 
         isCheatMode = false;
-        currentPlayerProperty = new SimpleObjectProperty<>(blackPlayer);
+        currentPlayerProperty = new SimpleObjectProperty<>(player1);
         updateCurrentPlayer();
     }
 
@@ -49,7 +49,7 @@ public class SimpleGameController implements GameControllerLayer {
 
     @Override
     public boolean onGridClick(int rowIndex, int colIndex) {
-        Log0j.writeLog(
+        Log0j.writeInfo(
                 String.format("%s Clicked Grid (%d, %d)", controller.currentPlayer.toString(), rowIndex, colIndex));
 
         controller.makeMove(rowIndex, colIndex);
@@ -58,14 +58,18 @@ public class SimpleGameController implements GameControllerLayer {
 
         return true;
     }
+    @Override
+    public void restartGame(){
+        controller = new CLIGameController(8,8);
+    }
 
     public void updateCurrentPlayer() {
         switch (controller.getCurrentPlayer()) {
             case WHITE_PLAYER:
-                currentPlayer = whitePlayer;
+                currentPlayer = player2;
                 break;
             case BLACK_PLAYER:
-                currentPlayer = blackPlayer;
+                currentPlayer = player1;
                 break;
         }
         currentPlayerProperty().setValue(currentPlayer);
@@ -76,13 +80,13 @@ public class SimpleGameController implements GameControllerLayer {
     }
 
     @Override
-    public PlayerLayer getWhitePlayer() {
-        return whitePlayer;
+    public PlayerLayer getPlayer1() {
+        return player1;
     }
 
     @Override
-    public PlayerLayer getBlackPlayer() {
-        return blackPlayer;
+    public PlayerLayer getPlayer2() {
+        return player2;
     }
 
     @Override
@@ -99,7 +103,7 @@ public class SimpleGameController implements GameControllerLayer {
     @Override
     public boolean setCheatMode(boolean isEnabled) {
         isCheatMode = isEnabled;
-        Log0j.writeLog("Cheat mode switched: " + (isCheatMode ? "ON" : "OFF"));
+        Log0j.writeInfo("Cheat mode switched: " + (isCheatMode ? "ON" : "OFF"));
         return true;
     }
 
@@ -135,7 +139,7 @@ public class SimpleGameController implements GameControllerLayer {
             gamePage.update();
         }
         else{
-            Log0j.writeLog("Cannot update because GUI pointer is null.");
+            Log0j.writeInfo("Cannot update because GUI pointer is null.");
         }
     }
 
@@ -145,7 +149,7 @@ public class SimpleGameController implements GameControllerLayer {
             ((GamePageLocal)gamePage).sourcedUpdate(row, col);
         }
         else{
-            Log0j.writeLog("Cannot update because GUI pointer is null.");
+            Log0j.writeInfo("Cannot update because GUI pointer is null.");
         }
     }
 

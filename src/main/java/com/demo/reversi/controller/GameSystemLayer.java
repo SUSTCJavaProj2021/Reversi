@@ -11,9 +11,9 @@ public interface GameSystemLayer {
 
     public boolean delPlayer();
 
-    public GameControllerLayer startNewGame();
+    public GameControllerLayer startNewGame(String playerName1, String playerName2);
 
-    public GameControllerLayer loadGame(int index, boolean isReadOnly);
+    public GameControllerLayer loadGame(int index, boolean isGameModifiable);
 
     public boolean updateRanking();
 

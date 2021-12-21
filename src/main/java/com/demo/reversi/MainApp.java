@@ -59,10 +59,10 @@ public class MainApp extends Application {
 
 
         setCloseAction();
-        Log0j.writeLog("Stage ready.");
+        Log0j.writeInfo("Stage ready.");
 
         primaryStage.show();
-        Log0j.writeLog("Stage shown.");
+        Log0j.writeInfo("Stage shown.");
 
     }
 
@@ -78,7 +78,7 @@ public class MainApp extends Application {
                 theme.saveTheme();
             }
         });
-        Log0j.writeLog("primaryStage CloseAction set.");
+        Log0j.writeInfo("primaryStage CloseAction set.");
     }
 
 }

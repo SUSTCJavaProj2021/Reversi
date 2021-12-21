@@ -7,16 +7,23 @@ import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Scene;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class Test extends Application{
 
     @Override
     public void start(Stage primaryStage){
-        ObjectProperty<Paint> wdnmd = new SimpleObjectProperty<>(Color.BLACK);
-        primaryStage.setScene(new Scene(new InfoPane(new SimplePlayer("WNDMD"), new Theme(primaryStage), wdnmd)));
+        ObjectProperty<Color> wdnmd = new SimpleObjectProperty<>(Color.BLACK);
+        GridPane gridPane = new GridPane();
+        gridPane.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
+        gridPane.add(new InfoPane(new SimplePlayer("WNDMD"), new Theme(primaryStage), wdnmd),0,0);
+        primaryStage.setScene(new Scene(gridPane));
         primaryStage.show();
     }
 

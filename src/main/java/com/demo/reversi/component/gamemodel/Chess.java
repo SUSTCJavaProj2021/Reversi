@@ -191,7 +191,7 @@ public class Chess extends StackPane implements Updatable {
                     chessDownSound.play();
                 } catch (NullPointerException e) {
                     e.printStackTrace();
-                    Log0j.writeLog("Not able to play down chess sound.");
+                    Log0j.writeInfo("Not able to play down chess sound.");
                 }
             }
         });
@@ -206,7 +206,7 @@ public class Chess extends StackPane implements Updatable {
                 chessUpSound.play();
             } catch (NullPointerException e) {
                 e.printStackTrace();
-                Log0j.writeLog("Not able to play chess up sound.");
+                Log0j.writeInfo("Not able to play chess up sound.");
             }
         });
         SequentialTransition transition = new SequentialTransition(firstTransition, rotator2);

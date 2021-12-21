@@ -31,7 +31,7 @@ public class MainSelectorPane extends SelectorPane{
             selector.setExitButton(new Icon(theme.getClass().getResource("icons/Exit.png").toURI().toString()));
         }catch (URISyntaxException e){
             e.printStackTrace();
-            Log0j.writeLog("Exit button failed to load.");
+            Log0j.writeInfo("Exit button failed to load.");
         }
         selector.init();
     }

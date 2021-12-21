@@ -45,6 +45,7 @@ public class Theme {
     public static Path defaultMainViewBGMSource;
     public static Path defaultGamePageBGMSource;
     public static Path defaultGameFinishBGMSource;
+    public static Path defaultTutorialBGMSource;    //You shouldn't be changing this!
     public static Path defaultChessDownSoundSource;
     public static Path defaultChessUpSoundSource;
     public static Path defaultGridSoundSource;
@@ -52,45 +53,58 @@ public class Theme {
     static {
         try {
             defaultMainViewBGMSource = Paths.get(Theme.class.getResource("MainViewBGM.mp3").toURI());
-            Log0j.writeLog("Main View BGM loaded on path: " + defaultMainViewBGMSource);
+            Log0j.writeInfo("Main View BGM loaded on path: " + defaultMainViewBGMSource);
         } catch (NullPointerException | URISyntaxException e) {
-            Log0j.writeLog("Main View BGM loading failed. Check your path.");
             e.printStackTrace();
+            Log0j.writeError("Main View BGM loading failed. Check your path.");
         }
+
         try {
             defaultGamePageBGMSource = Paths.get(Theme.class.getResource("GamePageBGM.mp3").toURI());
-            Log0j.writeLog("Game Page BGM loaded on path: " + defaultGamePageBGMSource);
+            Log0j.writeInfo("Game Page BGM loaded on path: " + defaultGamePageBGMSource);
         } catch (NullPointerException | URISyntaxException e) {
-            Log0j.writeLog("Game Page BGM loading failed. Check your path.");
             e.printStackTrace();
+            Log0j.writeError("Game Page BGM loading failed. Check your path.");
         }
+
         try {
             defaultGameFinishBGMSource = Paths.get(Theme.class.getResource("GameFinishBGM.mp3").toURI());
-            Log0j.writeLog("Game Finish BGM loaded on path: " + defaultGameFinishBGMSource);
+            Log0j.writeInfo("Game Finish BGM loaded on path: " + defaultGameFinishBGMSource);
         } catch (NullPointerException | URISyntaxException e) {
-            Log0j.writeLog("Game Finish BGM loading failed. Check your path.");
             e.printStackTrace();
+            Log0j.writeError("Game Finish BGM loading failed. Check your path.");
         }
+
+        try{
+            defaultTutorialBGMSource = Paths.get(Theme.class.getResource("TutorialBGM.mp3").toURI());
+            Log0j.writeInfo("Tutorial BGM loaded on path: " + defaultTutorialBGMSource);
+        }catch(NullPointerException| URISyntaxException e){
+            e.printStackTrace();
+            Log0j.writeError("Tutorial BGM loading failed. Check your path.");
+        }
+
         try {
             defaultChessDownSoundSource = Paths.get(Paths.get(Theme.class.getResource("soundeffects/").toURI()).toString(), "Chess_Down.mp3");
-            Log0j.writeLog("Chess down sound loaded on path : " + defaultChessDownSoundSource);
+            Log0j.writeInfo("Chess down sound loaded on path : " + defaultChessDownSoundSource);
         } catch (NullPointerException | URISyntaxException e) {
-            Log0j.writeLog("Chess down sound loading failed. Check your path.");
             e.printStackTrace();
+            Log0j.writeError("Chess down sound loading failed. Check your path.");
         }
+
         try {
             defaultChessUpSoundSource = Paths.get(Paths.get(Theme.class.getResource("soundeffects/").toURI()).toString(), "Chess_Up.mp3");
-            Log0j.writeLog("Chess up sound loaded on path : " + defaultChessUpSoundSource);
+            Log0j.writeInfo("Chess up sound loaded on path : " + defaultChessUpSoundSource);
         } catch (NullPointerException | URISyntaxException e) {
-            Log0j.writeLog("Chess up sound loading failed. Check your path.");
             e.printStackTrace();
+            Log0j.writeError("Chess up sound loading failed. Check your path.");
         }
+
         try {
             defaultGridSoundSource = Paths.get(Paths.get(Theme.class.getResource("soundeffects/").toURI()).toString(), "Grid.mp3");
-            Log0j.writeLog("Grid sound loaded on path : " + defaultGridSoundSource);
+            Log0j.writeInfo("Grid sound loaded on path : " + defaultGridSoundSource);
         } catch (NullPointerException | URISyntaxException e) {
-            Log0j.writeLog("Grid sound loading failed. Check your path.");
             e.printStackTrace();
+            Log0j.writeError("Grid sound loading failed. Check your path.");
         }
     }
 
@@ -109,10 +123,10 @@ public class Theme {
     static {
         try {
             defaultBackgroundSource = Paths.get(Theme.class.getResource("Background.jpg").toURI());
-            Log0j.writeLog("Correctly loaded default background source from " + defaultBackgroundSource.toUri().toString());
+            Log0j.writeInfo("Correctly loaded default background source from " + defaultBackgroundSource.toUri().toString());
         } catch (NullPointerException | URISyntaxException e) {
-            Log0j.writeLog("Default background loading failed. Check your path.");
             e.printStackTrace();
+            Log0j.writeError("Default background loading failed. Check your path.");
         }
     }
 
@@ -134,8 +148,8 @@ public class Theme {
         try {
             defaultChessSource = Paths.get(Theme.class.getResource("Chess.png").toURI());
         } catch (NullPointerException | URISyntaxException e) {
-            Log0j.writeLog("Failed to load default chess component. Chess will be initialized using circles.");
             e.printStackTrace();
+            Log0j.writeError("Failed to load default chess component. Chess will be initialized using circles.");
         }
     }
 
@@ -158,7 +172,7 @@ public class Theme {
      */
     public static final Font defaultTitleFontFamily = new Font("Garamond", 25);
     public static final Paint defaultTitleFontPaint = Color.WHITE;
-    public static final Font defaultInfoTitleFontFamily = new Font("Garamond", 19);
+    public static final Font defaultInfoTitleFontFamily = new Font("Garamond", 24);
     public static final Paint defaultInfoTitleFontPaint = Color.WHITE;
     public static final Font defaultMenuFontFamily = new Font("Segoe UI", 14);
     public static final Paint defaultMenuFontPaint = Color.WHITE;
@@ -168,8 +182,8 @@ public class Theme {
     /**
      * In-game settings: Chess Paint, ChessBoard Grid Paint, etc.
      */
-    public static final Paint defaultPlayerChessPaint1 = Color.WHITE;
-    public static final Paint defaultPlayerChessPaint2 = Color.BLACK;
+    public static final Color defaultPlayerChessColor1 = Color.WHITE;
+    public static final Color defaultPlayerChessColor2 = Color.BLACK;
     public static final Paint defaultChessBoardPaint1 = Color.rgb(29, 31, 44);
     public static final Paint defaultChessBoardPaint2 = Color.rgb(55, 58, 84);
     public static final Paint defaultChessBoardGridPaint = Color.rgb(255, 255, 255, 0.50);
@@ -185,7 +199,7 @@ public class Theme {
             defaultPlayerIcon = new Image(Theme.class.getResource("PlayerIcon.png").toURI().toString());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-            Log0j.writeLog("Cannot load default player icon.");
+            Log0j.writeError("Cannot load default player icon.");
         }
     }
 
@@ -259,12 +273,14 @@ public class Theme {
     public final ObjectProperty<Paint> textFontPaintPR;
 
     //Chessboard Color
-    public final ObjectProperty<Paint> playerChessPaintPR1;
-    public final ObjectProperty<Paint> playerChessPaintPR2;
+    public final ObjectProperty<Color> player1ChessPaintPR;
+    public final ObjectProperty<Color> player2ChessPaintPR;
     public final ObjectProperty<Paint> chessBoardPaintPR1;
     public final ObjectProperty<Paint> chessBoardPaintPR2;
     public final ObjectProperty<Paint> chessBoardGridPaintPR;
     public final ObjectProperty<Background> chessBoardBackgroundPR;
+
+    public final ObjectProperty<Image> playerIconPR;
 
 
     public final Stage primaryStage;
@@ -306,16 +322,18 @@ public class Theme {
         textFontFamilyPR = new SimpleObjectProperty<>();
         textFontPaintPR = new SimpleObjectProperty<>();
 
-        playerChessPaintPR1 = new SimpleObjectProperty<>();
-        playerChessPaintPR2 = new SimpleObjectProperty<>();
+        player1ChessPaintPR = new SimpleObjectProperty<>();
+        player2ChessPaintPR = new SimpleObjectProperty<>();
         chessBoardPaintPR1 = new SimpleObjectProperty<>();
         chessBoardPaintPR2 = new SimpleObjectProperty<>();
         chessBoardGridPaintPR = new SimpleObjectProperty<>();
         chessBoardBackgroundPR = new SimpleObjectProperty<>();
 
+        playerIconPR = new SimpleObjectProperty<>();
+
         applyDefaultTheme();
         initRelations();
-        Log0j.writeLog("Theme initialized.");
+        Log0j.writeInfo("Theme initialized.");
 
         //Audio Applied.
 
@@ -330,17 +348,17 @@ public class Theme {
             if (!bgmSourceMoved.getValue()) {
                 media = new Media(mainViewBGMSourcePR.getValue().toUri().toString());
             } else {
-                Log0j.writeLog("Default BGM Source initialized on path: " + defaultMainViewBGMSource.toUri().toString());
+                Log0j.writeInfo("Default BGM Source initialized on path: " + defaultMainViewBGMSource.toUri().toString());
                 media = new Media(defaultMainViewBGMSource.toUri().toString());
             }
             bgmPlayer = new MediaPlayer(media);
             bgmPlayer.setCycleCount(MediaPlayer.INDEFINITE);
             bgmPlayer.volumeProperty().bind(bgmVolumePR);
-            Log0j.writeLog("BGM Player Initialized.");
+            Log0j.writeInfo("BGM Player Initialized.");
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log0j.writeLog("Failed to initialize BGM.");
+            Log0j.writeInfo("Failed to initialize BGM.");
         }
     }
 
@@ -379,15 +397,17 @@ public class Theme {
         textFontFamilyPR.setValue(defaultTextFontFamily);
         textFontPaintPR.setValue(defaultTextFontPaint);
 
-        playerChessPaintPR1.setValue(defaultPlayerChessPaint1);
-        playerChessPaintPR2.setValue(defaultPlayerChessPaint2);
+        player1ChessPaintPR.setValue(defaultPlayerChessColor1);
+        player2ChessPaintPR.setValue(defaultPlayerChessColor2);
         chessBoardPaintPR1.setValue(defaultChessBoardPaint1);
         chessBoardPaintPR2.setValue(defaultChessBoardPaint2);
         chessBoardGridPaintPR.setValue(defaultChessBoardGridPaint);
         chessBoardBackgroundPR.setValue(defaultChessBoardBackground);
 
+        playerIconPR.setValue(defaultPlayerIcon);
+
         initMedia();
-        Log0j.writeLog("Default Theme Applied.");
+        Log0j.writeInfo("Default Theme Applied.");
 
     }
 
@@ -420,7 +440,7 @@ public class Theme {
         themePaintPR.bind(Bindings.createObjectBinding(themeColorPR::getValue, themeColorPR));
 
 
-        Log0j.writeLog("Relation initialized.");
+        Log0j.writeInfo("Relation initialized.");
     }
 
     public static Image getAppIcon() {
@@ -470,15 +490,16 @@ public class Theme {
         }
     }
 
-    public void bgmPlayerInterrupt(long delayDurationMillis) {
+    public void bgmPlayerInterrupt(Path BGMSource,long delayDurationMillis) {
         //First unbind all connections
         bgmPlayer.volumeProperty().unbind();
         bgmPlayer.stop();
         lastBGM = bgmPlayer;
 
 
-        bgmPlayer = new MediaPlayer(new Media(gameFinishBGMSourcePR.getValue().toUri().toString()));
+        bgmPlayer = new MediaPlayer(new Media(BGMSource.toUri().toString()));
         bgmPlayer.setVolume(bgmVolumePR.getValue());
+        bgmPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         try {
             Thread.sleep(delayDurationMillis);
         } catch (InterruptedException e) {
@@ -492,7 +513,7 @@ public class Theme {
      */
     public void bgmPlayerResume(long delayDurationMillis) {
         if (lastBGM == null) {
-            Log0j.writeLog("Invalid bgm resume call.");
+            Log0j.writeInfo("Invalid bgm resume call.");
         } else {
             Platform.runLater(bgmPlayer.volumeProperty()::unbind);
 
@@ -506,7 +527,7 @@ public class Theme {
                     Thread.sleep(delayDurationMillis);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    Log0j.writeLog("BGM delaying failed. Normally this shouldn't happen.");
+                    Log0j.writeInfo("BGM delaying failed. Normally this shouldn't happen.");
                 }
                 bgmPlayer = lastBGM;
                 bgmPlayer.setVolume(0);
@@ -542,7 +563,7 @@ public class Theme {
                 Thread.sleep(delayDurationMillis);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-                Log0j.writeLog("BGM delaying failed. Normally this shouldn't happen.");
+                Log0j.writeInfo("BGM delaying failed. Normally this shouldn't happen.");
             }
             bgmPlayer = new MediaPlayer(new Media(path.toUri().toString()));
             bgmPlayer.setCycleCount(MediaPlayer.INDEFINITE);
@@ -712,32 +733,44 @@ public class Theme {
         }, chessBoardGridPaintPR));
     }
 
+    public ObjectProperty<Image> playerIconPR(){
+        return playerIconPR;
+    }
+
+    public ObjectProperty<Color> player1ChessPaintPR(){
+        return player1ChessPaintPR;
+    }
+
+    public ObjectProperty<Color> player2ChessPaintPR(){
+        return player2ChessPaintPR;
+    }
+
 
     public void loadTheme() {
         try {
             loadTheme(Paths.get(Theme.class.getResource("theme.json").toURI()).toUri().toString());
         } catch (Exception e) {
             e.printStackTrace();
-            Log0j.writeLog("Error occurred because cannot found theme.json. No theme is changed.");
+            Log0j.writeInfo("Error occurred because cannot found theme.json. No theme is changed.");
         }
     }
 
     public void loadTheme(String srcPath) {
         try {
             //Try to read the configuration file
-            Log0j.writeLog("Loading theme file from the following path: " + srcPath);
+            Log0j.writeInfo("Loading theme file from the following path: " + srcPath);
             JSONObject jsonObject = new JSONObject(new File(srcPath));
-            Log0j.writeLog("Theme loaded.");
+            Log0j.writeInfo("Theme loaded.");
         } catch (Exception e) {
             e.printStackTrace();
-            Log0j.writeLog("Error occurred during converting source file to file stream. No theme is changed.");
+            Log0j.writeInfo("Error occurred during converting source file to file stream. No theme is changed.");
         }
     }
 
 
     public void saveTheme() {
 
-        Log0j.writeLog("Theme saved.");
+        Log0j.writeInfo("Theme saved.");
     }
 
 }

@@ -12,6 +12,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 public class SettingsPage implements Updatable {
     public static final double PREF_CONTAINER_HEIGHT = 100;
@@ -49,6 +50,9 @@ public class SettingsPage implements Updatable {
                 }
             }
         }
+
+
+        //Finally
         root.add(new TitleLabel(LiteralConstants.SettingsPageTitle.toString(), theme), 0, 0);
         root.add(scrollPane, 0, 1);
         root.add(configWrapper, 0, 2);

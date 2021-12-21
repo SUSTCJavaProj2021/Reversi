@@ -46,7 +46,7 @@ public class HomePage implements Updatable {
         root = new GridPane();
         root.addRow(0, new TitleLabel(LiteralConstants.HomePageTitle.toString(), theme));
 
-        welcomeText = new Label(LiteralConstants.WelcomeText.toString());
+        welcomeText = new Label("Welcome to Reversi!");
 
 
         welcomeText.setFont(new Font("Cambria", 24));

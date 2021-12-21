@@ -1,0 +1,11 @@
+/**
+    Sometimes, when you force the user to use css, you know they are going to complain about it
+    Even if you think that it's good to use it.
+ */
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}

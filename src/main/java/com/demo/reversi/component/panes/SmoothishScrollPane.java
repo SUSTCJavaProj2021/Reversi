@@ -1,17 +1,21 @@
 package com.demo.reversi.component.panes;
 
+import com.demo.reversi.themes.Theme;
 import javafx.animation.Animation.Status;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.skin.ScrollPaneSkin;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+
+import java.net.URISyntaxException;
+import java.nio.channels.WritableByteChannel;
 
 /**
  * ScrollPane with kinda smooth transition scrolling.
@@ -31,6 +35,15 @@ public class SmoothishScrollPane extends ScrollPane {
         // set content in a wrapper
         VBox wrapper = new VBox(content);
         setContent(wrapper);
+
+        //Load transparent stage style.
+        try {
+            getStylesheets().add(Theme.class.getResource("ScrollPane.css").toURI().toString());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+
         // add scroll handling to wrapper
         wrapper.setOnScroll(new EventHandler<ScrollEvent>() {
             private SmoothishTransition transition;

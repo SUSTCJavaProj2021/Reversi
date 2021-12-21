@@ -1,5 +1,6 @@
 package com.demo.reversi.view.contentpages;
 
+import com.demo.reversi.component.MetroButton;
 import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.selector.SelectorPane;
 import com.demo.reversi.controller.SimpleGameSystem;
@@ -14,9 +15,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class PlayPage implements Updatable {
     public static final double SELECTOR_WIDTH = 180;
@@ -30,8 +32,8 @@ public class PlayPage implements Updatable {
     public final GridPane onlinePlayPane;
 
 
-    public final Button newLocalGameButton;
-    public final Button loadLocalGameButton;
+    public final MetroButton newLocalGameButton;
+    public final MetroButton loadLocalGameButton;
 
     public final SimpleGameSystem gameSystem;
     public final Theme theme;
@@ -64,28 +66,29 @@ public class PlayPage implements Updatable {
 
         onlinePlayPane = new GridPane();
         onlinePlayPane.add(new TitleLabel("Play Online Game", theme), 0, 0);
+        onlinePlayPane.add(new Label("Actually, there is no online game yet.\n QAQ"), 0, 1);
 
         localPlaySelector = new GridPane();
 
 
         //Initialize the Play Selector
 
-        playSelector.addPage("Play Local Game", localPlaySelector);
-        playSelector.addPage("Play Online Game", onlinePlayPane);
+        playSelector.addPage("Local", localPlaySelector);
+        playSelector.addPage("Online", onlinePlayPane);
         playSelector.resetSelectorWidth(120);
         playSelector.init();
 
 
         //Buttons need not only to be initialized, but also added to the pane.
-        newLocalGameButton = new Button(LiteralConstants.PlayLocalText.toString());
+        newLocalGameButton = new MetroButton(LiteralConstants.PlayLocalText.toString(), theme);
         initPlayLocalGameButton();
 
-        loadLocalGameButton = new Button(LiteralConstants.LoadGameText.toString());
+        loadLocalGameButton = new MetroButton(LiteralConstants.LoadGameText.toString(), theme);
         initLoadGameButton();
 
 
         //TEST
-        localPlaySelector.add(newLocalGameButton,0,0);
+        localPlaySelector.add(newLocalGameButton, 0, 0);
         localPlaySelector.add(loadLocalGameButton, 0, 1);
         //END TEST
     }
@@ -93,29 +96,12 @@ public class PlayPage implements Updatable {
 
     private void initPlayLocalGameButton() {
         //TEST LOCAL GAME
-        newLocalGameButton.setPrefHeight(75);
-        newLocalGameButton.setPrefWidth(300);
 
         newLocalGameButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                GamePageLocal gameLocalPage = new GamePageLocal(gameSystem.startNewGame(), theme);
-                Stage gameStage = new Stage();
-                gameStage.setScene(new Scene(gameLocalPage.root));
-                gameStage.setTitle("Local Game");
-                gameStage.getIcons().add(Theme.getAppIcon());
-
-                gameStage.setMinWidth(GamePageLocal.MIN_WIDTH);
-                gameStage.setMinHeight(GamePageLocal.MIN_HEIGHT);
-
-                gameStage.show();
-                Platform.runLater(theme::registerGame);
-
-                Log0j.writeLog("LocalPlay (New Game) initialized.");
-
-                gameStage.setOnCloseRequest(ActionEvent->{
-                    Platform.runLater(theme::unregisterGame);
-                });
+                GamePageLocal gameLocalPage = new GamePageLocal(gameSystem, -1, theme);
+                initGame(gameLocalPage);
             }
         });
         GridPane.setHalignment(newLocalGameButton, HPos.CENTER);
@@ -123,8 +109,6 @@ public class PlayPage implements Updatable {
 
     private void initLoadGameButton() {
         //TEST LOAD GAME
-        loadLocalGameButton.setPrefHeight(75);
-        loadLocalGameButton.setPrefWidth(300);
 
         loadLocalGameButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -134,19 +118,30 @@ public class PlayPage implements Updatable {
                 SimpleIntegerProperty indexProperty = new SimpleIntegerProperty(2);
 
                 if (indexProperty.intValue() != -1) {
-                    GamePageLocal gameLocalPage = new GamePageLocal(gameSystem.loadGame(indexProperty.intValue(), false), theme);
-                    Stage gameStage = new Stage();
-                    gameStage.setScene(new Scene(gameLocalPage.root));
-                    gameStage.setTitle("Local Game");
-                    gameStage.getIcons().add(Theme.getAppIcon());
-                    gameStage.setMinWidth(GamePageLocal.MIN_WIDTH);
-                    gameStage.setMinHeight(GamePageLocal.MIN_HEIGHT);
-                    gameStage.show();
-                    Log0j.writeLog("LocalPlay (Load Game) initialized.");
+                    //todo: change loading behavior
+                    GamePageLocal gameLocalPage = new GamePageLocal(gameSystem, -1, theme);
+                    initGame(gameLocalPage);
                 }
             }
         });
         GridPane.setHalignment(loadLocalGameButton, HPos.CENTER);
+    }
+
+    private void initGame(GamePageLocal gameLocalPage) {
+        Stage gameStage = new Stage();
+        gameStage.setScene(new Scene(gameLocalPage.root));
+        gameStage.setTitle("Local Game");
+        gameStage.getIcons().add(Theme.getAppIcon());
+
+        gameStage.setMinWidth(GamePageLocal.MIN_WIDTH);
+        gameStage.setMinHeight(GamePageLocal.MIN_HEIGHT);
+
+        gameStage.show();
+        Platform.runLater(theme::registerGame);
+        Log0j.writeInfo("LocalPlay (Load Game) initialized.");
+        gameStage.setOnCloseRequest(ActionEvent -> {
+            Platform.runLater(theme::unregisterGame);
+        });
     }
 
     @Override

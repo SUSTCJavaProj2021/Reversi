@@ -25,14 +25,15 @@ public class SimpleGameSystem implements GameSystemLayer {
         return true;
     }
 
-    public SimpleGameController startNewGame() {
-        return new SimpleGameController(new SimplePlayer("BLACK PLAYER 114"), new SimplePlayer("WHITE PLAYER 514"), true);
+    @Override
+    public SimpleGameController startNewGame(String playerName1, String playerName2) {
+        return new SimpleGameController(new SimplePlayer(playerName1), new SimplePlayer(playerName2), true);
     }
 
     @Override
-    public GameControllerLayer loadGame(int index, boolean isReadOnly) {
-        SimpleGameController simpleGameController = new SimpleGameController(new SimplePlayer("LOAD TEST 1"), new SimplePlayer("LOAD TEST 2"), !isReadOnly);
-        Log0j.writeLog("loadGame method test: New GameController Created: " + simpleGameController);
+    public GameControllerLayer loadGame(int index, boolean isModifiable) {
+        SimpleGameController simpleGameController = new SimpleGameController(new SimplePlayer("LOAD TEST 1"), new SimplePlayer("LOAD TEST 2"), isModifiable);
+        Log0j.writeInfo("loadGame method test: New GameController Created: " + simpleGameController);
         return simpleGameController;
     }
 

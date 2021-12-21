@@ -5,13 +5,12 @@ import com.demo.reversi.controller.GameControllerLayer;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -19,8 +18,6 @@ import javafx.geometry.VPos;
 import javafx.scene.control.Control;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.util.Duration;
 
 /**
  * You should not in any way directly manipulate the contents of the ChessBoard instance.
@@ -89,8 +86,10 @@ public class ChessBoard extends HBox implements Updatable {
 
                 //Dynamic Chess Size
                 Chess chess = new Chess(15, theme, Chess.ChessOwner.PLACEHOLDER);
-                chess.playerPaint1PR().setValue(Color.BLACK);
-                chess.playerPaint2PR().setValue(Color.WHITE);
+
+                //todo: OK!
+                chess.playerPaint1PR().bind(theme.player1ChessPaintPR());
+                chess.playerPaint2PR().bind(theme.player2ChessPaintPR());
 
                 gridBases[row][col].getChildren().add(chess);
                 StackPane.setAlignment(chess, Pos.CENTER);
@@ -100,7 +99,7 @@ public class ChessBoard extends HBox implements Updatable {
                         gridBases[row][col].heightProperty().divide(2).multiply(CHESS_SIZE_RATIO)));
             }
         }
-        Log0j.writeLog("Grid background color all bound.");
+        Log0j.writeInfo("Grid background color all bound.");
 
         for (int row = 0; row < rowSize; row++) {
             grid.getRowConstraints().add(new RowConstraints(cellMinSize, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY,
@@ -110,7 +109,7 @@ public class ChessBoard extends HBox implements Updatable {
             grid.getColumnConstraints().add(new ColumnConstraints(cellMinSize, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY,
                     Priority.SOMETIMES, HPos.CENTER, true));
         }
-        Log0j.writeLog("Grid shape initialized.");
+        Log0j.writeInfo("Grid shape initialized.");
 
         grid.setMinWidth(boardSize);
         grid.setMinHeight(boardSize);
@@ -143,7 +142,7 @@ public class ChessBoard extends HBox implements Updatable {
         HBox.setHgrow(vBoxCover, Priority.ALWAYS);
 
         update();
-        bindToController();
+//        bindToController();
     }
 
     public void bindToSize(DoubleProperty width, DoubleProperty height) {
@@ -162,7 +161,7 @@ public class ChessBoard extends HBox implements Updatable {
                  */
 
                 GridStatus positionPlayer = controller.getGridStatus(row, col);
-                Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
+                Chess chess = ((Chess) gridBases[row][col].getChildren().get(1));
 
                 //todo: change it to be modifiable
                 Platform.runLater(() -> {
@@ -171,12 +170,12 @@ public class ChessBoard extends HBox implements Updatable {
             }
 
         }
-        Log0j.writeLog("Board Updated.");
+        Log0j.writeInfo("Board Updated.");
     }
 
     public void updateByGrid(int row, int col) {
         GridStatus positionPlayer = controller.getGridStatus(row, col);
-        Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
+        Chess chess = ((Chess) gridBases[row][col].getChildren().get(1));
         Platform.runLater(() -> {
             chess.setChessOwner(readBlockStatus(positionPlayer));
         });
@@ -189,7 +188,7 @@ public class ChessBoard extends HBox implements Updatable {
          * Set the current chess
          */
         GridStatus positionPlayer = controller.getGridStatus(row, col);
-        Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
+        Chess chess = ((Chess) gridBases[row][col].getChildren().get(1));
         chess.setChessOwner(readBlockStatus(positionPlayer));
 
         Task<Void> tasks[] = new Task[8];
@@ -222,7 +221,7 @@ public class ChessBoard extends HBox implements Updatable {
             col += stepCol;
 
             GridStatus positionPlayer = controller.getGridStatus(row, col);
-            Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
+            Chess chess = ((Chess) gridBases[row][col].getChildren().get(1));
 
             //todo: change it to be modifiable
             chess.setChessOwnerDirected(readBlockStatus(positionPlayer), stepCol, stepRow);
@@ -240,6 +239,7 @@ public class ChessBoard extends HBox implements Updatable {
      * You should make sure that the board is valid.
      */
     public void curtainCall() {
+        unbindController();
         int Player1Count = 0;
         int Player2Count = 0;
         for (int row = 0; row < rowSize; row++) {
@@ -252,12 +252,12 @@ public class ChessBoard extends HBox implements Updatable {
                 }
             }
         }
-        Log0j.writeLog("Player 1 counted: " + Player1Count);
-        Log0j.writeLog("Player 2 counted: " + Player2Count);
+        Log0j.writeInfo("Player 1 counted: " + Player1Count);
+        Log0j.writeInfo("Player 2 counted: " + Player2Count);
 
         for (int row = 0; row < rowSize; row++) {
             for (int col = 0; col < colSize; col++) {
-                Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
+                Chess chess = ((Chess) gridBases[row][col].getChildren().get(1));
                 chess.setChessOwner(Chess.ChessOwner.PLACEHOLDER);
             }
         }
@@ -266,32 +266,45 @@ public class ChessBoard extends HBox implements Updatable {
          * Listing Player 1 Chess
          */
         final int cnt1 = Player1Count;
-        new Thread(new Task<Void>() {
+        Task<Void> task1 = new Task<Void>() {
             @Override
             protected Void call() {
                 placePlayerChess(cnt1, Chess.ChessOwner.PLAYER1, rowSize - 1, 0, -1, 1);
                 return null;
             }
-        }).start();
-
-        /**
-         * Listing Player 2 Chess
-         */
+        };
         final int cnt2 = Player2Count;
-        new Thread(new Task<Void>() {
+        Task<Void> task2 = new Task<Void>() {
             @Override
             protected Void call() {
                 placePlayerChess(cnt2, Chess.ChessOwner.PLAYER2, 0, 0, 1, 1);
                 return null;
             }
-        }).start();
+        };
+        task1.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                new Thread(task2).start();
+            }
+        });
+        task2.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                bindController();
+            }
+        });
+        new Thread(task1).start();
+
+        /**
+         * Listing Player 2 Chess
+         */
     }
 
     private void placePlayerChess(int cnt, Chess.ChessOwner player, int startRow, int startCol, int stepR, int stepC) {
         int cursorR = startRow, cursorC = startCol;
         while (cnt-- > 0) {
-            Chess chess = ((Chess) gridBases[cursorR][cursorC].getChildren().get(0));
-            Log0j.writeLog("Performing chess list: Coordinate: (" + cursorR + ", " + cursorC + ")");
+            Chess chess = ((Chess) gridBases[cursorR][cursorC].getChildren().get(1));
+            Log0j.writeInfo("Performing chess list: Coordinate: (" + cursorR + ", " + cursorC + ")");
 
             chess.setChessOwnerForceAnimated(player);
 
@@ -326,7 +339,10 @@ public class ChessBoard extends HBox implements Updatable {
 
     // Below are color updaters
 
-    private void bindToController() {
+    /**
+     * Bind to its default controller
+     */
+    private void bindController() {
         for (int row = 0; row < rowSize; row++) {
             for (int col = 0; col < colSize; col++) {
                 final int tmpRow = row, tmpCol = col;
@@ -339,10 +355,21 @@ public class ChessBoard extends HBox implements Updatable {
                 });
             }
         }
-        Log0j.writeLog("Bind to controller: " + controller);
+        Log0j.writeInfo("Bind to controller: " + controller);
     }
 
-    public void performFinalJudge() {
-
+    private void unbindController(){
+        for (int row = 0; row < rowSize; row++) {
+            for (int col = 0; col < colSize; col++) {
+                final int tmpRow = row, tmpCol = col;
+                gridBases[row][col].setOnMouseClicked(null);
+            }
+        }
+        Log0j.writeInfo("Unbind controller.");
     }
+
+    public void initBoardPlayable(){
+        bindController();
+    }
+
 }

@@ -10,6 +10,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.media.*;
 import javafx.util.Duration;
 
+import java.util.Stack;
+
 public class BoardGridComponent extends StackPane {
     public static final double CORNER_RADII = 0;
 
@@ -19,11 +21,15 @@ public class BoardGridComponent extends StackPane {
 
     public static final double TRANS_TIME_MILLIS = 100;
 
+    public final StackPane viewCover;
+
     private final Theme theme;
 
     public BoardGridComponent(Theme theme){
         super();
         this.theme = theme;
+        viewCover = new StackPane();
+        getChildren().add(viewCover);
 
         setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
@@ -68,7 +74,7 @@ public class BoardGridComponent extends StackPane {
                     clickSound.play();
                 }catch (Exception e){
                     e.printStackTrace();
-                    Log0j.writeLog("Not able to play chess sound.");
+                    Log0j.writeInfo("Not able to play chess sound.");
                 }
             }
         });

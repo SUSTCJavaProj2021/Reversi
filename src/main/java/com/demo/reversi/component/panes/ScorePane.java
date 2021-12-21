@@ -14,7 +14,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
-
+//todo: this whole class needs to be rewritten
 public class ScorePane extends GridPane implements Updatable {
     public static final int MIN_HEIGHT = 65;
     public static final int PREF_HEIGHT = 100;
@@ -26,7 +26,6 @@ public class ScorePane extends GridPane implements Updatable {
     public final GameControllerLayer controller;
 
     private final Theme theme;
-
 
     public ScorePane(GameControllerLayer controller, Theme theme) {
         super();
@@ -70,6 +69,10 @@ public class ScorePane extends GridPane implements Updatable {
         add(player2Indicator, 2, 0);
         GridPane.setVgrow(player2Indicator, Priority.SOMETIMES);
 
+
+        /**
+         * For central alignment.
+         */
         ColumnConstraints cs = new ColumnConstraints(0, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY, Priority.SOMETIMES, HPos.CENTER, true);
         getColumnConstraints().add(new ColumnConstraints());
         getColumnConstraints().add(cs);
