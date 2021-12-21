@@ -239,7 +239,7 @@ public class ChessBoard extends HBox implements Updatable {
     /**
      * You should make sure that the board is valid.
      */
-    public void judgeBoard() {
+    public void curtainCall() {
         int Player1Count = 0;
         int Player2Count = 0;
         for (int row = 0; row < rowSize; row++) {
@@ -269,7 +269,7 @@ public class ChessBoard extends HBox implements Updatable {
         new Thread(new Task<Void>() {
             @Override
             protected Void call() {
-                placePlayerChess(cnt1, Chess.ChessOwner.PLAYER1, rowSize - 1, colSize - 1, -1, -1);
+                placePlayerChess(cnt1, Chess.ChessOwner.PLAYER1, rowSize - 1, 0, -1, 1);
                 return null;
             }
         }).start();

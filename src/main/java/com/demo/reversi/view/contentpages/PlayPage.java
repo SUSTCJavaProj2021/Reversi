@@ -110,7 +110,9 @@ public class PlayPage implements Updatable {
 
                 gameStage.show();
                 Platform.runLater(theme::registerGame);
+
                 Log0j.writeLog("LocalPlay (New Game) initialized.");
+
                 gameStage.setOnCloseRequest(ActionEvent->{
                     Platform.runLater(theme::unregisterGame);
                 });

@@ -473,6 +473,7 @@ public class Theme {
     public void bgmPlayerInterrupt(long delayDurationMillis) {
         //First unbind all connections
         bgmPlayer.volumeProperty().unbind();
+        bgmPlayer.stop();
         lastBGM = bgmPlayer;
 
 
@@ -510,6 +511,10 @@ public class Theme {
                 bgmPlayer = lastBGM;
                 bgmPlayer.setVolume(0);
                 fadeInBGM(bgmPlayer);
+            });
+
+            Platform.runLater(()->{
+                fadeOutTimeline.play();
             });
         }
     }
@@ -593,9 +598,8 @@ public class Theme {
         effectVolumePR.unbind();
     }
 
-
-    public void bindToBackPane(ObjectProperty<Background> background) {
-        background.bind(backPaneBackgroundPR);
+    public ObjectProperty<Background> backPanePR(){
+        return backPaneBackgroundPR;
     }
 
     public void bindBackPanePRTo(ObjectProperty<Background> background) {
@@ -606,8 +610,8 @@ public class Theme {
         backPaneBackgroundPR.unbind();
     }
 
-    public void bindToFrontPane(ObjectProperty<Background> background) {
-        background.bind(frontPaneBackgroundPR);
+    public ObjectProperty<Background> frontPanePR(){
+        return frontPaneBackgroundPR;
     }
 
     public void bindFrontPanePRTo(ObjectProperty<Background> background) {
@@ -627,21 +631,13 @@ public class Theme {
     }
 
     public ObjectProperty<Paint> modeRevPaintPR() {
-        return modePaintPR();
-    }
-
-    public void bindToModePaint(ObjectProperty<Paint> paint) {
-        paint.bind(Bindings.createObjectBinding(modePaintPR::getValue, modePaintPR));
+        return modeRevPaintPR;
     }
 
     public void bindToModePaintBackground(ObjectProperty<Background> background) {
         background.bind(Bindings.createObjectBinding(() -> {
             return new Background(new BackgroundFill(modePaintPR.getValue(), null, null));
         }, modeSwitchPR));
-    }
-
-    public void bindToModeRevPaint(ObjectProperty<Paint> paint) {
-        paint.bind(Bindings.createObjectBinding(modeRevPaintPR::getValue, modeSwitchPR));
     }
 
     public void bindToModeRevPaintBackground(ObjectProperty<Background> background) {

@@ -73,7 +73,7 @@ public class SelectorPane extends GridPane {
         //Final adjust for viewCoverPane
         GridPane.setHgrow(viewCoverPane, Priority.ALWAYS);
         GridPane.setVgrow(viewCoverPane, Priority.ALWAYS);
-        theme.bindToFrontPane(viewCoverPane.backgroundProperty());
+        viewCoverPane.backgroundProperty().bind(theme.frontPanePR());
         Log0j.writeLog("ViewCover Pane loaded.");
 
         //Initialize View stack

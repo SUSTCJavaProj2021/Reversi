@@ -28,7 +28,7 @@ public class Chess extends StackPane implements Updatable {
         PLAYER1, PLAYER2, AI, PLACEHOLDER;
     }
 
-    public static final double TRANS_TIME_MILLIS = 150;
+    public static final double TRANS_TIME_MILLIS = 100;
     public static final Color placeHolderColor = Color.TRANSPARENT;
 
     public final Circle chessInnerCircle;
@@ -170,8 +170,8 @@ public class Chess extends StackPane implements Updatable {
         if (axis == null) {
             axis = new Point3D(1, 1, 0);
         }
-        RotateTransition rotator1 = createRotatorUp(this, 1, axis);
-        RotateTransition rotator2 = createRotatorUp(this, 2, axis);
+        RotateTransition rotator1 = createRotator(this, 1, axis);
+        RotateTransition rotator2 = createRotator(this, 2, axis);
         ScaleTransition scale1 = createScalar(this, 1);
         rotator1.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
@@ -214,7 +214,7 @@ public class Chess extends StackPane implements Updatable {
     }
 
     //todo: test
-    private RotateTransition createRotatorUp(Node node, int para, Point3D axis) {
+    private RotateTransition createRotator(Node node, int para, Point3D axis) {
         RotateTransition rotator = new RotateTransition(Duration.millis(TRANS_TIME_MILLIS), node);
         rotator.setAxis(axis);
         rotator.setFromAngle((para - 1) * 90);

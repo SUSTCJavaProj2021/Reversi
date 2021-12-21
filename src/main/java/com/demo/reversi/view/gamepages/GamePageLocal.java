@@ -1,19 +1,24 @@
 package com.demo.reversi.view.gamepages;
 
+import com.demo.reversi.component.MetroButton;
 import com.demo.reversi.component.gamemodel.ChessBoard;
 import com.demo.reversi.component.panes.ExtendedInfoPane;
 import com.demo.reversi.component.panes.ScorePane;
 import com.demo.reversi.controller.GameControllerLayer;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Control;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class GamePageLocal implements Updatable {
     public static final double MIN_WIDTH = ExtendedInfoPane.MIN_WIDTH * 2 + ChessBoard.DEFAULT_BOARD_MIN_SIZE;
@@ -49,12 +54,23 @@ public class GamePageLocal implements Updatable {
         settingsPane = new GridPane();
         settingsPane.setMinHeight(300);
 
-        Button btn = new Button("SetCheat!");
+        MetroButton btn = new MetroButton("Perform board judge!", theme);
         btn.setPrefHeight(300);
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                chessBoard.judgeBoard();
+                chessBoard.curtainCall();
+                Platform.runLater(() -> {
+                    theme.bgmPlayerInterrupt(100);
+                });
+                Stage stage = new Stage();
+                stage.setScene(new Scene(new Button("Well played!")));
+                stage.show();
+                stage.setOnCloseRequest(ActionEvent -> {
+                    Platform.runLater(() -> {
+                        theme.bgmPlayerResume(100);
+                    });
+                });
             }
         });
         settingsPane.add(btn, 0, 0);
@@ -67,7 +83,7 @@ public class GamePageLocal implements Updatable {
 
         //Last node added is on top
         root.setCenter(chessBoard);
-        theme.bindToBackPane(root.backgroundProperty());
+        root.backgroundProperty().bind(theme.backPanePR());
         root.setPrefWidth(DEFAULT_PREF_WIDTH);
         root.setPrefHeight(DEFAULT_PREF_HEIGHT);
 

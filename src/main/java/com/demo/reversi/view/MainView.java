@@ -83,8 +83,7 @@ public class MainView extends GridPane {
 
         //Initialize Main View
 
-
-        theme.bindToBackPane(backgroundProperty());
+        backgroundProperty().bind(theme.backPanePR());
         add(mainSelectorPane, 0, 0);
 
         Log0j.writeLog("Main View initialized.");

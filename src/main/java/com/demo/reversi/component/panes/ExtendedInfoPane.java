@@ -29,7 +29,7 @@ public class ExtendedInfoPane extends GridPane {
         this.getColumnConstraints().add(new ColumnConstraints(0, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY, Priority.SOMETIMES, HPos.CENTER, true));
         GridPane.setHgrow(this, Priority.SOMETIMES);
 
-        theme.bindToFrontPane(backgroundProperty());
+        backgroundProperty().bind(theme.frontPanePR());
     }
 
 }

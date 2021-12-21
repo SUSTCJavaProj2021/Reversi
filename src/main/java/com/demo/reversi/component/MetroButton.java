@@ -38,6 +38,12 @@ public class MetroButton extends Button {
 
     private Theme theme;
 
+    /**
+     * Create a metro-styled button with default animations
+     * Notice: setOnAction should be overridden by the user.
+     * @param text Button text
+     * @param theme The theme you are using
+     */
     public MetroButton(String text, Theme theme) {
         super(text);
         this.theme = theme;
@@ -47,9 +53,8 @@ public class MetroButton extends Button {
         setMaxWidth(Control.USE_PREF_SIZE);
         setPrefSize(PREFERRED_WIDTH, PREFERRED_HEIGHT);
 
-
         fontProperty().bind(theme.menuFontFamilyPR());
-        textFillProperty().bind(theme.menuFontPaintPR());
+        textFillProperty().bind(theme.modeRevPaintPR());
 
         //Initialize default background
         if(theme.modeSwitchPR().getValue()){
