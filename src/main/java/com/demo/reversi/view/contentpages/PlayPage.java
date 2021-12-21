@@ -25,9 +25,7 @@ public class PlayPage implements Updatable {
     public final SelectorPane playSelector;
 
     // Secondary views
-    public final SelectorPane localPlaySelector;
-    public final GridPane localPlayNewPane;
-    public final GridPane localPlayLoadPane;
+    public final GridPane localPlaySelector;
 
     public final GridPane onlinePlayPane;
 
@@ -62,22 +60,19 @@ public class PlayPage implements Updatable {
 
 
         //Initialize all secondary panes.
-        localPlaySelector = new SelectorPane(new TitleLabel("Local Play", theme), theme);
-        localPlaySelector.resetSelectorWidth(220);
-        localPlayNewPane = new GridPane();
-        localPlayLoadPane = new GridPane();
-        localPlaySelector.addPage("New Game", localPlayNewPane);
-        localPlaySelector.addPage("Load Game", localPlayLoadPane);
-        localPlaySelector.init();
+
 
         onlinePlayPane = new GridPane();
         onlinePlayPane.add(new TitleLabel("Play Online Game", theme), 0, 0);
+
+        localPlaySelector = new GridPane();
 
 
         //Initialize the Play Selector
 
         playSelector.addPage("Play Local Game", localPlaySelector);
         playSelector.addPage("Play Online Game", onlinePlayPane);
+        playSelector.resetSelectorWidth(120);
         playSelector.init();
 
 
@@ -90,8 +85,8 @@ public class PlayPage implements Updatable {
 
 
         //TEST
-        localPlayNewPane.add(newLocalGameButton, 0, 0);
-        localPlayLoadPane.add(loadLocalGameButton, 0, 0);
+        localPlaySelector.add(newLocalGameButton,0,0);
+        localPlaySelector.add(loadLocalGameButton, 0, 1);
         //END TEST
     }
 

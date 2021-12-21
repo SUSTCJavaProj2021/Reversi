@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.control.Control;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -19,7 +20,7 @@ public class MetroButton extends Button {
     public static final double CORNER_RADII = 10;
 
     public static final int PREFERRED_HEIGHT = 40;
-    public static final int PREFERRED_WIDTH = 167;
+    public static final int PREFERRED_WIDTH = 150;
 
     public static final int FONT_SIZE = 14;
     public static final double ICON_GAP = 10;
@@ -41,9 +42,9 @@ public class MetroButton extends Button {
         super(text);
         this.theme = theme;
 
-        setMinWidth(Button.USE_COMPUTED_SIZE);
-        setMinHeight(Button.USE_COMPUTED_SIZE);
-        setMaxWidth(Double.POSITIVE_INFINITY);
+        setMinWidth(Control.USE_COMPUTED_SIZE);
+        setMinHeight(Control.USE_PREF_SIZE);
+        setMaxWidth(Control.USE_PREF_SIZE);
         setPrefSize(PREFERRED_WIDTH, PREFERRED_HEIGHT);
 
 

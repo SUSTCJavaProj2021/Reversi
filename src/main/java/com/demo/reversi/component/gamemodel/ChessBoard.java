@@ -25,6 +25,7 @@ import javafx.scene.paint.Color;
 public class ChessBoard extends HBox implements Updatable {
     public static final double DEFAULT_BOARD_MIN_SIZE = 400;
     public static final double CHESS_SIZE_RATIO = 0.800;
+    public static final long CHESS_REVERSE_GAP_TIME = 70; //Unit: millis
 
     public final VBox vBoxCover;
     public final GridPane grid;
@@ -161,13 +162,109 @@ public class ChessBoard extends HBox implements Updatable {
                 Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
 
                 //todo: change it to be modifiable
-                Platform.runLater(()->{
+                Platform.runLater(() -> {
                     chess.setChessOwner(readBlockStatus(positionPlayer));
                 });
             }
 
         }
         Log0j.writeLog("Board Updated.");
+    }
+
+    public void updateByGrid(int row, int col) {
+        GridStatus positionPlayer = controller.getGridStatus(row, col);
+        Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
+        Platform.runLater(() -> {
+            chess.setChessOwner(readBlockStatus(positionPlayer));
+        });
+    }
+
+    /**
+     * You should make sure that the board is valid.
+     */
+    public void judgeBoard() {
+        int Player1Count = 0;
+        int Player2Count = 0;
+        for (int row = 0; row < rowSize; row++) {
+            for (int col = 0; col < colSize; col++) {
+                GridStatus positionPlayer = controller.getGridStatus(row, col);
+                if (positionPlayer == GridStatus.PLAYER_1) {
+                    Player1Count++;
+                } else if (positionPlayer == GridStatus.PLAYER_2) {
+                    Player2Count++;
+                }
+            }
+        }
+        Log0j.writeLog("Player 1 counted: " + Player1Count);
+        Log0j.writeLog("Player 2 counted: " + Player2Count);
+
+        for (int row = 0; row < rowSize; row++) {
+            for (int col = 0; col < colSize; col++) {
+                Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
+                chess.setChessOwner(Chess.ChessOwner.PLACEHOLDER);
+            }
+        }
+
+        /**
+         * Listing Player 1 Chess
+         */
+        {
+            int cursorR = rowSize - 1, cursorC = colSize - 1;
+            int stepC = -1;
+            while (Player1Count-- > 0) {
+                Chess chess = ((Chess) gridBases[cursorR][cursorC].getChildren().get(0));
+                Log0j.writeLog("Performing chess list: Coordinate: (" + cursorR + ", " + cursorC + ")");
+                Platform.runLater(() -> {
+                    chess.setChessOwnerForceAnimated(Chess.ChessOwner.PLAYER1);
+                });
+                try {
+                    Thread.sleep(CHESS_REVERSE_GAP_TIME);
+                } catch (InterruptedException e) {
+//                e.printStackTrace();
+//                Thread.currentThread().interrupt();
+                }
+                if (cursorC + stepC >= colSize || cursorC + stepC < 0) {
+                    if (cursorR - 1 < 0) {
+                        break;
+                    }
+                    cursorR--;
+                    stepC = -stepC;
+                } else {
+                    cursorC += stepC;
+                }
+            }
+        }
+        Log0j.writeLog("Player 1 chess all listed.");
+
+        /**
+         * Listing Player 2 Chess
+         */
+        {
+            int cursorR = 0, cursorC = 0;
+            int stepC = 1;
+            while (Player2Count-- > 0) {
+                Chess chess = ((Chess) gridBases[cursorR][cursorC].getChildren().get(0));
+                Log0j.writeLog("Performing chess list: Coordinate: (" + cursorR + ", " + cursorC + ")");
+                Platform.runLater(() -> {
+                    chess.setChessOwnerForceAnimated(Chess.ChessOwner.PLAYER2);
+                });
+                try {
+                    Thread.sleep(CHESS_REVERSE_GAP_TIME);
+                } catch (InterruptedException e) {
+//                e.printStackTrace();
+//                Thread.currentThread().interrupt();
+                }
+                if (cursorC + stepC >= colSize || cursorC + stepC < 0) {
+                    if (cursorR + 1 >= rowSize) {
+                        break;
+                    }
+                    cursorR++;
+                    stepC = -stepC;
+                } else {
+                    cursorC += stepC;
+                }
+            }
+        }
     }
 
     public void sourcedUpdate(int row, int col) {
@@ -177,7 +274,7 @@ public class ChessBoard extends HBox implements Updatable {
          */
         GridStatus positionPlayer = controller.getGridStatus(row, col);
         Chess chess = ((Chess) gridBases[row][col].getChildren().get(0));
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             chess.setChessOwner(readBlockStatus(positionPlayer));
         });
 
@@ -217,7 +314,7 @@ public class ChessBoard extends HBox implements Updatable {
                 chess.setChessOwnerDirected(readBlockStatus(positionPlayer), stepCol, stepRow);
             });
             try {
-                Thread.sleep(70);
+                Thread.sleep(CHESS_REVERSE_GAP_TIME);
             } catch (InterruptedException e) {
 //                e.printStackTrace();
 //                Thread.currentThread().interrupt();
@@ -226,9 +323,9 @@ public class ChessBoard extends HBox implements Updatable {
     }
 
     public Chess.ChessOwner readBlockStatus(GridStatus gridStatus) {
-        if (gridStatus == GridStatus.BLACK_PLAYER) {
+        if (gridStatus == GridStatus.PLAYER_1) {
             return Chess.ChessOwner.PLAYER1;
-        } else if (gridStatus == GridStatus.WHITE_PLAYER) {
+        } else if (gridStatus == GridStatus.PLAYER_2) {
             return Chess.ChessOwner.PLAYER2;
         } else {
             return Chess.ChessOwner.PLACEHOLDER;
@@ -253,7 +350,7 @@ public class ChessBoard extends HBox implements Updatable {
         Log0j.writeLog("Bind to controller: " + controller);
     }
 
-    public void performFinalJudge(){
+    public void performFinalJudge() {
 
     }
 }

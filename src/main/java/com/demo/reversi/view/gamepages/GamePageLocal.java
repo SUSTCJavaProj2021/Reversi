@@ -41,18 +41,20 @@ public class GamePageLocal implements Updatable {
 
 
         scorePane = new ScorePane(controller, theme);
-        Button btn = new Button("SetCheat!");
 
         root.setTop(scorePane);
         BorderPane.setAlignment(scorePane, Pos.CENTER);
 
         //TEST CHEAT MODE
         settingsPane = new GridPane();
-        ToggleButton toggleButton = new ToggleButton("Test");
+        settingsPane.setMinHeight(300);
+
+        Button btn = new Button("SetCheat!");
+        btn.setPrefHeight(300);
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                controller.setCheatMode(true);
+                chessBoard.judgeBoard();
             }
         });
         settingsPane.add(btn, 0, 0);

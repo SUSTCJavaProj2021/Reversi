@@ -65,7 +65,7 @@ public class SettingsPage implements Updatable {
     }
 
     public void initConfig() {
-        contentWrapper.add(new MetroButton("Click to do nothing", theme), 0, 0);
+        configWrapper.add(new MetroButton("Click to do nothing", theme), 0, 0);
     }
 
     public void initThemeColorPicker() {

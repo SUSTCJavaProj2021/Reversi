@@ -33,9 +33,9 @@ public class CLIGameController {
 
     public GridStatus getBlockStatus(int rowIndex, int colIndex) {
         if (board[rowIndex][colIndex] == 1) {
-            return GridStatus.BLACK_PLAYER;
+            return GridStatus.PLAYER_1;
         } else if (board[rowIndex][colIndex] == -1) {
-            return GridStatus.WHITE_PLAYER;
+            return GridStatus.PLAYER_2;
         } else {
             return GridStatus.UNOCCUPIED;
         }

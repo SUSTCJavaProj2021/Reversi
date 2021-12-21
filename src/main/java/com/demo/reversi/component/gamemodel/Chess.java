@@ -35,7 +35,6 @@ public class Chess extends StackPane implements Updatable {
     public static final Color placeHolderColor = Color.TRANSPARENT;
 
     public final Circle chessInnerCircle;
-    public final Circle chessOuterCircle;
 
     public final DoubleProperty chessSizePR;
     public final ObjectProperty<Paint> playerPaint1PR;
@@ -49,17 +48,14 @@ public class Chess extends StackPane implements Updatable {
     public Chess(double radius, Theme theme, ChessOwner chessOwner) {
         this.theme = theme;
         chessSizePR = new SimpleDoubleProperty(radius);
-        chessInnerCircle = new Circle(radius * 0.75);
-        chessOuterCircle = new Circle(radius);
+        chessInnerCircle = new Circle(radius);
 
-        getChildren().addAll(chessOuterCircle, chessInnerCircle);
+        getChildren().addAll(chessInnerCircle);
         StackPane.setAlignment(chessInnerCircle, Pos.CENTER);
-        StackPane.setAlignment(chessOuterCircle, Pos.CENTER);
         /**
          * Binding chess properties
          */
         chessInnerCircle.radiusProperty().bind(chessSizePR);
-        chessOuterCircle.radiusProperty().bind(chessSizePR);
 //        chessOuterCircle.strokeWidthProperty().bind(chessSizePR.multiply(0.02));
 //        chessOuterCircle.setFill(Color.TRANSPARENT);
 
@@ -87,7 +83,7 @@ public class Chess extends StackPane implements Updatable {
 //        });
 //      getStyleClass().add("ring");
 
-        update(ChessOwner.PLACEHOLDER, null);
+        update(ChessOwner.PLACEHOLDER, null, true);
     }
 
     public Chess(double radius, Theme theme) {
@@ -98,14 +94,24 @@ public class Chess extends StackPane implements Updatable {
         ChessOwner oldValue = chessOwner.getValue();
         chessOwner.setValue(owner);
         Platform.runLater(() -> {
-            update(oldValue, null);
+            update(oldValue, null, false);
         });
     }
 
     public void setChessOwnerDirected(ChessOwner owner, int actualRowDir, int actualColDir) {
         ChessOwner oldValue = chessOwner.getValue();
         chessOwner.setValue(owner);
-        update(oldValue, new Point3D(-actualColDir, actualRowDir, 0));
+        Platform.runLater(() -> {
+            update(oldValue, new Point3D(-actualColDir, actualRowDir, 0), false);
+        });
+    }
+
+    public void setChessOwnerForceAnimated(ChessOwner owner) {
+        ChessOwner oldValue = chessOwner.getValue();
+        chessOwner.setValue(owner);
+        Platform.runLater(() -> {
+            update(oldValue, null, true);
+        });
     }
 
     @Override
@@ -117,41 +123,35 @@ public class Chess extends StackPane implements Updatable {
      * @param oldOwner Old owner of the chess
      * @param axis     rotation axis
      */
-    public void update(ChessOwner oldOwner, Point3D axis) {
+    public void update(ChessOwner oldOwner, Point3D axis, boolean forceAnimation) {
         switch (chessOwner.getValue()) {
             case PLAYER1:
                 //Change fill
                 chessInnerCircle.fillProperty().unbind();
-                chessOuterCircle.fillProperty().unbind();
-                if (oldOwner != ChessOwner.PLACEHOLDER && oldOwner != chessOwner.getValue()) {
+                if (forceAnimation || oldOwner != ChessOwner.PLACEHOLDER && oldOwner != chessOwner.getValue()) {
                     Platform.runLater(() -> {
-                        animateReverse(playerPaint1PR, playerPaint1PR, axis);
+                        animateReverse(playerPaint1PR, axis);
                     });
                 } else {
                     chessInnerCircle.fillProperty().bind(playerPaint1PR);
-                    chessOuterCircle.fillProperty().bind(playerPaint1PR);
                 }
                 break;
 
             case PLAYER2:
                 //Change fill
                 chessInnerCircle.fillProperty().unbind();
-                chessOuterCircle.fillProperty().unbind();
-                if (oldOwner != ChessOwner.PLACEHOLDER && oldOwner != chessOwner.getValue()) {
+                if (forceAnimation || oldOwner != ChessOwner.PLACEHOLDER && oldOwner != chessOwner.getValue()) {
                     Platform.runLater(() -> {
-                        animateReverse(playerPaint2PR, playerPaint2PR, axis);
+                        animateReverse(playerPaint2PR, axis);
                     });
                 } else {
                     chessInnerCircle.fillProperty().bind(playerPaint2PR);
-                    chessOuterCircle.fillProperty().bind(playerPaint2PR);
                 }
                 break;
 
             case PLACEHOLDER:
                 chessInnerCircle.fillProperty().unbind();
-                chessOuterCircle.fillProperty().unbind();
                 chessInnerCircle.setFill(placeHolderColor);
-                chessOuterCircle.setFill(placeHolderColor);
                 break;
 
             case AI:
@@ -163,13 +163,13 @@ public class Chess extends StackPane implements Updatable {
             dropShadow.setOffsetX(3.0);
             dropShadow.setOffsetY(3.0);
             dropShadow.setColor(Color.rgb(0, 0, 0, 0.45));
-            chessOuterCircle.setEffect(dropShadow);
+            chessInnerCircle.setEffect(dropShadow);
         } else {
-            chessOuterCircle.setEffect(null);
+            chessInnerCircle.setEffect(null);
         }
     }
 
-    public void animateReverse(ObjectProperty<Paint> newPaint1, ObjectProperty<Paint> newPaint2, Point3D axis) {
+    public void animateReverse(ObjectProperty<Paint> newPaint1, Point3D axis) {
         if (axis == null) {
             axis = new Point3D(1, 1, 0);
         }
@@ -180,7 +180,6 @@ public class Chess extends StackPane implements Updatable {
             @Override
             public void handle(ActionEvent event) {
                 chessInnerCircle.fillProperty().bind(newPaint1);
-                chessOuterCircle.fillProperty().bind(newPaint2);
                 rotator2.play();
             }
         });
@@ -191,16 +190,29 @@ public class Chess extends StackPane implements Updatable {
                  * Play chess dropping sound.
                  */
                 try {
-                    AudioClip clickSound = new AudioClip(theme.chessSoundSourcePR().getValue().toUri().toString());
-                    clickSound.setVolume(theme.getEffectVolume());
-                    clickSound.play();
-                } catch (Exception e) {
+                    AudioClip chessDownSound = new AudioClip(theme.chessDownSoundSourcePR().getValue().toUri().toString());
+                    chessDownSound.setVolume(theme.getEffectVolume());
+                    chessDownSound.play();
+                } catch (NullPointerException e) {
                     e.printStackTrace();
-                    Log0j.writeLog("Not able to play chess sound.");
+                    Log0j.writeLog("Not able to play down chess sound.");
                 }
             }
         });
         ParallelTransition pt = new ParallelTransition(rotator1, scale1);
+        Platform.runLater(() -> {
+            /**
+             * Play chess up sound.
+             */
+            try {
+                AudioClip chessUpSound = new AudioClip(theme.chessUpSoundSourcePR().getValue().toUri().toString());
+                chessUpSound.setVolume(theme.getEffectVolume() * 0.25);
+                chessUpSound.play();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+                Log0j.writeLog("Not able to play chess up sound.");
+            }
+        });
         Platform.runLater(pt::play);
     }
 

@@ -45,7 +45,8 @@ public class Theme {
     public static Path defaultMainViewBGMSource;
     public static Path defaultGamePageBGMSource;
     public static Path defaultGameFinishBGMSource;
-    public static Path defaultChessSoundSource;
+    public static Path defaultChessDownSoundSource;
+    public static Path defaultChessUpSoundSource;
     public static Path defaultGridSoundSource;
 
     static {
@@ -71,10 +72,17 @@ public class Theme {
             e.printStackTrace();
         }
         try {
-            defaultChessSoundSource = Paths.get(Paths.get(Theme.class.getResource("soundeffects/").toURI()).toString(), "Chess.mp3");
-            Log0j.writeLog("Chess sound loaded on path : " + defaultChessSoundSource);
+            defaultChessDownSoundSource = Paths.get(Paths.get(Theme.class.getResource("soundeffects/").toURI()).toString(), "Chess_Down.mp3");
+            Log0j.writeLog("Chess down sound loaded on path : " + defaultChessDownSoundSource);
         } catch (NullPointerException | URISyntaxException e) {
-            Log0j.writeLog("Chess sound loading failed. Check your path.");
+            Log0j.writeLog("Chess down sound loading failed. Check your path.");
+            e.printStackTrace();
+        }
+        try {
+            defaultChessUpSoundSource = Paths.get(Paths.get(Theme.class.getResource("soundeffects/").toURI()).toString(), "Chess_Up.mp3");
+            Log0j.writeLog("Chess up sound loaded on path : " + defaultChessUpSoundSource);
+        } catch (NullPointerException | URISyntaxException e) {
+            Log0j.writeLog("Chess up sound loading failed. Check your path.");
             e.printStackTrace();
         }
         try {
@@ -212,7 +220,8 @@ public class Theme {
     public final ObjectProperty<Path> gamePageBGMSourcePR;
     public final ObjectProperty<Path> gameFinishBGMSourcePR;
     private int gameCnt;
-    public final ObjectProperty<Path> chessSoundSourcePR;
+    public final ObjectProperty<Path> chessDownSoundSourcePR;
+    public final ObjectProperty<Path> chessUpSoundSourcePR;
     public final ObjectProperty<Path> gridSoundSourcePR;
     public final DoubleProperty bgmVolumePR;
     public final DoubleProperty effectVolumePR;
@@ -272,7 +281,8 @@ public class Theme {
         gamePageBGMSourcePR = new SimpleObjectProperty<>();
         gameFinishBGMSourcePR = new SimpleObjectProperty<>();
         gameCnt = 0;
-        chessSoundSourcePR = new SimpleObjectProperty<>();
+        chessDownSoundSourcePR = new SimpleObjectProperty<>();
+        chessUpSoundSourcePR = new SimpleObjectProperty<>();
         gridSoundSourcePR = new SimpleObjectProperty<>();
         effectVolumePR = new SimpleDoubleProperty();
 
@@ -344,7 +354,8 @@ public class Theme {
         mainViewBGMSourcePR.setValue(defaultMainViewBGMSource);
         gamePageBGMSourcePR.setValue(defaultGamePageBGMSource);
         gameFinishBGMSourcePR.setValue(defaultGameFinishBGMSource);
-        chessSoundSourcePR.setValue(defaultChessSoundSource);
+        chessDownSoundSourcePR.setValue(defaultChessDownSoundSource);
+        chessUpSoundSourcePR.setValue(defaultChessUpSoundSource);
         gridSoundSourcePR.setValue(defaultGridSoundSource);
 
         bgmSourceMoved.setValue(false);
@@ -550,8 +561,12 @@ public class Theme {
     }
 
 
-    public ObjectProperty<Path> chessSoundSourcePR() {
-        return chessSoundSourcePR;
+    public ObjectProperty<Path> chessDownSoundSourcePR() {
+        return chessDownSoundSourcePR;
+    }
+
+    public ObjectProperty<Path> chessUpSoundSourcePR(){
+        return chessUpSoundSourcePR;
     }
 
     public ObjectProperty<Path> gridSoundSourcePR() {

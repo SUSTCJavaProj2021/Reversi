@@ -1,5 +1,5 @@
 package com.demo.reversi.controller;
 
 public enum GridStatus {
-    WHITE_PLAYER, BLACK_PLAYER, UNOCCUPIED, PREFERRED, BANNED;
+    PLAYER_1, PLAYER_2, UNOCCUPIED, PREFERRED, BANNED;
 }

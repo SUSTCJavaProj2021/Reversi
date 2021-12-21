@@ -4,7 +4,6 @@ import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
@@ -64,7 +63,7 @@ public class BoardGridComponent extends StackPane {
             public void handle(MouseEvent event) {
                 setOpacity(OPACITY_SELECTED);
                 try{
-                    AudioClip clickSound = new AudioClip(theme.chessSoundSourcePR().getValue().toUri().toString());
+                    AudioClip clickSound = new AudioClip(theme.chessDownSoundSourcePR().getValue().toUri().toString());
                     clickSound.setVolume(theme.getEffectVolume());
                     clickSound.play();
                 }catch (Exception e){
