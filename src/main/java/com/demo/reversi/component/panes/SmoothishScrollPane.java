@@ -7,24 +7,21 @@ import javafx.animation.Transition;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.skin.ScrollPaneSkin;
-import javafx.scene.effect.BlendMode;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
-
-import java.net.URISyntaxException;
-import java.nio.channels.WritableByteChannel;
 
 /**
  * ScrollPane with kinda smooth transition scrolling.
  *
  * @author Matt
+ *
+ * Speeded up the scrolling process and added some styles.
+ * The original author is Matt.
  */
 public class SmoothishScrollPane extends ScrollPane {
     private final static int TRANSITION_DURATION = 200;
-    private final static double BASE_MODIFIER = 1;
+    private final static double BASE_MODIFIER = 6; //Changed from 1 to 6
 
     /**
      * @param content Item to be wrapped in the ScrollPane.
@@ -32,14 +29,24 @@ public class SmoothishScrollPane extends ScrollPane {
     public SmoothishScrollPane(Node content) {
         // ease-of-access for inner class
         ScrollPane scroll = this;
+
+        setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
+        setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+        setFitToWidth(true);
+
         // set content in a wrapper
         VBox wrapper = new VBox(content);
         setContent(wrapper);
 
         //Load transparent stage style.
         try {
-            getStylesheets().add(Theme.class.getResource("ScrollPane.css").toURI().toString());
-        } catch (URISyntaxException e) {
+            getStylesheets().add(Theme.class.getResource("ScrollPane.css").toExternalForm());
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        try {
+            getStylesheets().add(Theme.class.getResource("ScrollBar.css").toExternalForm());
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
 
@@ -50,7 +57,7 @@ public class SmoothishScrollPane extends ScrollPane {
 
             @Override
             public void handle(ScrollEvent event) {
-                double deltaY = BASE_MODIFIER * event.getDeltaY();
+                double deltaY = BASE_MODIFIER * event.getDeltaY() ;
                 double width = scroll.getContent().getBoundsInLocal().getWidth();
                 double vvalue = scroll.getVvalue();
                 Interpolator interpolator = Interpolator.LINEAR;
@@ -64,6 +71,9 @@ public class SmoothishScrollPane extends ScrollPane {
                 transition.play();
             }
         });
+
+        //finally
+        setPannable(true);
     }
 
     /**

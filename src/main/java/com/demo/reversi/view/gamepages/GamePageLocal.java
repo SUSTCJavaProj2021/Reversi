@@ -5,6 +5,8 @@ import com.demo.reversi.component.gamemodel.ChessBoard;
 import com.demo.reversi.component.panes.InfoPane;
 import com.demo.reversi.controller.GameControllerLayer;
 import com.demo.reversi.controller.GameSystemLayer;
+import com.demo.reversi.controller.local.SimpleGameController;
+import com.demo.reversi.controller.local.SimplePlayer;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
@@ -32,7 +34,7 @@ public class GamePageLocal implements Updatable {
 
     public final VBox sidePanel;
     public final HBox controlsPane;
-    public final FlowPane configPane;
+    public final VBox configPane;
     public InfoPane player1Info;
     public InfoPane player2Info;
     public ChessBoard chessBoard;
@@ -69,7 +71,7 @@ public class GamePageLocal implements Updatable {
                 constraints[i] = new ColumnConstraints();
                 root.getColumnConstraints().add(constraints[i]);
             }
-            constraints[0].setHgrow(Priority.ALWAYS);
+            constraints[0].setMaxWidth(Double.POSITIVE_INFINITY);
         }
         {
             RowConstraints constraint = new RowConstraints();
@@ -93,13 +95,18 @@ public class GamePageLocal implements Updatable {
         /**
          * Adding options pane
          */
-        configPane = new FlowPane();
+        configPane = new VBox();
         sidePanel.getChildren().add(configPane);
         VBox.setVgrow(configPane, Priority.ALWAYS);
 
         initOptions();
     }
 
+    /**
+     * Load the controller.
+     *
+     * @param index
+     */
     public void loadController(int index) {
         if (index == -1) {
             Optional<String>[] playerNames = new Optional[2];
@@ -113,9 +120,8 @@ public class GamePageLocal implements Updatable {
             if (playerNames[0].isPresent() && playerNames[1].isPresent()) {
                 controller = gameSystem.startNewGame(playerNames[0].get(), playerNames[1].get());
             }
-
         } else {
-            controller = gameSystem.loadGame(1, false);
+            controller = gameSystem.loadGame(1, true);
         }
         if (controller != null) {
             chessBoard = new ChessBoard(controller, theme);
@@ -126,17 +132,23 @@ public class GamePageLocal implements Updatable {
             GridPane.setHalignment(chessBoard, HPos.CENTER);
             GridPane.setValignment(chessBoard, VPos.CENTER);
             GridPane.setVgrow(chessBoard, Priority.ALWAYS);
+            GridPane.setHgrow(chessBoard, Priority.ALWAYS);
 
+
+            player2Info = new InfoPane(controller.getPlayer2(), theme, theme.player2ChessPaintPR());
+            sidePanel.getChildren().add(player2Info);
+            player2Info.toFront();
 
             player1Info = new InfoPane(controller.getPlayer1(), theme, theme.player1ChessPaintPR());
             sidePanel.getChildren().add(player1Info);
-            player2Info = new InfoPane(controller.getPlayer2(), theme, theme.player2ChessPaintPR());
-            sidePanel.getChildren().add(player2Info);
+            player1Info.toFront();
+
             controller.bindToGamePage(this);
+            update();
         }
     }
 
-    public void initControls(){
+    public void initControls() {
 
         //todo: switch it to a toggleSwitch
         MetroButton cheatBtn = new MetroButton("Cheat", theme);
@@ -155,7 +167,11 @@ public class GamePageLocal implements Updatable {
         //todo: This may need change.
         MetroButton restartBtn = new MetroButton("Restart", theme);
         restartBtn.setOnAction(event -> {
-            controller.restartGame();
+            if (controller == null) {
+                loadController(-1);
+            } else {
+                controller.restartGame();
+            }
             update();
         });
         controlsPane.getChildren().add(restartBtn);

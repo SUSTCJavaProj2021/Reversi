@@ -7,6 +7,7 @@ import com.demo.reversi.res.icons.Icon;
 import com.demo.reversi.res.lang.LiteralConstants;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.contentpages.*;
+import javafx.scene.control.Button;
 import javafx.scene.media.MediaView;
 
 import javafx.scene.control.Label;
@@ -96,5 +97,6 @@ public class MainView extends GridPane {
         else{
             Log0j.writeInfo("Background BGM isn't loaded because the pointer to BGMPlayer is null.");
         }
+
     }
 }

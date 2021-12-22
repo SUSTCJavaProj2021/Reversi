@@ -66,10 +66,10 @@ public class SettingsPage implements Updatable {
         loadButton = new MetroButton("Load Theme", theme);
         saveButton = new MetroButton("Save Theme", theme);
         resetButton = new MetroButton("Reset Theme", theme);
-        configWrapper.add(discardButton,0,0);
-        configWrapper.add(loadButton,1,0);
-        configWrapper.add(saveButton,2,0);
-        configWrapper.add(resetButton,3,0);
+        configWrapper.add(discardButton, 0, 0);
+        configWrapper.add(loadButton, 1, 0);
+        configWrapper.add(saveButton, 2, 0);
+        configWrapper.add(resetButton, 3, 0);
 
         initContent();
         initConfig();
@@ -89,7 +89,7 @@ public class SettingsPage implements Updatable {
         container.setPrefHeight(PREF_CONTAINER_HEIGHT);
 
         ColorPicker cp = new ColorPicker(Theme.defaultThemeColor);
-        theme.themeColorPR().bind(cp.valueProperty());
+//        theme.themeColorPR().bind(cp.valueProperty());
 
         Label label = new Label("ThemeColor");
         label.fontProperty().bind(theme.textFontFamilyPR());
@@ -99,7 +99,7 @@ public class SettingsPage implements Updatable {
         s.setOpacity(0);
 
         container.getChildren().addAll(label, s, cp);
-        contentWrapper.add(container, 0, 1);
+        contentWrapper.add(container, 0, contentWrapper.getRowCount());
     }
 
     @Override

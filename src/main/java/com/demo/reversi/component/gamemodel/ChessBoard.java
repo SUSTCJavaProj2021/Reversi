@@ -269,7 +269,12 @@ public class ChessBoard extends HBox implements Updatable {
         Task<Void> task1 = new Task<Void>() {
             @Override
             protected Void call() {
-                placePlayerChess(cnt1, Chess.ChessOwner.PLAYER1, rowSize - 1, 0, -1, 1);
+                if (rowSize % 2 == 0) {
+                    placePlayerChess(cnt1, Chess.ChessOwner.PLAYER1, rowSize - 1, 0, -1, 1);
+                }
+                else{
+                    placePlayerChess(cnt1, Chess.ChessOwner.PLAYER1, rowSize - 1, colSize - 1, -1, -1);
+                }
                 return null;
             }
         };
@@ -358,7 +363,7 @@ public class ChessBoard extends HBox implements Updatable {
         Log0j.writeInfo("Bind to controller: " + controller);
     }
 
-    private void unbindController(){
+    private void unbindController() {
         for (int row = 0; row < rowSize; row++) {
             for (int col = 0; col < colSize; col++) {
                 final int tmpRow = row, tmpCol = col;
@@ -368,7 +373,7 @@ public class ChessBoard extends HBox implements Updatable {
         Log0j.writeInfo("Unbind controller.");
     }
 
-    public void initBoardPlayable(){
+    public void initBoardPlayable() {
         bindController();
     }
 

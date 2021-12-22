@@ -157,8 +157,8 @@ public class Theme {
     /**
      * Mode colors
      */
-    public static final Paint defaultDarkModeColor = Color.rgb(32, 32, 32);
-    public static final Paint defaultLightModeColor = Color.rgb(240, 240, 240);
+    public static final Color defaultDarkModeColor = Color.rgb(32, 32, 32);
+    public static final Color defaultLightModeColor = Color.rgb(240, 240, 240);
 
     /**
      * Theme colors & paints
@@ -253,9 +253,9 @@ public class Theme {
      * If <code>modeSwitchPR</code> is set to true, then dark mode is applied.
      */
     public final BooleanProperty modeSwitchPR;
-    public final ObjectProperty<Paint> modePaintPR;
+    public final ObjectProperty<Color> modeColorPR;
     //This property is for getting the reversed color of the mode.
-    public final ObjectProperty<Paint> modeRevPaintPR;
+    public final ObjectProperty<Color> modeRevColorPR;
 
     public final ObjectProperty<Color> themeColorPR;
     public final ObjectProperty<Paint> themePaintPR;
@@ -308,8 +308,8 @@ public class Theme {
         frontPaneBackgroundPR = new SimpleObjectProperty<>();
 
         modeSwitchPR = new SimpleBooleanProperty();
-        modePaintPR = new SimpleObjectProperty<>();
-        modeRevPaintPR = new SimpleObjectProperty<>();
+        modeColorPR = new SimpleObjectProperty<>();
+        modeRevColorPR = new SimpleObjectProperty<>();
 
         themeColorPR = new SimpleObjectProperty<>();
         themePaintPR = new SimpleObjectProperty<>();
@@ -382,8 +382,8 @@ public class Theme {
         frontPaneBackgroundPR.setValue(defaultFrontPaneBKGND);
 
         modeSwitchPR.setValue(true);
-        modePaintPR.setValue(defaultDarkModeColor);
-        modeRevPaintPR.setValue(defaultLightModeColor);
+        modeColorPR.setValue(defaultDarkModeColor);
+        modeRevColorPR.setValue(defaultLightModeColor);
 
         themeColorPR.setValue(defaultThemeColor);
         themePaintPR.setValue(defaultThemePaint);
@@ -414,7 +414,7 @@ public class Theme {
     public void initRelations() {
 
         //Bind mode switch to dynamically change color.
-        modePaintPR.bind(Bindings.createObjectBinding(() -> {
+        modeColorPR.bind(Bindings.createObjectBinding(() -> {
             if (modeSwitchPR.getValue()) {
                 return defaultDarkModeColor;
             } else {
@@ -422,7 +422,7 @@ public class Theme {
             }
         }, modeSwitchPR));
 
-        modeRevPaintPR.bind(Bindings.createObjectBinding(() -> {
+        modeRevColorPR.bind(Bindings.createObjectBinding(() -> {
             if (modeSwitchPR.getValue()) {
                 return defaultLightModeColor;
             } else {
@@ -430,10 +430,10 @@ public class Theme {
             }
         }, modeSwitchPR));
 
-        titleFontPaintPR.bind(modeRevPaintPR);
-        infoTitleFontPaintPR.bind(modeRevPaintPR);
-        menuFontPaintPR.bind(modeRevPaintPR);
-        textFontPaintPR.bind(modeRevPaintPR);
+        titleFontPaintPR.bind(modeRevColorPR);
+        infoTitleFontPaintPR.bind(modeRevColorPR);
+        menuFontPaintPR.bind(modeRevColorPR);
+        textFontPaintPR.bind(modeRevColorPR);
 
 
         //Bind theme paint to theme color
@@ -647,23 +647,23 @@ public class Theme {
         return modeSwitchPR;
     }
 
-    public ObjectProperty<Paint> modePaintPR() {
-        return modePaintPR;
+    public ObjectProperty<Color> modePaintPR() {
+        return modeColorPR;
     }
 
-    public ObjectProperty<Paint> modeRevPaintPR() {
-        return modeRevPaintPR;
+    public ObjectProperty<Color> modeRevPaintPR() {
+        return modeRevColorPR;
     }
 
     public void bindToModePaintBackground(ObjectProperty<Background> background) {
         background.bind(Bindings.createObjectBinding(() -> {
-            return new Background(new BackgroundFill(modePaintPR.getValue(), null, null));
+            return new Background(new BackgroundFill(modeColorPR.getValue(), null, null));
         }, modeSwitchPR));
     }
 
     public void bindToModeRevPaintBackground(ObjectProperty<Background> background) {
         background.bind(Bindings.createObjectBinding(() -> {
-            return new Background(new BackgroundFill(modeRevPaintPR.getValue(), null, null));
+            return new Background(new BackgroundFill(modeRevColorPR.getValue(), null, null));
         }, modeSwitchPR));
     }
 

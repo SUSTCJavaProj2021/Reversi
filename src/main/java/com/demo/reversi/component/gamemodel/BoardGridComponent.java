@@ -27,7 +27,7 @@ public class BoardGridComponent extends StackPane {
 
     private final Theme theme;
 
-    public BoardGridComponent(Theme theme){
+    public BoardGridComponent(Theme theme) {
         super();
         this.theme = theme;
         viewCover = new StackPane();
@@ -70,11 +70,11 @@ public class BoardGridComponent extends StackPane {
             @Override
             public void handle(MouseEvent event) {
                 setOpacity(OPACITY_SELECTED);
-                try{
+                try {
                     AudioClip clickSound = new AudioClip(theme.chessDownSoundSourcePR().getValue().toUri().toString());
                     clickSound.setVolume(theme.getEffectVolume());
                     clickSound.play();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                     Log0j.writeInfo("Not able to play chess sound.");
                 }
@@ -82,8 +82,20 @@ public class BoardGridComponent extends StackPane {
         });
     }
 
-    public BoardGridComponent outer(){
+    public BoardGridComponent outer() {
         return this;
+    }
+
+    public void restore() {
+        viewCover.setBackground(null);
+    }
+
+    public void setPreferred() {
+        viewCover.setBackground(new Background(new BackgroundFill(Color.rgb(5, 245, 240, 0.35), null, null)));
+    }
+
+    public void setBanned() {
+        viewCover.setBackground(new Background(new BackgroundFill(Color.rgb(120, 120, 120, 0.5), null, null)));
     }
 
 }

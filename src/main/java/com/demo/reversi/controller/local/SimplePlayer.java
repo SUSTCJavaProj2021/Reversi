@@ -25,8 +25,8 @@ public class SimplePlayer implements PlayerLayer {
     }
 
     @Override
-    public IntegerProperty pveWinCountProperty() {
-        return new SimpleIntegerProperty(18);
+    public DoubleProperty overallWinRateProperty() {
+        return new SimpleDoubleProperty(0.5321);
     }
 
     @Override
@@ -35,18 +35,18 @@ public class SimplePlayer implements PlayerLayer {
     }
 
     @Override
-    public DoubleProperty overallWinRateProperty() {
-        return new SimpleDoubleProperty(0.5321);
+    public DoubleProperty pvpWinRateProperty() {
+        return new SimpleDoubleProperty(0.629);
+    }
+
+    @Override
+    public IntegerProperty pveWinCountProperty() {
+        return new SimpleIntegerProperty(18);
     }
 
     @Override
     public DoubleProperty pveWinRateProperty(){
         return new SimpleDoubleProperty(0.5);
-    }
-
-    @Override
-    public DoubleProperty pvpWinRateProperty() {
-        return new SimpleDoubleProperty(0.629);
     }
 
     @Override

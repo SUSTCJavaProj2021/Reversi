@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.net.URISyntaxException;
+import java.util.Scanner;
 
 public class MainApp extends Application {
     public static final int MAIN_WINDOW_PREF_WIDTH = 1280;

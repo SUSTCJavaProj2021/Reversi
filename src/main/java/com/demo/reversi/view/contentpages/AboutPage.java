@@ -20,10 +20,14 @@ public class AboutPage implements Updatable {
 
         Label ver = new Label("Version: 0.01; All controls are hard coded.\n" +
                 "All Controls are coded using NATIVE javafx controls. Animations are customized to suit Fluent Design Style.");
-        ver.setTextFill(Color.WHITE);
-        ver.setWrapText(true);
+        ver.fontProperty().bind(theme.textFontFamilyPR());
+        ver.textFillProperty().bind(theme.titleFontPaintPR());
+
         Label aut = new Label("Author: sorrymaker");
-        aut.setTextFill(Color.WHITE);
+
+        aut.fontProperty().bind(theme.textFontFamilyPR());
+        aut.textFillProperty().bind(theme.textFontPaintPR());
+
         root.add(ver, 0, 1);
         root.add(aut, 0, 2);
 

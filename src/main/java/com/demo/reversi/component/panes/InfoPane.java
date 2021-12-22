@@ -1,6 +1,7 @@
 package com.demo.reversi.component.panes;
 
 import com.demo.reversi.controller.PlayerLayer;
+import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
 import javafx.animation.FadeTransition;
@@ -14,7 +15,10 @@ import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.skin.ProgressIndicatorSkin;
 import javafx.scene.effect.Bloom;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -141,10 +145,14 @@ public class InfoPane extends StackPane implements Updatable {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 //todo: Add animation
                 if (isActivated.getValue()) {
-                    //WDNMD
+                    ProgressIndicator progressIndicator = new ProgressIndicator();
+                    indicator.getChildren().add(progressIndicator);
+                    ColorAdjust colorAdjust = new ColorAdjust();
+                    colorAdjust.setBrightness(-1); //Makes all non-white colors black
+                    indicator.setEffect(colorAdjust);
                 }
                 else{
-                    //555555
+                    indicator.getChildren().clear();
                 }
             }
         });
