@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.json.JSONObject;
 
+
 import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -761,6 +762,7 @@ public class Theme {
             Log0j.writeInfo("Loading theme file from the following path: " + srcPath);
             JSONObject jsonObject = new JSONObject(new File(srcPath));
             Log0j.writeInfo("Theme loaded.");
+
         } catch (Exception e) {
             e.printStackTrace();
             Log0j.writeInfo("Error occurred during converting source file to file stream. No theme is changed.");

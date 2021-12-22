@@ -322,17 +322,14 @@ public class ChessBoard extends HBox implements Updatable {
                 new Thread(task2).start();
             }
         });
-        task2.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                loadController();
-            }
-        });
+//        task2.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+//            @Override
+//            public void handle(WorkerStateEvent event) {
+//                loadController();
+//            }
+//        });
         new Thread(task1).start();
 
-        /**
-         * Listing Player 2 Chess
-         */
     }
 
     private void placePlayerChess(int cnt, Chess.ChessOwner player, int startRow, int startCol, int stepR, int stepC) {

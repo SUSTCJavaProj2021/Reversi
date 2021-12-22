@@ -28,7 +28,7 @@ public class BoardGridComponent extends StackPane {
     private final Theme theme;
 
     public BoardGridComponent(Theme theme) {
-        super();
+        setCache(true);
         this.theme = theme;
         viewCover = new StackPane();
         getChildren().add(viewCover);
@@ -80,6 +80,7 @@ public class BoardGridComponent extends StackPane {
                 }
             }
         });
+
     }
 
     public BoardGridComponent outer() {

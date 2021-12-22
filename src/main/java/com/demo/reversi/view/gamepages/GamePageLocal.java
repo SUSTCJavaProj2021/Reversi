@@ -177,6 +177,7 @@ public class GamePageLocal implements UpdatableGame {
                 loadController(-1);
             } else {
                 controller.restartGame();
+                chessBoard.initBoardPlayable(controller);
             }
             update();
         });
@@ -226,15 +227,16 @@ public class GamePageLocal implements UpdatableGame {
                 chessBoard.curtainCall();
                 Platform.runLater(() -> {
                     theme.bgmPlayerInterrupt(theme.gameFinishBGMSourcePR().getValue(), 100);
-                });
-                Stage stage = new Stage();
-                stage.setScene(new Scene(new Label("Well played!")));
-                stage.show();
-                stage.setOnCloseRequest(ActionEvent -> {
-                    Platform.runLater(() -> {
-                        theme.bgmPlayerResume(100);
+                    Stage stage = new Stage();
+                    stage.setScene(new Scene(new Label("Well played!")));
+                    stage.show();
+                    stage.setOnCloseRequest(ActionEvent -> {
+                        Platform.runLater(() -> {
+                            theme.bgmPlayerResume(100);
+                        });
                     });
                 });
+
                 return null;
             }
         };

@@ -43,6 +43,8 @@ public class Chess extends StackPane implements Updatable {
 
 
     public Chess(double radius, Theme theme, ChessOwner chessOwner) {
+        setCache(true);
+
         this.theme = theme;
         chessSizePR = new SimpleDoubleProperty(radius);
         chessInnerCircle = new Circle(radius);

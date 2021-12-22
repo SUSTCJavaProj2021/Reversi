@@ -13,20 +13,15 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import org.json.JSONObject;
 
-public class Test extends Application {
+public class Test {
 
-    @Override
-    public void start(Stage primaryStage) {
 
-        GridPane gridPane = new GridPane();
-        gridPane.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
-        gridPane.add(new PlayerItem(1, new SimplePlayer("wdnmd"), new Theme(primaryStage)), 0, 0);
-        primaryStage.setScene(new Scene(gridPane));
-        primaryStage.show();
-    }
 
     public static void main(String[] args) {
-        launch(args);
+        GridPane gridPane = new GridPane();
+        gridPane.setMinWidth(80);
+        JSONObject jsonObject = new JSONObject();
     }
 }

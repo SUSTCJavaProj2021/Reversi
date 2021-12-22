@@ -1,20 +1,28 @@
 package com.demo.reversi.component.statistics;
 
 import com.demo.reversi.controller.PlayerLayer;
-import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
+import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
+import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
 
 public class PlayerItem extends GridPane {
     public static final double DEFAULT_HEIGHT = 45;
+    public final static double OPACITY_DEFAULT = 0.90;
+    public final static double OPACITY_SELECTED = 1.0;
+
+    public static final double TRANS_TIME_MILLIS = 100;
 
     public final Label playerRanking;
     public final Label playerName;
@@ -35,8 +43,21 @@ public class PlayerItem extends GridPane {
         /**
          * To make the items have a visual separator
          */
-        if (index % 2 == 0) {
-//            backgroundProperty().bind();
+        if (index <= 3) {
+            Stop[] stops;
+            LinearGradient coverFill;
+            stops = switch (index) {
+                case 1 -> new Stop[]{new Stop(0, Color.TRANSPARENT), new Stop(0.2, Color.rgb(255, 238, 0, 0.30)), new Stop(1, Color.TRANSPARENT)};
+                case 2 -> new Stop[]{new Stop(0, Color.TRANSPARENT), new Stop(0.2, Color.rgb(255, 255, 255, 0.30)), new Stop(1, Color.TRANSPARENT)};
+                case 3 -> new Stop[]{new Stop(0, Color.TRANSPARENT), new Stop(0.2, Color.rgb(143, 88, 4, 0.30)), new Stop(1, Color.TRANSPARENT)};
+                default -> new Stop[]{new Stop(0, Color.TRANSPARENT), new Stop(0.2, Color.rgb(255, 255, 255, 0.08)), new Stop(1, Color.TRANSPARENT)};
+            };
+            coverFill = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
+            setBackground(new Background(new BackgroundFill(coverFill, null, null)));
+        } else if (index % 2 == 0) {
+            Stop[] stops = new Stop[]{new Stop(0, Color.TRANSPARENT), new Stop(0.2, Color.rgb(255, 255, 255, 0.08)), new Stop(1, Color.TRANSPARENT)};
+            LinearGradient coverFill = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
+            setBackground(new Background(new BackgroundFill(coverFill, null, null)));
         }
 
         /**
@@ -68,8 +89,7 @@ public class PlayerItem extends GridPane {
         playerPVEWinRate.textProperty().bind(player.pveWinRateProperty().asString());
 
 
-        bindToTheme();
-        initLayout();
+        init();
     }
 
     /**
@@ -91,11 +111,21 @@ public class PlayerItem extends GridPane {
         playerPVEWinCnt = new Label("PVE Win Count");
         playerPVEWinRate = new Label("Win Rate");
 
-        bindToTheme();
-        initLayout();
+        Stop[] stops = new Stop[]{new Stop(0, Color.TRANSPARENT), new Stop(0.2, Color.rgb(255, 255, 255, 0.08)), new Stop(1, Color.TRANSPARENT)};
+        LinearGradient coverFill = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
+        setBackground(new Background(new BackgroundFill(coverFill, null, null)));
+
+        init();
     }
 
-    private void bindToTheme(){
+    public void init() {
+        setCache(true);
+        bindAllLabelToTheme();
+        initLayout();
+        initAnimation();
+    }
+
+    private void bindAllLabelToTheme() {
 
         playerRanking.textFillProperty().bind(theme.textFontPaintPR());
         playerName.textFillProperty().bind(theme.textFontPaintPR());
@@ -125,17 +155,29 @@ public class PlayerItem extends GridPane {
 
         getChildren().addAll(playerRanking, playerName, playerTotalMatchCnt, playerTotalWinCnt,
                 playerPVPWinCnt, playerPVPWinRate, playerPVEWinCnt, playerPVEWinRate);
-        setConstraints(playerRanking,0,0,1,1, HPos.LEFT, VPos.CENTER);
-        setConstraints(playerName,1,0,1,1, HPos.LEFT, VPos.CENTER);
-        setConstraints(playerTotalMatchCnt,2,0,1,1, HPos.CENTER, VPos.CENTER);
-        setConstraints(playerTotalWinCnt,3,0,1,1, HPos.CENTER, VPos.CENTER);
-        setConstraints(playerPVPWinCnt,4,0,1,1, HPos.CENTER, VPos.CENTER);
-        setConstraints(playerPVPWinRate,5,0,1,1, HPos.CENTER, VPos.CENTER);
-        setConstraints(playerPVEWinCnt,6,0,1,1, HPos.CENTER, VPos.CENTER);
-        setConstraints(playerPVEWinRate,7,0,1,1, HPos.CENTER, VPos.CENTER);
+
+
+        setConstraints(playerRanking, 0, 0, 1, 1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
+        setConstraints(playerName, 1, 0, 1, 1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
+        setConstraints(playerTotalMatchCnt, 2, 0, 1, 1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
+        setConstraints(playerTotalWinCnt, 3, 0, 1, 1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
+        setConstraints(playerPVPWinCnt, 4, 0, 1, 1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
+        setConstraints(playerPVPWinRate, 5, 0, 1, 1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
+        setConstraints(playerPVEWinCnt, 6, 0, 1, 1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
+        setConstraints(playerPVEWinRate, 7, 0, 1, 1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
+
+        playerRanking.setAlignment(Pos.CENTER);
+        playerName.setAlignment(Pos.CENTER);
+        playerTotalMatchCnt.setAlignment(Pos.CENTER);
+        playerTotalWinCnt.setAlignment(Pos.CENTER);
+        playerOverallWinRate.setAlignment(Pos.CENTER);
+        playerPVPWinCnt.setAlignment(Pos.CENTER);
+        playerPVPWinRate.setAlignment(Pos.CENTER);
+        playerPVEWinCnt.setAlignment(Pos.CENTER);
+        playerPVEWinRate.setAlignment(Pos.CENTER);
 
         ColumnConstraints constraints[] = new ColumnConstraints[8];
-        for(int i = 0;i<8;i++){
+        for (int i = 0; i < 8; i++) {
             constraints[i] = new ColumnConstraints();
             getColumnConstraints().add(constraints[i]);
         }
@@ -147,5 +189,27 @@ public class PlayerItem extends GridPane {
         constraints[5].setPercentWidth(13);
         constraints[6].setPercentWidth(10);
         constraints[7].setPercentWidth(13);
+    }
+
+    private void initAnimation() {
+        setOnMouseEntered(event -> {
+            FadeTransition ft = new FadeTransition(Duration.millis(TRANS_TIME_MILLIS), outer());
+            ft.setFromValue(OPACITY_DEFAULT);
+            ft.setToValue(OPACITY_SELECTED);
+            ft.setCycleCount(1);
+            Platform.runLater(ft::play);
+        });
+
+        setOnMouseExited(event -> {
+            FadeTransition ft = new FadeTransition(Duration.millis(TRANS_TIME_MILLIS), outer());
+            ft.setFromValue(OPACITY_SELECTED);
+            ft.setToValue(OPACITY_DEFAULT);
+            ft.setCycleCount(1);
+            Platform.runLater(ft::play);
+        });
+    }
+
+    private PlayerItem outer() {
+        return this;
     }
 }

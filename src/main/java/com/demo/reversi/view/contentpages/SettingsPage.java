@@ -7,6 +7,7 @@ import com.demo.reversi.controller.local.SimpleGameSystem;
 import com.demo.reversi.res.lang.LiteralConstants;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
+import javafx.event.ActionEvent;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
@@ -66,10 +67,6 @@ public class SettingsPage implements Updatable {
         loadButton = new MetroButton("Load Theme", theme);
         saveButton = new MetroButton("Save Theme", theme);
         resetButton = new MetroButton("Reset Theme", theme);
-        configWrapper.add(discardButton, 0, 0);
-        configWrapper.add(loadButton, 1, 0);
-        configWrapper.add(saveButton, 2, 0);
-        configWrapper.add(resetButton, 3, 0);
 
         initContent();
         initConfig();
@@ -81,6 +78,24 @@ public class SettingsPage implements Updatable {
     }
 
     public void initConfig() {
+        configWrapper.add(discardButton, 0, 0);
+        configWrapper.add(loadButton, 1, 0);
+        configWrapper.add(saveButton, 2, 0);
+        configWrapper.add(resetButton, 3, 0);
+        discardButton.setOnAction(ActionEvent -> {
+            theme.applyDefaultTheme();
+        });
+        loadButton.setOnAction(ActionEvent->
+        {   //todo: add file picker
+
+            theme.loadTheme();
+        });
+        saveButton.setOnAction(ActionEvent->{
+            theme.saveTheme();
+        });
+        resetButton.setOnAction(ActionEvent->{
+            theme.applyDefaultTheme();
+        });
     }
 
     public void initThemeColorPicker() {

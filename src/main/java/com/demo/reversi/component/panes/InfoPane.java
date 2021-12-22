@@ -42,6 +42,7 @@ public class InfoPane extends StackPane implements Updatable {
     public final Label playerWinRateLabel;
     public final ObjectProperty<Paint> playerColorPR;
     public final ImageView playerImage;
+    public final ProgressIndicator progressIndicator;
     public final BooleanProperty isActivated;
 
     public BooleanProperty isActivatedProperty() {
@@ -101,6 +102,12 @@ public class InfoPane extends StackPane implements Updatable {
         //Design leads to it
         playerImage.fitWidthProperty().bind(Bindings.min(widthProperty().multiply(0.4), heightProperty().multiply(0.85)));
 
+        progressIndicator = new ProgressIndicator();
+        ColorAdjust colorAdjust = new ColorAdjust();
+        colorAdjust.setBrightness(-1); //Makes all non-white colors black
+        indicator.setEffect(colorAdjust);
+        indicator.maxHeightProperty().bind(heightProperty().multiply(INDICATOR_RATIO));
+        indicator.maxWidthProperty().bind(indicator.maxHeightProperty());
 
         init();
     }
@@ -112,13 +119,7 @@ public class InfoPane extends StackPane implements Updatable {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 //todo: Add animation
                 if (isActivated.getValue()) {
-                    ProgressIndicator progressIndicator = new ProgressIndicator();
                     indicator.getChildren().add(progressIndicator);
-                    ColorAdjust colorAdjust = new ColorAdjust();
-                    colorAdjust.setBrightness(-1); //Makes all non-white colors black
-                    indicator.setEffect(colorAdjust);
-                    indicator.prefHeightProperty().bind(heightProperty().multiply(INDICATOR_RATIO));
-                    indicator.prefWidthProperty().bind(indicator.prefHeightProperty());
                 } else {
                     indicator.getChildren().clear();
                 }
