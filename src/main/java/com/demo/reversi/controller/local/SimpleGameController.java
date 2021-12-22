@@ -6,6 +6,7 @@ import com.demo.reversi.controller.GridStatus;
 import com.demo.reversi.controller.PlayerLayer;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.view.Updatable;
+import com.demo.reversi.view.UpdatableGame;
 import com.demo.reversi.view.gamepages.GamePageLocal;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -20,7 +21,7 @@ public class SimpleGameController implements GameControllerLayer {
 
     public CLIGameController controller;
 
-    public Updatable gamePage;
+    public UpdatableGame gamePage;
 
     public boolean isCheatMode;
 
@@ -63,7 +64,7 @@ public class SimpleGameController implements GameControllerLayer {
         GameStatus gameStatus = controller.judge();
         if(gameStatus !=GameStatus.UNFINISHED){
             if(gamePage!=null){
-                ((GamePageLocal)gamePage).finishUpdate();
+                gamePage.curtainCallUpdate();
             }
         }
         return true;
@@ -138,7 +139,7 @@ public class SimpleGameController implements GameControllerLayer {
     ;
 
     @Override
-    public boolean bindToGamePage(Updatable gamePage){
+    public boolean bindToGamePage(UpdatableGame gamePage){
         this.gamePage = gamePage;
         return true;
     }
@@ -157,7 +158,7 @@ public class SimpleGameController implements GameControllerLayer {
     @Override
     public void forceSourcedGUIUpdate(int row, int col){
         if(gamePage !=null){
-            ((GamePageLocal)gamePage).sourcedUpdate(row, col);
+            gamePage.sourcedUpdate(row, col);
         }
         else{
             Log0j.writeInfo("Cannot update because GUI pointer is null.");

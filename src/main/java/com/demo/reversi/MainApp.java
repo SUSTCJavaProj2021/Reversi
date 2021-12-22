@@ -8,11 +8,11 @@ import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.net.URISyntaxException;
-import java.util.Scanner;
 
 public class MainApp extends Application {
     public static final int MAIN_WINDOW_PREF_WIDTH = 1280;
@@ -27,7 +27,11 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) throws URISyntaxException {
         //Initialize Game System
         this.primaryStage = primaryStage;
+
+        //Loading...
+
         gameSystem = new SimpleGameSystem();
+
 
         //Initialize MainView
 
@@ -65,13 +69,17 @@ public class MainApp extends Application {
         primaryStage.show();
         Log0j.writeInfo("Stage shown.");
 
+//        primaryStage.setFullScreen(true);
+//        primaryStage.setFullScreenExitHint("Press Esc to exit fullscreen.");
+//        primaryStage.setFullScreenExitKeyCombination(KeyCombination.valueOf("Esc"));
+
     }
 
     public static void main(String[] args) {
         launch(args);
     }
 
-    public void setCloseAction(){
+    public void setCloseAction() {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {

@@ -1,11 +1,12 @@
 package com.demo.reversi.controller;
 
 import com.demo.reversi.view.Updatable;
+import com.demo.reversi.view.UpdatableGame;
 import javafx.beans.property.ObjectProperty;
 
 public interface GameControllerLayer {
 
-    public boolean bindToGamePage(Updatable gamePage);
+    public boolean bindToGamePage(UpdatableGame gamePage);
 
 //    public boolean bindToChessBoard();
 

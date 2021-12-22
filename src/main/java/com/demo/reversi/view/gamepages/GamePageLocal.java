@@ -5,11 +5,10 @@ import com.demo.reversi.component.gamemodel.ChessBoard;
 import com.demo.reversi.component.panes.InfoPane;
 import com.demo.reversi.controller.GameControllerLayer;
 import com.demo.reversi.controller.GameSystemLayer;
-import com.demo.reversi.controller.local.SimpleGameController;
-import com.demo.reversi.controller.local.SimplePlayer;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
+import com.demo.reversi.view.UpdatableGame;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.geometry.HPos;
@@ -22,10 +21,9 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
-public class GamePageLocal implements Updatable {
+public class GamePageLocal implements UpdatableGame {
     public static final double MIN_WIDTH = InfoPane.PREF_WIDTH + ChessBoard.DEFAULT_BOARD_MIN_SIZE;
     public static final double MIN_HEIGHT = ChessBoard.DEFAULT_BOARD_MIN_SIZE + 40;
     public static final double DEFAULT_PREF_WIDTH = 930;
@@ -193,7 +191,7 @@ public class GamePageLocal implements Updatable {
          */
         MetroButton judgeBtn = new MetroButton("Perform board judge!", theme);
         judgeBtn.setOnAction(actionEvent -> {
-            finishGame();
+            curtainCall();
         });
         configPane.getChildren().add(judgeBtn);
 
@@ -216,11 +214,11 @@ public class GamePageLocal implements Updatable {
         updateElements();
     }
 
-    public void finishUpdate(){
-        finishGame();
+    public void curtainCallUpdate(){
+        curtainCall();
     }
 
-    private void finishGame(){
+    private void curtainCall(){
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {

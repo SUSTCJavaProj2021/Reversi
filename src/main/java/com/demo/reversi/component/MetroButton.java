@@ -11,6 +11,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.control.Button;
 import javafx.scene.control.Control;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.media.AudioClip;
@@ -55,6 +56,7 @@ public class MetroButton extends Button {
         setMinWidth(Control.USE_COMPUTED_SIZE);
         setMinHeight(Control.USE_PREF_SIZE);
         setMaxWidth(Control.USE_PREF_SIZE);
+        setTooltip(new Tooltip(text));
 
         fontProperty().bind(theme.menuFontFamilyPR());
         textFillProperty().bind(theme.modeRevPaintPR());
