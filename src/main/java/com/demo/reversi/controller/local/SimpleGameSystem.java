@@ -1,5 +1,8 @@
-package com.demo.reversi.controller;
+package com.demo.reversi.controller.local;
 
+import com.demo.reversi.controller.GameControllerLayer;
+import com.demo.reversi.controller.GameSystemLayer;
+import com.demo.reversi.controller.PlayerLayer;
 import com.demo.reversi.logger.Log0j;
 
 import java.util.ArrayList;
@@ -40,6 +43,25 @@ public class SimpleGameSystem implements GameSystemLayer {
     @Override
     public boolean updateRanking() {
         return true;
+    }
+
+    @Override
+    public List<PlayerLayer> queryPlayerInfoAllSorted() {
+        ArrayList<PlayerLayer> playerList = new ArrayList<PlayerLayer>();
+        //todo: Change test method
+        playerList.add(new SimplePlayer("AQX0783"));
+        playerList.add(new SimplePlayer("B7820HQ"));
+        playerList.add(new SimplePlayer("S9980HK"));
+        playerList.add(new SimplePlayer("W1165G7"));
+        playerList.add(new SimplePlayer("B1135G7"));
+        playerList.add(new SimplePlayer("N8650UK"));
+        playerList.add(new SimplePlayer("XTQ2014"));
+        playerList.add(new SimplePlayer("Test Player wdnmd"));
+        playerList.add(new SimplePlayer("我带你们打！"));
+        playerList.add(new SimplePlayer("dnmd"));
+        playerList.add(new SimplePlayer("Raiden Shogun"));
+        playerList.add(new SimplePlayer("Zachary"));
+        return playerList;
     }
 
     @Override

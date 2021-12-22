@@ -3,7 +3,7 @@ package com.demo.reversi.view.contentpages;
 import com.demo.reversi.component.MetroButton;
 import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.selector.SelectorPane;
-import com.demo.reversi.controller.SimpleGameSystem;
+import com.demo.reversi.controller.local.SimpleGameSystem;
 import com.demo.reversi.res.lang.LiteralConstants;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
@@ -18,7 +18,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 public class PlayPage implements Updatable {
     public static final double SELECTOR_WIDTH = 180;
@@ -29,6 +28,7 @@ public class PlayPage implements Updatable {
     // Secondary views
     public final GridPane localPlaySelector;
 
+    public final GridPane LANPlayPane;
     public final GridPane onlinePlayPane;
 
 
@@ -63,6 +63,9 @@ public class PlayPage implements Updatable {
 
         //Initialize all secondary panes.
 
+        LANPlayPane = new GridPane();
+        LANPlayPane.add(new TitleLabel("Play Game in Local Area Network", theme), 0,0);
+        LANPlayPane.add(new Label("Actually, there is no LAN game yet.\n QAQ"), 0, 1);
 
         onlinePlayPane = new GridPane();
         onlinePlayPane.add(new TitleLabel("Play Online Game", theme), 0, 0);
@@ -74,6 +77,7 @@ public class PlayPage implements Updatable {
         //Initialize the Play Selector
 
         playSelector.addPage("Local", localPlaySelector);
+        playSelector.addPage("LAN", LANPlayPane);
         playSelector.addPage("Online", onlinePlayPane);
         playSelector.resetSelectorWidth(120);
         playSelector.init();
@@ -82,14 +86,14 @@ public class PlayPage implements Updatable {
         //Buttons need not only to be initialized, but also added to the pane.
         newLocalGameButton = new MetroButton(LiteralConstants.PlayLocalText.toString(), theme);
         initPlayLocalGameButton();
+        localPlaySelector.add(newLocalGameButton, 0, 0);
 
         loadLocalGameButton = new MetroButton(LiteralConstants.LoadGameText.toString(), theme);
         initLoadGameButton();
+        localPlaySelector.add(loadLocalGameButton, 0, 1);
 
 
         //TEST
-        localPlaySelector.add(newLocalGameButton, 0, 0);
-        localPlaySelector.add(loadLocalGameButton, 0, 1);
         //END TEST
     }
 

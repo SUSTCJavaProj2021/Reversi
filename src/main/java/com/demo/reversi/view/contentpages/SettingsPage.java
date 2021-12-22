@@ -3,7 +3,7 @@ package com.demo.reversi.view.contentpages;
 import com.demo.reversi.component.MetroButton;
 import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.panes.SmoothishScrollPane;
-import com.demo.reversi.controller.SimpleGameSystem;
+import com.demo.reversi.controller.local.SimpleGameSystem;
 import com.demo.reversi.res.lang.LiteralConstants;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
@@ -12,7 +12,6 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 
 public class SettingsPage implements Updatable {
     public static final double PREF_CONTAINER_HEIGHT = 100;
@@ -20,6 +19,11 @@ public class SettingsPage implements Updatable {
     public final SmoothishScrollPane scrollPane;
     public final GridPane contentWrapper;
     public final GridPane configWrapper;
+
+    public final MetroButton discardButton;
+    public final MetroButton loadButton;
+    public final MetroButton saveButton;
+    public final MetroButton resetButton;
 
     public final SimpleGameSystem gameSystem;
     public final Theme theme;
@@ -58,6 +62,14 @@ public class SettingsPage implements Updatable {
         root.add(configWrapper, 0, 2);
 
         //Test ColorPicker
+        discardButton = new MetroButton("Discard Changes", theme);
+        loadButton = new MetroButton("Load Theme", theme);
+        saveButton = new MetroButton("Save Theme", theme);
+        resetButton = new MetroButton("Reset Theme", theme);
+        configWrapper.add(discardButton,0,0);
+        configWrapper.add(loadButton,1,0);
+        configWrapper.add(saveButton,2,0);
+        configWrapper.add(resetButton,3,0);
 
         initContent();
         initConfig();
@@ -69,7 +81,6 @@ public class SettingsPage implements Updatable {
     }
 
     public void initConfig() {
-        configWrapper.add(new MetroButton("Click to do nothing", theme), 0, 0);
     }
 
     public void initThemeColorPicker() {

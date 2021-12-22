@@ -1,6 +1,6 @@
 package com.demo.reversi.view.prompts;
 
-import com.demo.reversi.controller.SimpleGameSystem;
+import com.demo.reversi.controller.local.SimpleGameSystem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 

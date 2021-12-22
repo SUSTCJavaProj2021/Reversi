@@ -1,5 +1,6 @@
 package com.demo.reversi.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface GameSystemLayer {
@@ -16,6 +17,12 @@ public interface GameSystemLayer {
     public GameControllerLayer loadGame(int index, boolean isGameModifiable);
 
     public boolean updateRanking();
+
+    /**
+     *
+     * @return List of players in sorted order (according to MMR)
+     */
+    public List<PlayerLayer> queryPlayerInfoAllSorted();
 
     public List<GameControllerLayer> getAllExistingGames();
 

@@ -2,24 +2,18 @@ package com.demo.reversi.view.gamepages;
 
 import com.demo.reversi.component.MetroButton;
 import com.demo.reversi.component.gamemodel.ChessBoard;
-import com.demo.reversi.component.panes.ExtendedInfoPane;
 import com.demo.reversi.component.panes.InfoPane;
-import com.demo.reversi.component.panes.ScorePane;
 import com.demo.reversi.controller.GameControllerLayer;
 import com.demo.reversi.controller.GameSystemLayer;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.*;
@@ -29,14 +23,16 @@ import java.util.Optional;
 
 public class GamePageLocal implements Updatable {
     public static final double MIN_WIDTH = InfoPane.PREF_WIDTH + ChessBoard.DEFAULT_BOARD_MIN_SIZE;
-    public static final double MIN_HEIGHT = ChessBoard.DEFAULT_BOARD_MIN_SIZE;
+    public static final double MIN_HEIGHT = ChessBoard.DEFAULT_BOARD_MIN_SIZE + 40;
     public static final double DEFAULT_PREF_WIDTH = 930;
     public static final double DEFAULT_PREF_HEIGHT = 630;
+    public static final double MAX_SIDE_PANEL_WIDTH = InfoPane.PREF_WIDTH * 2;
 
     public final GridPane root;
 
     public final VBox sidePanel;
-    public final GridPane optionsPane;
+    public final HBox controlsPane;
+    public final FlowPane configPane;
     public InfoPane player1Info;
     public InfoPane player2Info;
     public ChessBoard chessBoard;
@@ -61,6 +57,7 @@ public class GamePageLocal implements Updatable {
         root.setPrefHeight(DEFAULT_PREF_HEIGHT);
 
         sidePanel = new VBox();
+        GridPane.setHgrow(sidePanel, Priority.SOMETIMES);
         root.add(sidePanel, 1, 0);
 
         /**
@@ -84,6 +81,26 @@ public class GamePageLocal implements Updatable {
         /**
          * Adding chessboard and Info Pane
          */
+        loadController(index);
+
+        /**
+         * Adding controls pane
+         */
+        controlsPane = new HBox();
+        sidePanel.getChildren().add(controlsPane);
+        initControls();
+
+        /**
+         * Adding options pane
+         */
+        configPane = new FlowPane();
+        sidePanel.getChildren().add(configPane);
+        VBox.setVgrow(configPane, Priority.ALWAYS);
+
+        initOptions();
+    }
+
+    public void loadController(int index) {
         if (index == -1) {
             Optional<String>[] playerNames = new Optional[2];
             for (int i = 1; i <= 2; i++) {
@@ -117,21 +134,34 @@ public class GamePageLocal implements Updatable {
             sidePanel.getChildren().add(player2Info);
             controller.bindToGamePage(this);
         }
-
-
-        /**
-         * Adding options pane
-         */
-        optionsPane = new GridPane();
-
-        optionsPane.getColumnConstraints().add(
-                new ColumnConstraints(0, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.CENTER, true));
-        sidePanel.getChildren().add(optionsPane);
-        VBox.setVgrow(optionsPane, Priority.ALWAYS);
-
-
-        initOptions();
     }
+
+    public void initControls(){
+
+        //todo: switch it to a toggleSwitch
+        MetroButton cheatBtn = new MetroButton("Cheat", theme);
+        cheatBtn.setOnAction(event -> controller.setCheatMode(true));
+        controlsPane.getChildren().add(cheatBtn);
+
+        MetroButton undoBtn = new MetroButton("Undo", theme);
+        undoBtn.setOnAction(event -> Log0j.writeInfo("GamePage tried to undo the last operation."));
+        controlsPane.getChildren().add(undoBtn);
+
+        //todo: the following buttons shall all be rewritten
+        MetroButton pauseBtn = new MetroButton("Pause", theme);
+        pauseBtn.setOnAction(event -> Log0j.writeInfo("Game paused on request."));
+        controlsPane.getChildren().add(pauseBtn);
+
+        //todo: This may need change.
+        MetroButton restartBtn = new MetroButton("Restart", theme);
+        restartBtn.setOnAction(event -> {
+            controller.restartGame();
+            update();
+        });
+        controlsPane.getChildren().add(restartBtn);
+
+    }
+
 
     public void initOptions() {
         /**
@@ -152,49 +182,31 @@ public class GamePageLocal implements Updatable {
                 });
             });
         });
-        optionsPane.add(judgeBtn, 0, 0);
-
-
-        MetroButton restartBtn = new MetroButton("Restart", theme);
-        restartBtn.setOnAction(event -> {
-            controller.restartGame();
-            update();
-        });
-        optionsPane.add(restartBtn, 0, 1);
-
-
-        //todo: switch it to a toggleSwitch
-        MetroButton cheatBtn = new MetroButton("Cheat", theme);
-        cheatBtn.setOnAction(event -> controller.setCheatMode(true));
-        optionsPane.add(cheatBtn, 0, 2);
-
-
-        //todo: the following buttons shall all be rewritten
-        MetroButton pauseBtn = new MetroButton("Pause", theme);
-        pauseBtn.setOnAction(event -> Log0j.writeInfo("Game paused on request."));
-        optionsPane.add(pauseBtn, 0, 3);
+        configPane.getChildren().add(judgeBtn);
 
         MetroButton loadAIBtn = new MetroButton("Replace Player to AI", theme);
         loadAIBtn.setOnAction(event -> {
             Log0j.writeInfo("Loading AI player.");
         });
-        optionsPane.add(loadAIBtn, 0, 4);
-
+        configPane.getChildren().add(loadAIBtn);
 
     }
 
     @Override
     public void update() {
         chessBoard.update();
-        updateNoChessBoard();
+        updateElements();
     }
 
     public void sourcedUpdate(int row, int col) {
         chessBoard.sourcedUpdate(row, col);
-        updateNoChessBoard();
+        updateElements();
     }
 
-    public void updateNoChessBoard() {
+    /**
+     * Update all other elements except the chessboard.
+     */
+    public void updateElements() {
         if (controller.getCurrentPlayer() == controller.getPlayer1()) {
             player2Info.isActivatedProperty().setValue(false);
             player1Info.isActivatedProperty().setValue(true);

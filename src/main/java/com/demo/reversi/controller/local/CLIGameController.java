@@ -1,5 +1,7 @@
-package com.demo.reversi.controller;
+package com.demo.reversi.controller.local;
 
+import com.demo.reversi.controller.GridStatus;
+import com.demo.reversi.controller.PlayerConstants;
 import com.demo.reversi.logger.Log0j;
 
 public class CLIGameController {

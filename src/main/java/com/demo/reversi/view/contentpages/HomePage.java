@@ -1,7 +1,7 @@
 package com.demo.reversi.view.contentpages;
 
 import com.demo.reversi.component.TitleLabel;
-import com.demo.reversi.controller.SimpleGameSystem;
+import com.demo.reversi.controller.local.SimpleGameSystem;
 import com.demo.reversi.res.lang.LiteralConstants;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;

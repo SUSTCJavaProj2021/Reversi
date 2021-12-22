@@ -132,9 +132,14 @@ public class InfoPane extends StackPane implements Updatable {
 //        GridPane.setConstraints(playerStatusLabel, 1, 2, 1,
 //                1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS, null);
 
+        init();
+    }
+
+    public void init(){
         isActivated.addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                //todo: Add animation
                 if (isActivated.getValue()) {
                     //WDNMD
                 }

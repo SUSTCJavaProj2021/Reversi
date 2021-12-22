@@ -6,8 +6,9 @@ import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.media.*;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 import java.util.Stack;
@@ -21,6 +22,7 @@ public class BoardGridComponent extends StackPane {
 
     public static final double TRANS_TIME_MILLIS = 100;
 
+
     public final StackPane viewCover;
 
     private final Theme theme;
@@ -31,6 +33,10 @@ public class BoardGridComponent extends StackPane {
         viewCover = new StackPane();
         getChildren().add(viewCover);
 
+
+//        viewCover.setBackground(new Background(new BackgroundFill(Color.rgb(255,123,238,0.5), null, null)));
+//        viewCover.setBorder(new Border(new BorderStroke(Color.GREEN,BorderStrokeStyle.SOLID, null, new BorderWidths(5))));
+
         setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -38,9 +44,7 @@ public class BoardGridComponent extends StackPane {
                 ft.setFromValue(OPACITY_UNSELECTED);
                 ft.setToValue(OPACITY_SELECTED);
                 ft.setCycleCount(1);
-                Platform.runLater(()->{
-                        ft.play();
-                });
+                Platform.runLater(ft::play);
             }
         });
 
@@ -51,9 +55,7 @@ public class BoardGridComponent extends StackPane {
                 ft.setFromValue(OPACITY_SELECTED);
                 ft.setToValue(OPACITY_UNSELECTED);
                 ft.setCycleCount(1);
-                Platform.runLater(()->{
-                        ft.play();
-                });
+                Platform.runLater(ft::play);
             }
         });
 

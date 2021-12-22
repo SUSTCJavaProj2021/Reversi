@@ -1,6 +1,6 @@
 package com.demo.reversi;
 
-import com.demo.reversi.controller.SimpleGameSystem;
+import com.demo.reversi.controller.local.SimpleGameSystem;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.view.MainView;
 import com.demo.reversi.themes.Theme;

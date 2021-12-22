@@ -61,8 +61,8 @@ public class MetroButton extends Button {
 
         //Initialize default background
         if (theme.modeSwitchPR().getValue()) {
-            OPACITY_DEFAULT = 1.0;
-            OPACITY_SELECTED = 0.90;
+            OPACITY_DEFAULT = 0.90;
+            OPACITY_SELECTED = 0.85;
             OPACITY_PRESSED = 1.0;
             setBackground(new Background(new BackgroundFill(Theme.defaultDarkModeColor, new CornerRadii(CORNER_RADII), null)));
         } else {

@@ -1,7 +1,7 @@
 package com.demo.reversi;
 
 import com.demo.reversi.component.panes.InfoPane;
-import com.demo.reversi.controller.SimplePlayer;
+import com.demo.reversi.controller.local.SimplePlayer;
 import com.demo.reversi.themes.Theme;
 import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
@@ -11,9 +11,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 public class Test extends Application{
 

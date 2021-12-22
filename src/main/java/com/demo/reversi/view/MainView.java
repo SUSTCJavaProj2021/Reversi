@@ -1,7 +1,7 @@
 package com.demo.reversi.view;
 
 import com.demo.reversi.component.selector.MainSelectorPane;
-import com.demo.reversi.controller.SimpleGameSystem;
+import com.demo.reversi.controller.local.SimpleGameSystem;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.res.icons.Icon;
 import com.demo.reversi.res.lang.LiteralConstants;
