@@ -182,8 +182,8 @@ public class Theme {
     /**
      * In-game settings: Chess Paint, ChessBoard Grid Paint, etc.
      */
-    public static final Color defaultPlayerChessColor1 = Color.WHITE;
-    public static final Color defaultPlayerChessColor2 = Color.BLACK;
+    public static final Color defaultPlayerChessColor1 = Color.BLACK;
+    public static final Color defaultPlayerChessColor2 = Color.WHITE;
     public static final Paint defaultChessBoardPaint1 = Color.rgb(29, 31, 44);
     public static final Paint defaultChessBoardPaint2 = Color.rgb(55, 58, 84);
     public static final Paint defaultChessBoardGridPaint = Color.rgb(255, 255, 255, 0.50);

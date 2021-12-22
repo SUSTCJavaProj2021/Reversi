@@ -13,6 +13,7 @@ public class TutorialPage {
     public final ChessBoard chessBoard;
     public TutorialPage(GameSystemLayer gameSystem, Theme theme){
         root = new GridPane();
-        chessBoard = new ChessBoard(gameSystem.startNewGame("Test Player 1", "Test Player 2"), theme);
+        chessBoard = new ChessBoard(theme);
+        chessBoard.initBoardPlayable(gameSystem.startNewGame("Test Player 1", "Test Player 2"));
     }
 }

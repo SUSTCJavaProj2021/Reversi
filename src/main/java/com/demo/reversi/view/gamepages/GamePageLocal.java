@@ -21,6 +21,7 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
 public class GamePageLocal implements Updatable {
@@ -37,8 +38,8 @@ public class GamePageLocal implements Updatable {
     public final VBox configPane;
     public InfoPane player1Info;
     public InfoPane player2Info;
-    public ChessBoard chessBoard;
 
+    public final ChessBoard chessBoard;
     public final GameSystemLayer gameSystem;
     public GameControllerLayer controller;
     public Theme theme;
@@ -57,6 +58,19 @@ public class GamePageLocal implements Updatable {
         root.setMinHeight(MIN_HEIGHT);
         root.setPrefWidth(DEFAULT_PREF_WIDTH);
         root.setPrefHeight(DEFAULT_PREF_HEIGHT);
+
+
+        /**
+         * Adding chessboard
+         */
+        chessBoard = new ChessBoard(theme);
+        BorderPane.setAlignment(chessBoard, Pos.CENTER);
+        root.add(chessBoard, 0, 0, 1, 4);
+        GridPane.setMargin(chessBoard, new Insets(20, 20, 20, 20));
+        GridPane.setHalignment(chessBoard, HPos.CENTER);
+        GridPane.setValignment(chessBoard, VPos.CENTER);
+        GridPane.setVgrow(chessBoard, Priority.ALWAYS);
+        GridPane.setHgrow(chessBoard, Priority.ALWAYS);
 
         sidePanel = new VBox();
         GridPane.setHgrow(sidePanel, Priority.SOMETIMES);
@@ -81,9 +95,14 @@ public class GamePageLocal implements Updatable {
 
 
         /**
-         * Adding chessboard and Info Pane
+         * Adding Info Pane
          */
-        loadController(index);
+        player1Info = new InfoPane(theme, theme.player1ChessPaintPR());
+        sidePanel.getChildren().add(player1Info);
+
+        player2Info = new InfoPane(theme, theme.player2ChessPaintPR());
+        sidePanel.getChildren().add(player2Info);
+
 
         /**
          * Adding controls pane
@@ -100,6 +119,8 @@ public class GamePageLocal implements Updatable {
         VBox.setVgrow(configPane, Priority.ALWAYS);
 
         initOptions();
+
+        loadController(index);
     }
 
     /**
@@ -124,24 +145,10 @@ public class GamePageLocal implements Updatable {
             controller = gameSystem.loadGame(1, true);
         }
         if (controller != null) {
-            chessBoard = new ChessBoard(controller, theme);
-            chessBoard.initBoardPlayable();
-            BorderPane.setAlignment(chessBoard, Pos.CENTER);
-            root.add(chessBoard, 0, 0, 1, 4);
-            GridPane.setMargin(chessBoard, new Insets(20, 20, 20, 20));
-            GridPane.setHalignment(chessBoard, HPos.CENTER);
-            GridPane.setValignment(chessBoard, VPos.CENTER);
-            GridPane.setVgrow(chessBoard, Priority.ALWAYS);
-            GridPane.setHgrow(chessBoard, Priority.ALWAYS);
+            chessBoard.initBoardPlayable(controller);
 
-
-            player2Info = new InfoPane(controller.getPlayer2(), theme, theme.player2ChessPaintPR());
-            sidePanel.getChildren().add(player2Info);
-            player2Info.toFront();
-
-            player1Info = new InfoPane(controller.getPlayer1(), theme, theme.player1ChessPaintPR());
-            sidePanel.getChildren().add(player1Info);
-            player1Info.toFront();
+            player1Info.setPlayer(controller.getPlayer1());
+            player2Info.setPlayer(controller.getPlayer2());
 
             controller.bindToGamePage(this);
             update();
@@ -224,8 +231,8 @@ public class GamePageLocal implements Updatable {
      */
     public void updateElements() {
         if (controller.getCurrentPlayer() == controller.getPlayer1()) {
-            player2Info.isActivatedProperty().setValue(false);
             player1Info.isActivatedProperty().setValue(true);
+            player2Info.isActivatedProperty().setValue(false);
         } else {
             player1Info.isActivatedProperty().setValue(false);
             player2Info.isActivatedProperty().setValue(true);

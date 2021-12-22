@@ -61,7 +61,7 @@ public class CLIGameController {
      */
     public boolean checkMove(int rowIndex, int colIndex) {
         // TODO: Check the position.
-        if(board[rowIndex][colIndex]!=0){
+        if (board[rowIndex][colIndex] != 0) {
             return MOVE_INVALID;
         }
         for (int i = -1; i <= 1; i++) {
@@ -83,7 +83,7 @@ public class CLIGameController {
      * @return MOVE_INVALID, MOVE_COMPLETE
      */
     public boolean makeMove(int rowIndex, int colIndex) {
-        if(board[rowIndex][colIndex]!=0){
+        if (board[rowIndex][colIndex] != 0) {
             return MOVE_INVALID;
         }
 

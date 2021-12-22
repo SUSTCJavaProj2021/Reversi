@@ -69,11 +69,12 @@ public class SimpleGameController implements GameControllerLayer {
 
     public void updateCurrentPlayer() {
         switch (controller.getCurrentPlayer()) {
-            case WHITE_PLAYER:
-                currentPlayer = player2;
-                break;
             case BLACK_PLAYER:
                 currentPlayer = player1;
+                break;
+
+            case WHITE_PLAYER:
+                currentPlayer = player2;
                 break;
         }
         currentPlayerProperty().setValue(currentPlayer);

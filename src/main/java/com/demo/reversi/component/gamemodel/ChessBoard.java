@@ -29,30 +29,39 @@ public class ChessBoard extends HBox implements Updatable {
 
     public final VBox vBoxCover;
     public final GridPane grid;
-    public final BoardGridComponent gridBases[][];
-    public final int rowSize, colSize;
-    public final GameControllerLayer controller;
-    public final double cellMinSize;
     public final double boardSize;
+
+    public double cellMinSize;
+    public int rowSize, colSize;
+    public BoardGridComponent gridBases[][];
+    public GameControllerLayer controller;
 
     private final Theme theme;
 
+    public ChessBoard(Theme theme) {
+        this(theme, 0);
+    }
+
     public ChessBoard(GameControllerLayer controller, Theme theme) {
-        this(controller, theme, 0);
+        this(theme, 0);
+        initBoardPlayable(controller);
+    }
+
+    public ChessBoard(GameControllerLayer controller, Theme theme, double prefBoardSize) {
+        this(theme, prefBoardSize);
+        initBoardPlayable(controller);
     }
 
     /**
      * New Game Initialization
      *
-     * @param controller    the specific GameController
      * @param theme         the specific board theme
      * @param prefBoardSize the preferred board size
      */
-    public ChessBoard(GameControllerLayer controller, Theme theme, double prefBoardSize) {
+    public ChessBoard(Theme theme, double prefBoardSize) {
         this.theme = theme;
-        this.controller = controller;
-        this.rowSize = controller.getRowSize();
-        this.colSize = controller.getColSize();
+        this.rowSize = 8;
+        this.colSize = 8;
         grid = new GridPane();
 
         if (prefBoardSize <= 0) {
@@ -60,6 +69,46 @@ public class ChessBoard extends HBox implements Updatable {
         } else {
             boardSize = prefBoardSize;
         }
+
+        reloadGrids();
+
+        grid.setMinWidth(boardSize);
+        grid.setMinHeight(boardSize);
+        grid.setPrefWidth(GridPane.USE_COMPUTED_SIZE);
+        grid.setPrefHeight(GridPane.USE_COMPUTED_SIZE);
+
+
+        //Techniques to make the ChessBoard always square
+        vBoxCover = new VBox();
+        vBoxCover.setAlignment(Pos.CENTER);
+        setAlignment(Pos.CENTER);
+
+        final NumberBinding binding = Bindings.min(widthProperty(), heightProperty());
+        /**
+         * Let me explain the strange constant 0.99 here:
+         * So when I was developing this chessboard, I found that it will start shaking
+         * after resized (if I bind its size properties directly to its parent container)
+         * However, adding a 0.99 will prevent this. I don't know why.
+         */
+        vBoxCover.prefHeightProperty().bind(binding.multiply(0.99));
+        vBoxCover.prefWidthProperty().bind(binding.multiply(0.99));
+
+        vBoxCover.setMaxSize(Control.USE_PREF_SIZE, Control.USE_PREF_SIZE);
+        vBoxCover.setFillWidth(true);
+
+        vBoxCover.getChildren().add(grid);
+        VBox.setVgrow(grid, Priority.ALWAYS);
+
+        getChildren().add(vBoxCover);
+        HBox.setHgrow(vBoxCover, Priority.ALWAYS);
+
+        update();
+    }
+
+    public void reloadGrids() {
+        grid.getChildren().clear();
+        grid.getColumnConstraints().clear();
+        grid.getRowConstraints().clear();
 
         cellMinSize = boardSize / this.rowSize;
 
@@ -110,39 +159,6 @@ public class ChessBoard extends HBox implements Updatable {
                     Priority.SOMETIMES, HPos.CENTER, true));
         }
         Log0j.writeInfo("Grid shape initialized.");
-
-        grid.setMinWidth(boardSize);
-        grid.setMinHeight(boardSize);
-        grid.setPrefWidth(GridPane.USE_COMPUTED_SIZE);
-        grid.setPrefHeight(GridPane.USE_COMPUTED_SIZE);
-
-
-        //Techniques to make the ChessBoard always square
-        vBoxCover = new VBox();
-        vBoxCover.setAlignment(Pos.CENTER);
-        setAlignment(Pos.CENTER);
-
-        final NumberBinding binding = Bindings.min(widthProperty(), heightProperty());
-        /**
-         * Let me explain the strange constant 0.99 here:
-         * So when I was developing this chessboard, I found that it will start shaking
-         * after resized (if I bind its size properties directly to its parent container)
-         * However, adding a 0.99 will prevent this. I don't know why.
-         */
-        vBoxCover.prefHeightProperty().bind(binding.multiply(0.99));
-        vBoxCover.prefWidthProperty().bind(binding.multiply(0.99));
-
-        vBoxCover.setMaxSize(Control.USE_PREF_SIZE, Control.USE_PREF_SIZE);
-        vBoxCover.setFillWidth(true);
-
-        vBoxCover.getChildren().add(grid);
-        VBox.setVgrow(grid, Priority.ALWAYS);
-
-        getChildren().add(vBoxCover);
-        HBox.setHgrow(vBoxCover, Priority.ALWAYS);
-
-        update();
-//        bindToController();
     }
 
     public void bindToSize(DoubleProperty width, DoubleProperty height) {
@@ -152,6 +168,10 @@ public class ChessBoard extends HBox implements Updatable {
 
     @Override
     public void update() {
+        if (controller == null) {
+            return;
+        }
+
         for (int row = 0; row < rowSize; row++) {
             for (int col = 0; col < colSize; col++) {
 
@@ -174,6 +194,10 @@ public class ChessBoard extends HBox implements Updatable {
     }
 
     public void updateByGrid(int row, int col) {
+        if (controller == null) {
+            return;
+        }
+
         GridStatus positionPlayer = controller.getGridStatus(row, col);
         Chess chess = ((Chess) gridBases[row][col].getChildren().get(1));
         Platform.runLater(() -> {
@@ -183,6 +207,9 @@ public class ChessBoard extends HBox implements Updatable {
 
 
     public void sourcedUpdate(int row, int col) {
+        if (controller == null) {
+            return;
+        }
 
         /**
          * Set the current chess
@@ -239,7 +266,11 @@ public class ChessBoard extends HBox implements Updatable {
      * You should make sure that the board is valid.
      */
     public void curtainCall() {
-        unbindController();
+        if (controller == null) {
+            return;
+        }
+
+        unloadController();
         int Player1Count = 0;
         int Player2Count = 0;
         for (int row = 0; row < rowSize; row++) {
@@ -271,8 +302,7 @@ public class ChessBoard extends HBox implements Updatable {
             protected Void call() {
                 if (rowSize % 2 == 0) {
                     placePlayerChess(cnt1, Chess.ChessOwner.PLAYER1, rowSize - 1, 0, -1, 1);
-                }
-                else{
+                } else {
                     placePlayerChess(cnt1, Chess.ChessOwner.PLAYER1, rowSize - 1, colSize - 1, -1, -1);
                 }
                 return null;
@@ -295,7 +325,7 @@ public class ChessBoard extends HBox implements Updatable {
         task2.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent event) {
-                bindController();
+                loadController();
             }
         });
         new Thread(task1).start();
@@ -347,7 +377,7 @@ public class ChessBoard extends HBox implements Updatable {
     /**
      * Bind to its default controller
      */
-    private void bindController() {
+    private void loadController() {
         for (int row = 0; row < rowSize; row++) {
             for (int col = 0; col < colSize; col++) {
                 final int tmpRow = row, tmpCol = col;
@@ -363,7 +393,7 @@ public class ChessBoard extends HBox implements Updatable {
         Log0j.writeInfo("Bind to controller: " + controller);
     }
 
-    private void unbindController() {
+    private void unloadController() {
         for (int row = 0; row < rowSize; row++) {
             for (int col = 0; col < colSize; col++) {
                 final int tmpRow = row, tmpCol = col;
@@ -373,8 +403,12 @@ public class ChessBoard extends HBox implements Updatable {
         Log0j.writeInfo("Unbind controller.");
     }
 
-    public void initBoardPlayable() {
-        bindController();
+    public void initBoardPlayable(GameControllerLayer controller) {
+        this.controller = controller;
+        this.rowSize = controller.getRowSize();
+        this.colSize = controller.getColSize();
+        reloadGrids();
+        loadController();
     }
 
 }

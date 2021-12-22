@@ -1,6 +1,7 @@
 package com.demo.reversi.component.panes;
 
 import com.demo.reversi.controller.PlayerLayer;
+import com.demo.reversi.controller.local.SimplePlayer;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
@@ -38,7 +39,6 @@ public class InfoPane extends StackPane implements Updatable {
     public final GridPane rootView;
     public final Label playerNameLabel;
     public final Label playerWinRateLabel;
-//    public final Label playerStatusLabel;
     public final ObjectProperty<Paint> playerColorPR;
     public final ImageView playerImage;
     public final BooleanProperty isActivated;
@@ -48,6 +48,10 @@ public class InfoPane extends StackPane implements Updatable {
     }
 
     private final Theme theme;
+
+    public InfoPane(Theme theme, ObjectProperty<Color> playerColor){
+        this(new SimplePlayer("Unknown"), theme, playerColor);
+    }
 
     public InfoPane(PlayerLayer player, Theme theme, ObjectProperty<Color> playerColor) {
         this.theme = theme;
@@ -80,21 +84,12 @@ public class InfoPane extends StackPane implements Updatable {
         playerNameLabel.textFillProperty().bind(theme.titleFontPaintPR());
 
         playerWinRateLabel = new Label();
-        playerWinRateLabel.fontProperty().bind(Bindings.createObjectBinding(()->{
+        playerWinRateLabel.fontProperty().bind(Bindings.createObjectBinding(() -> {
             return new Font(theme.titleFontFamilyPR().getValue().getFamily(), 16);
         }, theme.titleFontFamilyPR()));
         playerWinRateLabel.textFillProperty().bind(theme.titleFontPaintPR());
         //todo: Change this test
         playerWinRateLabel.setText("5W / 4L, 55.6%");
-
-
-//        playerStatusLabel = new Label();
-//        playerStatusLabel.fontProperty().bind(Bindings.createObjectBinding(()->{
-//            return new Font(theme.textFontFamilyPR().getValue().getFamily(), 11);
-//        }, theme.textFontFamilyPR));
-//        playerStatusLabel.textFillProperty().bind(theme.textFontPaintPR());
-//        //todo: Change this test
-//        playerStatusLabel.setText("Playing");
 
 
         isActivated = new SimpleBooleanProperty(false);
@@ -105,41 +100,12 @@ public class InfoPane extends StackPane implements Updatable {
         //Design leads to it
         playerImage.fitWidthProperty().bind(Bindings.min(widthProperty().multiply(0.4), heightProperty().multiply(0.85)));
 
-        {
-            ColumnConstraints constraints[] = new ColumnConstraints[2];
-            for (int i = 0; i < 2; i++) {
-                constraints[i] = new ColumnConstraints();
-                rootView.getColumnConstraints().add(constraints[i]);
-            }
-            constraints[1].setHgrow(Priority.ALWAYS);
-        }
-        {
-            RowConstraints constraints[] = new RowConstraints[3];
-            for (int i = 0; i < 3; i++) {
-                constraints[i] = new RowConstraints();
-                rootView.getRowConstraints().add(constraints[i]);
-            }
-            constraints[0].setPercentHeight(67);
-            constraints[1].setPercentHeight(33);
-        }
-        rootView.add(playerImage, 0, 0);
-        GridPane.setConstraints(playerImage, 0, 0, 1,
-                GridPane.REMAINING, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS, null);
-
-        rootView.add(playerNameLabel, 1, 0);
-        GridPane.setConstraints(playerNameLabel, 1, 0, 1,
-                1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS, null);
-        rootView.add(playerWinRateLabel, 1, 1);
-        GridPane.setConstraints(playerWinRateLabel, 1, 1, 1,
-                1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS, null);
-//        rootView.add(playerStatusLabel, 1, 2);
-//        GridPane.setConstraints(playerStatusLabel, 1, 2, 1,
-//                1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS, null);
 
         init();
     }
 
-    public void init(){
+    public void init() {
+        initLayout();
         isActivated.addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -150,12 +116,53 @@ public class InfoPane extends StackPane implements Updatable {
                     ColorAdjust colorAdjust = new ColorAdjust();
                     colorAdjust.setBrightness(-1); //Makes all non-white colors black
                     indicator.setEffect(colorAdjust);
-                }
-                else{
+                } else {
                     indicator.getChildren().clear();
                 }
             }
         });
+    }
+
+    public void initLayout() {
+        {
+            ColumnConstraints constraints[] = new ColumnConstraints[2];
+            for (int i = 0; i < 2; i++) {
+                constraints[i] = new ColumnConstraints();
+                rootView.getColumnConstraints().add(constraints[i]);
+            }
+            constraints[1].setHgrow(Priority.ALWAYS);
+        }
+
+
+        {
+            RowConstraints constraints[] = new RowConstraints[3];
+            for (int i = 0; i < 3; i++) {
+                constraints[i] = new RowConstraints();
+                rootView.getRowConstraints().add(constraints[i]);
+            }
+            constraints[0].setPercentHeight(67);
+            constraints[1].setPercentHeight(33);
+        }
+
+
+        rootView.add(playerImage, 0, 0);
+        GridPane.setConstraints(playerImage, 0, 0, 1,
+                GridPane.REMAINING, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS, null);
+
+
+        rootView.add(playerNameLabel, 1, 0);
+        GridPane.setConstraints(playerNameLabel, 1, 0, 1,
+                1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS, null);
+        rootView.add(playerWinRateLabel, 1, 1);
+
+
+        GridPane.setConstraints(playerWinRateLabel, 1, 1, 1,
+                1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS, null);
+    }
+
+    public void setPlayer(PlayerLayer player){
+        playerNameLabel.textProperty().bind(player.nameProperty());
+        playerWinRateLabel.textProperty().setValue("QX3 LOAD TEST");
     }
 
     public InfoPane outer() {
