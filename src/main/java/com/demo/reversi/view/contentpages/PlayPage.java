@@ -26,7 +26,7 @@ public class PlayPage implements Updatable {
     public final SelectorPane playSelector;
 
     // Secondary views
-    public final GridPane localPlaySelector;
+    public final GridPane localPlayPane;
 
     public final GridPane LANPlayPane;
     public final GridPane onlinePlayPane;
@@ -63,6 +63,9 @@ public class PlayPage implements Updatable {
 
         //Initialize all secondary panes.
 
+        localPlayPane = new GridPane();
+        localPlayPane.add(new TitleLabel("Play Game on Local Machine", theme), 0, 0);
+
         LANPlayPane = new GridPane();
         LANPlayPane.add(new TitleLabel("Play Game in Local Area Network", theme), 0,0);
         LANPlayPane.add(new Label("Actually, there is no LAN game yet.\n QAQ"), 0, 1);
@@ -71,12 +74,11 @@ public class PlayPage implements Updatable {
         onlinePlayPane.add(new TitleLabel("Play Online Game", theme), 0, 0);
         onlinePlayPane.add(new Label("Actually, there is no online game yet.\n QAQ"), 0, 1);
 
-        localPlaySelector = new GridPane();
 
 
         //Initialize the Play Selector
 
-        playSelector.addPage("Local", localPlaySelector);
+        playSelector.addPage("Local", localPlayPane);
         playSelector.addPage("LAN", LANPlayPane);
         playSelector.addPage("Online", onlinePlayPane);
         playSelector.resetSelectorWidth(120);
@@ -86,11 +88,11 @@ public class PlayPage implements Updatable {
         //Buttons need not only to be initialized, but also added to the pane.
         newLocalGameButton = new MetroButton(LiteralConstants.PlayLocalText.toString(), theme);
         initPlayLocalGameButton();
-        localPlaySelector.add(newLocalGameButton, 0, 0);
+        localPlayPane.add(newLocalGameButton, 0, 1);
 
         loadLocalGameButton = new MetroButton(LiteralConstants.LoadGameText.toString(), theme);
         initLoadGameButton();
-        localPlaySelector.add(loadLocalGameButton, 0, 1);
+        localPlayPane.add(loadLocalGameButton, 0, 2);
 
 
         //TEST

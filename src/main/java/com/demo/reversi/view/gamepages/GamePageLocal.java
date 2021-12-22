@@ -11,6 +11,7 @@ import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -192,18 +193,7 @@ public class GamePageLocal implements Updatable {
          */
         MetroButton judgeBtn = new MetroButton("Perform board judge!", theme);
         judgeBtn.setOnAction(actionEvent -> {
-            chessBoard.curtainCall();
-            Platform.runLater(() -> {
-                theme.bgmPlayerInterrupt(theme.gameFinishBGMSourcePR().getValue(), 100);
-            });
-            Stage stage = new Stage();
-            stage.setScene(new Scene(new Label("Well played!")));
-            stage.show();
-            stage.setOnCloseRequest(ActionEvent -> {
-                Platform.runLater(() -> {
-                    theme.bgmPlayerResume(100);
-                });
-            });
+            finishGame();
         });
         configPane.getChildren().add(judgeBtn);
 
@@ -224,6 +214,34 @@ public class GamePageLocal implements Updatable {
     public void sourcedUpdate(int row, int col) {
         chessBoard.sourcedUpdate(row, col);
         updateElements();
+    }
+
+    public void finishUpdate(){
+        finishGame();
+    }
+
+    private void finishGame(){
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                Thread.sleep(1000);
+                chessBoard.curtainCall();
+                Platform.runLater(() -> {
+                    theme.bgmPlayerInterrupt(theme.gameFinishBGMSourcePR().getValue(), 100);
+                });
+                Stage stage = new Stage();
+                stage.setScene(new Scene(new Label("Well played!")));
+                stage.show();
+                stage.setOnCloseRequest(ActionEvent -> {
+                    Platform.runLater(() -> {
+                        theme.bgmPlayerResume(100);
+                    });
+                });
+                return null;
+            }
+        };
+        new Thread(task).start();
+
     }
 
     /**

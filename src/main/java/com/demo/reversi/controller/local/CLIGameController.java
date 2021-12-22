@@ -1,5 +1,6 @@
 package com.demo.reversi.controller.local;
 
+import com.demo.reversi.controller.GameStatus;
 import com.demo.reversi.controller.GridStatus;
 import com.demo.reversi.controller.PlayerConstants;
 import com.demo.reversi.logger.Log0j;
@@ -176,6 +177,42 @@ public class CLIGameController {
     public void makeTurn() {
         currentPlayer = (currentPlayer == PlayerConstants.BLACK_PLAYER) ? PlayerConstants.WHITE_PLAYER
                 : PlayerConstants.BLACK_PLAYER;
+    }
+
+    public GameStatus judge() {
+        for (int i = 0; i < rowSize; i++) {
+            for (int j = 0; j < colSize; j++) {
+                if (checkMove(i, j)) {
+                    return GameStatus.UNFINISHED;
+                }
+            }
+        }
+        makeTurn();
+        for (int i = 0; i < rowSize; i++) {
+            for (int j = 0; j < colSize; j++) {
+                if (checkMove(i, j)) {
+                    return GameStatus.UNFINISHED;
+                }
+            }
+        }
+        int player1Cnt = 0;
+        int player2Cnt = 0;
+        for (int i = 0; i < rowSize; i++) {
+            for (int j = 0; j < colSize; j++) {
+                if (board[i][j] == 1) {
+                    player1Cnt++;
+                } else if (board[i][j] == -1) {
+                    player2Cnt++;
+                }
+            }
+        }
+        if(player1Cnt>player2Cnt){
+            return GameStatus.PLAYER1;
+        }else if(player1Cnt<player2Cnt){
+            return GameStatus.PLAYER2;
+        }else{
+            return GameStatus.TIED;
+        }
     }
 
     public void printBoard() {

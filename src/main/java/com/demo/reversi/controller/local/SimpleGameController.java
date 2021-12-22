@@ -1,9 +1,9 @@
 package com.demo.reversi.controller.local;
 
 import com.demo.reversi.controller.GameControllerLayer;
+import com.demo.reversi.controller.GameStatus;
 import com.demo.reversi.controller.GridStatus;
 import com.demo.reversi.controller.PlayerLayer;
-import com.demo.reversi.controller.local.CLIGameController;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.view.Updatable;
 import com.demo.reversi.view.gamepages.GamePageLocal;
@@ -60,6 +60,12 @@ public class SimpleGameController implements GameControllerLayer {
         updateCurrentPlayer();
         forceSourcedGUIUpdate(rowIndex, colIndex);
 
+        GameStatus gameStatus = controller.judge();
+        if(gameStatus !=GameStatus.UNFINISHED){
+            if(gamePage!=null){
+                ((GamePageLocal)gamePage).finishUpdate();
+            }
+        }
         return true;
     }
     @Override

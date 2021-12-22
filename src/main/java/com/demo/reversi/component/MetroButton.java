@@ -22,8 +22,8 @@ public class MetroButton extends Button {
 
     public static final double CORNER_RADII = 10;
 
-    public static final int PREFERRED_HEIGHT = 50;
-    public static final int PREFERRED_WIDTH = 100;
+    public static final int PREFERRED_HEIGHT = 40;
+    public static final int PREFERRED_WIDTH = 75;
 
     public static final int FONT_SIZE = 14;
     public static final double ICON_GAP = 10;
@@ -51,7 +51,7 @@ public class MetroButton extends Button {
     public MetroButton(String text, Theme theme) {
         super(text);
         this.theme = theme;
-        setPrefSize(text.length() * 10 + 30, PREFERRED_HEIGHT);
+        setPrefSize(text.length() * 10 + 7, PREFERRED_HEIGHT);
         setMinWidth(Control.USE_COMPUTED_SIZE);
         setMinHeight(Control.USE_PREF_SIZE);
         setMaxWidth(Control.USE_PREF_SIZE);

@@ -33,6 +33,7 @@ public class InfoPane extends StackPane implements Updatable {
     public static final double CORNER_RADII = 15;
     public static final double PREF_HEIGHT = 80;
     public static final double PREF_WIDTH = 130;
+    public static final double INDICATOR_RATIO= 0.6;
 
     public final StackPane viewCover;
     public final StackPane indicator;
@@ -116,6 +117,8 @@ public class InfoPane extends StackPane implements Updatable {
                     ColorAdjust colorAdjust = new ColorAdjust();
                     colorAdjust.setBrightness(-1); //Makes all non-white colors black
                     indicator.setEffect(colorAdjust);
+                    indicator.prefHeightProperty().bind(heightProperty().multiply(INDICATOR_RATIO));
+                    indicator.prefWidthProperty().bind(indicator.prefHeightProperty());
                 } else {
                     indicator.getChildren().clear();
                 }
