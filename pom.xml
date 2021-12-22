@@ -70,7 +70,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.demo.reversi/com.demo.reversi.HelloApplication</mainClass>
+                            <mainClass>com.demo.reversi/com.demo.reversi.AppLauncher</mainClass>
                         </configuration>
                     </execution>
                 </executions>

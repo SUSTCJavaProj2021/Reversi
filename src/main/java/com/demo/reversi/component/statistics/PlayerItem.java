@@ -99,6 +99,7 @@ public class PlayerItem extends GridPane {
      */
     public PlayerItem(Theme theme) {
         this.theme = theme;
+        setMaxHeight(DEFAULT_HEIGHT);
 
 
         playerRanking = new Label("Rank");
