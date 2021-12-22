@@ -27,7 +27,7 @@ public class PlayerItem extends GridPane {
             backgroundProperty().bind(theme.frontPanePR());
         }
 
-        
+
     }
 
     /**
