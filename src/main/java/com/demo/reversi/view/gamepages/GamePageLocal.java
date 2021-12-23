@@ -1,6 +1,7 @@
 package com.demo.reversi.view.gamepages;
 
 import com.demo.reversi.component.MetroButton;
+import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.gamemodel.ChessBoard;
 import com.demo.reversi.component.panes.InfoPane;
 import com.demo.reversi.controller.GameControllerLayer;
@@ -102,6 +103,7 @@ public class GamePageLocal implements UpdatableGame {
         player2Info = new InfoPane(theme, theme.player2ChessPaintPR());
         sidePanel.getChildren().add(player2Info);
 
+        sidePanel.getChildren().add(new TitleLabel("Settings",theme));
 
         /**
          * Adding controls pane
