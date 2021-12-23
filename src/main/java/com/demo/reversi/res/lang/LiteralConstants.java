@@ -6,7 +6,7 @@ public enum LiteralConstants {
     PlayButtonText("Play"),
     StatisticsButtonText("Statistics"),
     SettingsButtonText("Settings"),
-    SaveAndLoadButtonText("Save / Load"),
+    GameSystemButtonText("Game System"),
     AboutButtonText("About"),
     ExitButtonText("Exit"),
 
@@ -21,7 +21,7 @@ public enum LiteralConstants {
     PlayPageTitle("Play"),
     StatisticsPageTitle("Statistics"),
     SettingsPageTitle("Settings"),
-    SaveAndLoadPageTitle("Save And Load"),
+    GameSystemPageTitle("Game System"),
     AboutPageTitle("About");
 
     private String literal;

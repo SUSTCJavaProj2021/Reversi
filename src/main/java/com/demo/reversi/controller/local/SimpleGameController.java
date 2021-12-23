@@ -2,11 +2,16 @@ package com.demo.reversi.controller.local;
 
 import com.demo.reversi.controller.*;
 import com.demo.reversi.logger.Log0j;
+import com.demo.reversi.save.SaveLoader;
 import com.demo.reversi.view.UpdatableGame;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
+
+import java.io.File;
+import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 
 public class SimpleGameController implements GameControllerLayer {
     public boolean isGameModifiable;
@@ -54,7 +59,7 @@ public class SimpleGameController implements GameControllerLayer {
     }
 
     @Override
-    public boolean onGridClick(int rowIndex, int colIndex) {
+    public void onGridClick(int rowIndex, int colIndex) {
         Log0j.writeInfo(
                 String.format("%s Clicked Grid (%d, %d)", controller.currentPlayer, rowIndex, colIndex));
 
@@ -62,6 +67,7 @@ public class SimpleGameController implements GameControllerLayer {
         updateCurrentPlayer();
         forceSourcedGUIUpdate(rowIndex, colIndex);
 
+        //Judge the game
         GameStatus gameStatus = controller.judge();
         if (gameStatus != GameStatus.UNFINISHED) {
             if (gamePage != null) {
@@ -71,17 +77,36 @@ public class SimpleGameController implements GameControllerLayer {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }finally {
-                        Platform.runLater(gamePage::curtainCallUpdate);
+                        curtainCallUpdate();
                     }
                 }).start();
             }
         }
-        return true;
+    }
+
+    @Override
+    public void replayGame() {
+
     }
 
     @Override
     public void restartGame() {
         controller = new CLIGameController(8, 8);
+    }
+
+    @Override
+    public LocalDateTime getGameCreatedTime() {
+        return null;
+    }
+
+    @Override
+    public LocalDateTime getGameLastModifiedTime() {
+        return null;
+    }
+
+    @Override
+    public GameStatus getGameStatus() {
+        return null;
     }
 
     public void updateCurrentPlayer() {
@@ -94,7 +119,7 @@ public class SimpleGameController implements GameControllerLayer {
                 currentPlayer = player2;
                 break;
         }
-        currentPlayerProperty().setValue(currentPlayer);
+        currentPlayerProperty.setValue(currentPlayer);
     }
 
     public GridStatus getGridStatus(int rowIndex, int colIndex) {
@@ -116,10 +141,6 @@ public class SimpleGameController implements GameControllerLayer {
         return currentPlayer;
     }
 
-    @Override
-    public ObjectProperty<PlayerLayer> currentPlayerProperty() {
-        return currentPlayerProperty;
-    }
 
 
     @Override
@@ -129,20 +150,19 @@ public class SimpleGameController implements GameControllerLayer {
         return true;
     }
 
-    @Override
-    public boolean saveGame() {
-        return true;
-    }
-
-    ;
 
     @Override
     public boolean save() {
-        return saveTo("/save/DefaultSave.save");
+        try {
+            return saveTo(new File(SaveLoader.class.getResource("DefaultSave.save").toURI().toString()));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
-    public boolean saveTo(String srcPath) {
+    public boolean saveTo(File file) {
         return true;
     }
 
@@ -151,6 +171,12 @@ public class SimpleGameController implements GameControllerLayer {
     @Override
     public boolean bindToGamePage(UpdatableGame gamePage) {
         this.gamePage = gamePage;
+        return true;
+    }
+
+    @Override
+    public boolean unbindGamePage(){
+        this.gamePage = null;
         return true;
     }
 
@@ -171,6 +197,11 @@ public class SimpleGameController implements GameControllerLayer {
         } else {
             Log0j.writeInfo("Cannot update because GUI pointer is null.");
         }
+    }
+
+    @Override
+    public void curtainCallUpdate(){
+        Platform.runLater(gamePage::curtainCallUpdate);
     }
 
 }

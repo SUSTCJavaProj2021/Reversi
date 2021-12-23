@@ -7,7 +7,6 @@ import com.demo.reversi.res.icons.Icon;
 import com.demo.reversi.res.lang.LiteralConstants;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.contentpages.*;
-import javafx.scene.control.Button;
 import javafx.scene.media.MediaView;
 
 import javafx.scene.control.Label;
@@ -32,7 +31,7 @@ public class MainView extends GridPane {
     public HomePage homePage;
     public PlayPage playPage;
     public StatisticsPage statisticsPage;
-    public SaveAndLoadPage saveAndLoadPage;
+    public GameSystemPage gameSystemPage;
     public SettingsPage settingsPage;
     public AboutPage aboutPage;
 
@@ -48,7 +47,7 @@ public class MainView extends GridPane {
         homePage = new HomePage(gameSystem, theme);
         playPage = new PlayPage(gameSystem, theme);
         statisticsPage = new StatisticsPage(gameSystem, theme);
-        saveAndLoadPage = new SaveAndLoadPage(gameSystem, theme);
+        gameSystemPage = new GameSystemPage(gameSystem, theme);
         settingsPage = new SettingsPage(gameSystem, theme);
         aboutPage = new AboutPage(theme);
         Log0j.writeInfo("Content pages loaded.");
@@ -72,7 +71,7 @@ public class MainView extends GridPane {
         mainSelectorPane.addPage(LiteralConstants.HomePageTitle.toString(), homePage.root, new Icon(theme.getClass().getResource("icons/Home.png").toURI().toString()));
         mainSelectorPane.addPage(LiteralConstants.PlayPageTitle.toString(), playPage.root, new Icon(theme.getClass().getResource("icons/Play.png").toURI().toString()));
         mainSelectorPane.addPage(LiteralConstants.StatisticsPageTitle.toString(), statisticsPage.root, new Icon(theme.getClass().getResource("icons/Statistics.png").toURI().toString()));
-        mainSelectorPane.addPage(LiteralConstants.SaveAndLoadPageTitle.toString(), saveAndLoadPage.root, new Icon(theme.getClass().getResource("icons/SaveAndLoad.png").toURI().toString()));
+        mainSelectorPane.addPage(LiteralConstants.GameSystemPageTitle.toString(), gameSystemPage.root, new Icon(theme.getClass().getResource("icons/SaveAndLoad.png").toURI().toString()));
         mainSelectorPane.addPage(LiteralConstants.SettingsPageTitle.toString(), settingsPage.root, new Icon(theme.getClass().getResource("icons/Settings.png").toURI().toString()));
         mainSelectorPane.addPage(LiteralConstants.AboutPageTitle.toString(), aboutPage.root, new Icon(theme.getClass().getResource("icons/About.png").toURI().toString()));
         mainSelectorPane.init();

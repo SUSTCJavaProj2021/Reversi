@@ -10,16 +10,16 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 
-public class SaveAndLoadPage implements Updatable {
+public class GameSystemPage implements Updatable {
     public final GridPane root;
     public final SimpleGameSystem gameSystem;
     public final Theme theme;
 
-    public SaveAndLoadPage(SimpleGameSystem gameSystem, Theme theme) {
+    public GameSystemPage(SimpleGameSystem gameSystem, Theme theme) {
         this.gameSystem = gameSystem;
         this.theme = theme;
         root = new GridPane();
-        root.add(new TitleLabel(LiteralConstants.SaveAndLoadPageTitle.toString(), theme), 0, 0);
+        root.add(new TitleLabel(LiteralConstants.GameSystemPageTitle.toString(), theme), 0, 0);
 
 
         Button btn = new Button("Load");

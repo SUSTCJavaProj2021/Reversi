@@ -20,8 +20,6 @@ public class Test {
 
 
     public static void main(String[] args) {
-        GridPane gridPane = new GridPane();
-        gridPane.setMinWidth(80);
-        JSONObject jsonObject = new JSONObject();
+        System.out.println("QAQ");
     }
 }

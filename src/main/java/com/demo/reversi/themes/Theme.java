@@ -15,8 +15,11 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -514,11 +517,11 @@ public class Theme {
         }
     }
 
-    public void bgmPlayerStop(){
+    public void bgmPlayerStop() {
         bgmPlayer.stop();
     }
 
-    public void bgmPlayerResume(){
+    public void bgmPlayerResume() {
         fadeInBGM(bgmPlayer);
     }
 
@@ -780,23 +783,40 @@ public class Theme {
 
     public void loadTheme() {
         try {
-            loadTheme(Paths.get(Theme.class.getResource("theme.json").toURI()).toUri().toString());
-        } catch (Exception e) {
+            loadTheme(new File(Theme.class.getResource("theme.json").toURI()));
+            Log0j.writeInfo("Theme.json loaded.");
+        } catch (URISyntaxException | NullPointerException e) {
             e.printStackTrace();
-            Log0j.writeInfo("Error occurred because cannot found theme.json. No theme is changed.");
+            Log0j.writeError("Error occurred because cannot found theme.json. No theme is changed.");
         }
     }
 
-    public void loadTheme(String srcPath) {
+    public void loadThemeFromFileExplorer() {
+        try {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Load theme file from File Explorer");
+//            fileChooser.setInitialDirectory(new File(Theme.class.getResource("theme.json").toURI().toString()).getParentFile());
+            fileChooser.getExtensionFilters().addAll(
+                    new ExtensionFilter("Theme Config", "*.json"));
+            File selectedFile = fileChooser.showOpenDialog(primaryStage);
+            loadTheme(selectedFile);
+            Log0j.writeInfo("Trying to load them from external environment.");
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            Log0j.writeError("Error occurred because cannot found theme.json. No theme is changed.");
+        }
+    }
+
+    private void loadTheme(File file) {
         try {
             //Try to read the configuration file
-            Log0j.writeInfo("Loading theme file from the following path: " + srcPath);
-            JSONObject jsonObject = new JSONObject(new File(srcPath));
+            Log0j.writeInfo("Loading theme file from the following path: " + file.getPath());
+            //todo: add methods
+            JSONObject jsonObject = new JSONObject(file);
             Log0j.writeInfo("Theme loaded.");
-
-        } catch (Exception e) {
+        } catch (NullPointerException | JSONException e) {
             e.printStackTrace();
-            Log0j.writeInfo("Error occurred during converting source file to file stream. No theme is changed.");
+            Log0j.writeError("Error occurred during converting source file to file stream. No theme is changed.");
         }
     }
 

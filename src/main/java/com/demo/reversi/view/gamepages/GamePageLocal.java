@@ -96,7 +96,7 @@ public class GamePageLocal implements UpdatableGame {
 
         //Adding controls pane
         controlsPane = new VBox(5);
-
+        VBox.setVgrow(controlsPane, Priority.ALWAYS);
         sidePanel.getChildren().add(controlsPane);
         initControls();
 
@@ -128,7 +128,7 @@ public class GamePageLocal implements UpdatableGame {
                 }
             });
         } else {
-            controller = gameSystem.loadGame(index, true);
+            controller = gameSystem.registerGamePlayable(controller);
         }
         if (controller != null) {
             chessBoard.initBoardPlayable(controller);

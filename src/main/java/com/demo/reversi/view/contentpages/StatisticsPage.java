@@ -91,7 +91,7 @@ public class StatisticsPage implements Updatable {
         contentWrapper.getChildren().clear();
         List<PlayerLayer> playerLayerList = gameSystem.queryPlayerInfoAllSorted();
         Log0j.writeInfo("Player List count: " + playerLayerList.size());
-        //Initialize header
+        //Initialize header`
         contentWrapper.add(new PlayerItem(theme), 0, 0);
 
         //Add player items

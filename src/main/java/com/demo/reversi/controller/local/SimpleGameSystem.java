@@ -4,7 +4,10 @@ import com.demo.reversi.controller.GameControllerLayer;
 import com.demo.reversi.controller.GameSystemLayer;
 import com.demo.reversi.controller.PlayerLayer;
 import com.demo.reversi.logger.Log0j;
+import com.demo.reversi.save.SaveLoader;
 
+import java.io.File;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,35 +17,56 @@ public class SimpleGameSystem implements GameSystemLayer {
     }
 
     @Override
-    public void queryPlayerGames(PlayerLayer player) {
-
+    public ArrayList<GameControllerLayer> queryPlayerGames(PlayerLayer player) {
+        return null;
     }
 
     @Override
-    public boolean addPlayer() {
+    public PlayerLayer createNewPlayer(String playerName) {
+        return new SimplePlayer(playerName);
+    }
+
+    @Override
+    public PlayerLayer getPlayer(String playerName) {
+        return new SimplePlayer(playerName);
+    }
+
+    @Override
+    public boolean delPlayer(PlayerLayer player) {
         return true;
     }
 
     @Override
-    public boolean delPlayer() {
+    public boolean delPlayer(String playerName) {
         return true;
     }
 
     @Override
-    public SimpleGameController startNewGame(String playerName1, String playerName2) {
-        return new SimpleGameController(new SimplePlayer(playerName1), new SimplePlayer(playerName2), true);
+    public GameControllerLayer startNewGame(String player1, String player2) {
+        return startNewGame(player1, player2, 8, 8);
     }
 
     @Override
-    public GameControllerLayer startNewGame(String playerName1, String playerName2, int rowSize, int colSize) {
-        return new SimpleGameController(new SimplePlayer(playerName1), new SimplePlayer(playerName2), rowSize, colSize, true);
+    public GameControllerLayer startNewGame(String player1, String player2, int rowSize, int colSize) {
+        return new SimpleGameController(getPlayer(player1), getPlayer(player2), rowSize, colSize, true);
     }
 
     @Override
-    public GameControllerLayer loadGame(int index, boolean isModifiable) {
-        SimpleGameController simpleGameController = new SimpleGameController(new SimplePlayer("LOAD TEST 1"), new SimplePlayer("LOAD TEST 2"), isModifiable);
-        Log0j.writeInfo("loadGame method test: New GameController Created: " + simpleGameController);
-        return simpleGameController;
+    public GameControllerLayer registerGamePlayable(GameControllerLayer controller) {
+        if (controller == null) {
+            SimpleGameController simpleGameController = new SimpleGameController(new SimplePlayer("LOAD TEST 1"), new SimplePlayer("LOAD TEST 2"), true);
+            Log0j.writeInfo("loadGame method test: New GameController Created: " + simpleGameController);
+            return simpleGameController;
+        } else {
+            //todo: you should set the controller to be playable
+            return controller;
+        }
+    }
+
+    @Override
+    public GameControllerLayer unregisterGamePlayable(GameControllerLayer controller) {
+        //todo: you should set the controller to be unplayable
+        return controller;
     }
 
     @Override
@@ -70,7 +94,7 @@ public class SimpleGameSystem implements GameSystemLayer {
     }
 
     @Override
-    public List<GameControllerLayer> getAllExistingGames() {
+    public List<GameControllerLayer> queryGameControllerAllSorted() {
         ArrayList<GameControllerLayer> gameList = new ArrayList<GameControllerLayer>(0);
         for (int i = 0; i < 10; i++) {
             gameList.add(new SimpleGameController(new SimplePlayer("TEST PLAYER " + i * 2), new SimplePlayer("TEST PLAYER" + (i * 2 + 1)), false));
@@ -80,11 +104,17 @@ public class SimpleGameSystem implements GameSystemLayer {
 
     @Override
     public boolean save() {
-        return saveTo("/save/DefaultSave.save");
+        try {
+            return saveTo(new File(SaveLoader.class.getResource("DefaultSave.save").toURI().toString()));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Log0j.writeInfo("Failed to save.");
+            return false;
+        }
     }
 
     @Override
-    public boolean saveTo(String srcPath) {
+    public boolean saveTo(File file) {
         return true;
     }
 

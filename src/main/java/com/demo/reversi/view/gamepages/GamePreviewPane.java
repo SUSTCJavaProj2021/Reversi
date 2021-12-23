@@ -4,7 +4,7 @@ import com.demo.reversi.controller.GameControllerLayer;
 import com.demo.reversi.themes.Theme;
 import javafx.scene.layout.GridPane;
 
-public class GameDemoPane extends GridPane {
+public class GamePreviewPane extends GridPane {
     //todo: set the following animations:
     /**
      * Animation list:
@@ -24,7 +24,7 @@ public class GameDemoPane extends GridPane {
      * ----------------------
      *
      */
-    public GameDemoPane(GameControllerLayer gameController, Theme theme){
+    public GamePreviewPane(GameControllerLayer gameController, Theme theme){
 
     }
 

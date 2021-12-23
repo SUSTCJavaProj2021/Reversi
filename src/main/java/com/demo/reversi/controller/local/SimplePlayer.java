@@ -10,6 +10,10 @@ public class SimplePlayer implements PlayerLayer {
         nameProperty = new SimpleStringProperty(name);
     }
 
+    @Override
+    public LongProperty pidProperty(){return new SimpleLongProperty(2333333);}
+
+    @Override
     public StringProperty nameProperty(){
         return nameProperty;
     }

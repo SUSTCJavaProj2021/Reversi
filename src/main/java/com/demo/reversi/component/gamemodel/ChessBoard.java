@@ -387,7 +387,7 @@ public class ChessBoard extends HBox implements Updatable {
                 });
             }
         }
-        Log0j.writeInfo("Bind to controller: " + controller);
+        Log0j.writeInfo("Loaded the controller: " + controller);
     }
 
     private void unloadController() {
@@ -397,7 +397,7 @@ public class ChessBoard extends HBox implements Updatable {
                 gridBases[row][col].setOnMouseClicked(null);
             }
         }
-        Log0j.writeInfo("Unbind controller.");
+        Log0j.writeInfo("Unloaded the controller.");
     }
 
     public void initBoardPlayable(GameControllerLayer controller) {
@@ -407,6 +407,14 @@ public class ChessBoard extends HBox implements Updatable {
         this.colSize = controller.getColSize();
         reloadGrids();
         loadController();
+        update();
+    }
+
+    public void initBoardDemo(GameControllerLayer controller){
+        Log0j.writeInfo("Initializing the chessboard to be in demo mode.");
+        this.controller = controller;
+        reloadGrids();
+        update();
     }
 
 }
