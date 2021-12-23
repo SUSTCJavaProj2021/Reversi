@@ -33,7 +33,7 @@ public class ChessBoard extends HBox implements Updatable {
 
     public double cellMinSize;
     public int rowSize, colSize;
-    public BoardGridComponent gridBases[][];
+    public BoardGridComponent[][] gridBases;
     public GameControllerLayer controller;
 
     private final Theme theme;
@@ -117,8 +117,6 @@ public class ChessBoard extends HBox implements Updatable {
         for (int row = 0; row < this.rowSize; row++) {
             gridBases[row] = new BoardGridComponent[this.colSize];
             for (int col = 0; col < this.colSize; col++) {
-
-                final int tmpRow = row, tmpCol = col;
 
                 //Initialize Grids
                 gridBases[row][col] = new BoardGridComponent(theme);
@@ -262,10 +260,15 @@ public class ChessBoard extends HBox implements Updatable {
         }
     }
 
+    public void curtainCall() {
+        curtainCall(null);
+    }
+
+
     /**
      * You should make sure that the board is valid.
      */
-    public void curtainCall() {
+    public void curtainCall(Task<Void> endingTask) {
         if (controller == null) {
             return;
         }
@@ -294,12 +297,13 @@ public class ChessBoard extends HBox implements Updatable {
         }
 
         /**
-         * Listing Player 1 Chess
+         * Listing Player Chess
          */
         final int cnt1 = Player1Count;
-        Task<Void> task1 = new Task<Void>() {
+        Task<Void> showPlayer1Chess = new Task<Void>() {
             @Override
             protected Void call() {
+                Log0j.writeInfo("Performing curtain call.");
                 if (rowSize % 2 == 0) {
                     placePlayerChess(cnt1, Chess.ChessOwner.PLAYER1, rowSize - 1, 0, -1, 1);
                 } else {
@@ -308,35 +312,31 @@ public class ChessBoard extends HBox implements Updatable {
                 return null;
             }
         };
+
         final int cnt2 = Player2Count;
-        Task<Void> task2 = new Task<Void>() {
+        Task<Void> showPlayer2Chess = new Task<Void>() {
             @Override
             protected Void call() {
                 placePlayerChess(cnt2, Chess.ChessOwner.PLAYER2, 0, 0, 1, 1);
                 return null;
             }
         };
-        task1.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                new Thread(task2).start();
+
+        showPlayer1Chess.setOnSucceeded(event -> new Thread(showPlayer2Chess).start());
+        showPlayer2Chess.setOnSucceeded(event -> {
+            Log0j.writeInfo("Curtain call completed.");
+            if (endingTask != null) {
+                Log0j.writeInfo("Ending task exists. Executing the task.");
+                new Thread(endingTask).start();
             }
         });
-//        task2.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-//            @Override
-//            public void handle(WorkerStateEvent event) {
-//                loadController();
-//            }
-//        });
-        new Thread(task1).start();
-
+        new Thread(showPlayer1Chess).start();
     }
 
     private void placePlayerChess(int cnt, Chess.ChessOwner player, int startRow, int startCol, int stepR, int stepC) {
         int cursorR = startRow, cursorC = startCol;
         while (cnt-- > 0) {
             Chess chess = ((Chess) gridBases[cursorR][cursorC].getChildren().get(1));
-            Log0j.writeInfo("Performing chess list: Coordinate: (" + cursorR + ", " + cursorC + ")");
 
             chess.setChessOwnerForceAnimated(player);
 
@@ -401,6 +401,7 @@ public class ChessBoard extends HBox implements Updatable {
     }
 
     public void initBoardPlayable(GameControllerLayer controller) {
+        Log0j.writeInfo("Initializing the chessboard to be playable.");
         this.controller = controller;
         this.rowSize = controller.getRowSize();
         this.colSize = controller.getColSize();

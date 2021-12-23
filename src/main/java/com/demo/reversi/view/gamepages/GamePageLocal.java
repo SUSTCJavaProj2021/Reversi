@@ -9,15 +9,12 @@ import com.demo.reversi.controller.GameSystemLayer;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.UpdatableGame;
+import com.demo.reversi.view.prompts.PromptLoader;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.geometry.VPos;
+import javafx.geometry.*;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -33,7 +30,7 @@ public class GamePageLocal implements UpdatableGame {
     public final GridPane root;
 
     public final VBox sidePanel;
-    public final FlowPane controlsPane;
+    public final VBox controlsPane;
     public final VBox configPane;
     public InfoPane player1Info;
     public InfoPane player2Info;
@@ -59,11 +56,8 @@ public class GamePageLocal implements UpdatableGame {
         root.setPrefHeight(DEFAULT_PREF_HEIGHT);
 
 
-        /**
-         * Adding chessboard
-         */
+        //Adding chessboard
         chessBoard = new ChessBoard(theme);
-        BorderPane.setAlignment(chessBoard, Pos.CENTER);
         root.add(chessBoard, 0, 0, 1, 4);
         GridPane.setMargin(chessBoard, new Insets(20, 20, 20, 20));
         GridPane.setHalignment(chessBoard, HPos.CENTER);
@@ -71,20 +65,18 @@ public class GamePageLocal implements UpdatableGame {
         GridPane.setVgrow(chessBoard, Priority.ALWAYS);
         GridPane.setHgrow(chessBoard, Priority.ALWAYS);
 
-        sidePanel = new VBox();
+        sidePanel = new VBox(10);
         GridPane.setHgrow(sidePanel, Priority.SOMETIMES);
         root.add(sidePanel, 1, 0);
 
-        /**
-         * Adjust layouts
-         */
+        //Adjust layouts
         {
             ColumnConstraints[] constraints = new ColumnConstraints[2];
             for (int i = 0; i < 2; i++) {
                 constraints[i] = new ColumnConstraints();
                 root.getColumnConstraints().add(constraints[i]);
             }
-            constraints[0].setMaxWidth(Double.POSITIVE_INFINITY);
+            constraints[1].setHgrow(Priority.SOMETIMES);
         }
         {
             RowConstraints constraint = new RowConstraints();
@@ -93,28 +85,22 @@ public class GamePageLocal implements UpdatableGame {
         }
 
 
-        /**
-         * Adding Info Pane
-         */
+        //Adding Info Pane
         player1Info = new InfoPane(theme, theme.player1ChessPaintPR());
         sidePanel.getChildren().add(player1Info);
 
         player2Info = new InfoPane(theme, theme.player2ChessPaintPR());
         sidePanel.getChildren().add(player2Info);
 
-        sidePanel.getChildren().add(new TitleLabel("Settings",theme));
+        sidePanel.getChildren().add(new TitleLabel("Settings", theme));
 
-        /**
-         * Adding controls pane
-         */
-        controlsPane = new FlowPane();
+        //Adding controls pane
+        controlsPane = new VBox(5);
 
         sidePanel.getChildren().add(controlsPane);
         initControls();
 
-        /**
-         * Adding options pane
-         */
+        //Adding options pane
         configPane = new VBox();
         sidePanel.getChildren().add(configPane);
         VBox.setVgrow(configPane, Priority.ALWAYS);
@@ -126,23 +112,23 @@ public class GamePageLocal implements UpdatableGame {
     /**
      * Load the controller.
      *
-     * @param index
+     * @param index if<code>-1</code>, then a new game will be tried to create
      */
     public void loadController(int index) {
         if (index == -1) {
-            Optional<String>[] playerNames = new Optional[2];
-            for (int i = 1; i <= 2; i++) {
-                TextInputDialog dialog = new TextInputDialog();
-                dialog.setTitle("GameSystem Request");
-                dialog.setHeaderText("New Game Request");
-                dialog.setContentText("Please enter the name of Player " + i);
-                playerNames[i - 1] = dialog.showAndWait();
-            }
-            if (playerNames[0].isPresent() && playerNames[1].isPresent()) {
-                controller = gameSystem.startNewGame(playerNames[0].get(), playerNames[1].get());
-            }
+            Dialog<GameInfo> gameInfoDialog = PromptLoader.getGameInfoDialog(theme);
+
+            Optional<GameInfo> optionalGameInfo = gameInfoDialog.showAndWait();
+            optionalGameInfo.ifPresent((GameInfo gameInfo) -> {
+                if (gameInfo.rowSize < 0 || gameInfo.colSize < 0) {
+                    controller = gameSystem.startNewGame(gameInfo.playerName1, gameInfo.playerName2);
+                } else {
+                    controller = gameSystem.startNewGame(gameInfo.playerName1, gameInfo.playerName2,
+                            gameInfo.rowSize, gameInfo.colSize);
+                }
+            });
         } else {
-            controller = gameSystem.loadGame(1, true);
+            controller = gameSystem.loadGame(index, true);
         }
         if (controller != null) {
             chessBoard.initBoardPlayable(controller);
@@ -152,6 +138,8 @@ public class GamePageLocal implements UpdatableGame {
 
             controller.bindToGamePage(this);
             update();
+        } else {
+            Log0j.writeError("Controller is null because no valid user input is received. Chessboard will not be initialized.");
         }
     }
 
@@ -162,11 +150,11 @@ public class GamePageLocal implements UpdatableGame {
         cheatBtn.setOnAction(event -> controller.setCheatMode(true));
         controlsPane.getChildren().add(cheatBtn);
 
+        //todo: the following buttons shall all be rewritten
         MetroButton undoBtn = new MetroButton("Undo", theme);
         undoBtn.setOnAction(event -> Log0j.writeInfo("GamePage tried to undo the last operation."));
         controlsPane.getChildren().add(undoBtn);
 
-        //todo: the following buttons shall all be rewritten
         MetroButton pauseBtn = new MetroButton("Pause", theme);
         pauseBtn.setOnAction(event -> Log0j.writeInfo("Game paused on request."));
         controlsPane.getChildren().add(pauseBtn);
@@ -188,9 +176,7 @@ public class GamePageLocal implements UpdatableGame {
 
 
     public void initConfigs() {
-        /**
-         * Test board judge.
-         */
+        //Test board judge.
         MetroButton judgeBtn = new MetroButton("Perform board judge!", theme);
         judgeBtn.setOnAction(actionEvent -> {
             curtainCall();
@@ -207,6 +193,9 @@ public class GamePageLocal implements UpdatableGame {
 
     @Override
     public void update() {
+        if (controller == null) {
+            return;
+        }
         chessBoard.update();
         updateElements();
     }
@@ -216,33 +205,43 @@ public class GamePageLocal implements UpdatableGame {
         updateElements();
     }
 
-    public void curtainCallUpdate(){
+    public void curtainCallUpdate() {
         curtainCall();
     }
 
-    private void curtainCall(){
+    private void curtainCall() {
         Task<Void> task = new Task<Void>() {
             @Override
-            protected Void call() throws Exception {
-                Thread.sleep(1000);
-                chessBoard.curtainCall();
-                Platform.runLater(() -> {
-                    theme.bgmPlayerInterrupt(theme.gameFinishBGMSourcePR().getValue(), 100);
-                    Stage stage = new Stage();
-                    stage.setScene(new Scene(new Label("Well played!")));
-                    stage.show();
-                    stage.setOnCloseRequest(ActionEvent -> {
+            protected Void call() throws InterruptedException {
+                Task<Void> showScorePage = new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
                         Platform.runLater(() -> {
-                            theme.bgmPlayerResume(100);
-                        });
-                    });
-                });
+                            theme.bgmPlayerInterrupt(theme.gameFinishBGMSourcePR().getValue(), 100);
 
+                            //Show the winning prompt
+
+
+                            //This should be replaced
+                            Stage stage = new Stage();
+                            stage.setScene(new Scene(new Label("Well played!")));
+                            stage.show();
+                            stage.setOnCloseRequest(ActionEvent -> {
+                                Platform.runLater(() -> {
+                                    theme.bgmPlayerResumeFromInterrupt(100);
+                                });
+                            });
+
+                        });
+                        return null;
+                    }
+                };
+                Platform.runLater(theme::bgmPlayerStop);
+                chessBoard.curtainCall(showScorePage);
                 return null;
             }
         };
         new Thread(task).start();
-
     }
 
     /**

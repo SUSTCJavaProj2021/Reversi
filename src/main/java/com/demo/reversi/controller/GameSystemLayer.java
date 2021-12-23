@@ -14,6 +14,8 @@ public interface GameSystemLayer {
 
     public GameControllerLayer startNewGame(String playerName1, String playerName2);
 
+    public GameControllerLayer startNewGame(String playerName1, String playerName2, int rowSize, int colSize);
+
     public GameControllerLayer loadGame(int index, boolean isGameModifiable);
 
     public boolean updateRanking();

@@ -21,6 +21,7 @@ import org.json.JSONObject;
 
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -76,10 +77,10 @@ public class Theme {
             Log0j.writeError("Game Finish BGM loading failed. Check your path.");
         }
 
-        try{
+        try {
             defaultTutorialBGMSource = Paths.get(Theme.class.getResource("TutorialBGM.mp3").toURI());
             Log0j.writeInfo("Tutorial BGM loaded on path: " + defaultTutorialBGMSource);
-        }catch(NullPointerException| URISyntaxException e){
+        } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
             Log0j.writeError("Tutorial BGM loading failed. Check your path.");
         }
@@ -177,7 +178,7 @@ public class Theme {
     public static final Paint defaultInfoTitleFontPaint = Color.WHITE;
     public static final Font defaultMenuFontFamily = new Font("Segoe UI", 14);
     public static final Paint defaultMenuFontPaint = Color.WHITE;
-    public static final Font defaultTextFontFamily = new Font("Segoe UI", 16);
+    public static final Font defaultTextFontFamily = new Font("Segoe UI Light", 16);
     public static final Paint defaultTextFontPaint = Color.WHITE;
 
     /**
@@ -343,6 +344,9 @@ public class Theme {
     }
 
     public void initMedia() {
+        if (bgmPlayer != null) {
+            bgmPlayer.stop();
+        }
         try {
             Media media;
             //todo: modify this
@@ -357,13 +361,14 @@ public class Theme {
             bgmPlayer.volumeProperty().bind(bgmVolumePR);
             Log0j.writeInfo("BGM Player Initialized.");
 
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             e.printStackTrace();
             Log0j.writeInfo("Failed to initialize BGM.");
         }
     }
 
     public void applyDefaultTheme() {
+        removeRelations();
         primaryStage.setWidth(DEFAULT_MAIN_WINDOW_PREF_WIDTH);
         primaryStage.setHeight(DEFAULT_MAIN_WINDOW_PREF_HEIGHT);
 
@@ -408,8 +413,26 @@ public class Theme {
         playerIconPR.setValue(defaultPlayerIcon);
 
         initMedia();
+        initRelations();
         Log0j.writeInfo("Default Theme Applied.");
 
+    }
+
+    public void removeRelations() {
+        //Bind mode switch to dynamically change color.
+        modeColorPR.unbind();
+
+        modeRevColorPR.unbind();
+
+        titleFontPaintPR.unbind();
+        infoTitleFontPaintPR.unbind();
+        menuFontPaintPR.unbind();
+        textFontPaintPR.unbind();
+
+        //Bind theme paint to theme color
+        themePaintPR.unbind();
+
+        Log0j.writeInfo("Relation removed.");
     }
 
     public void initRelations() {
@@ -491,7 +514,15 @@ public class Theme {
         }
     }
 
-    public void bgmPlayerInterrupt(Path BGMSource,long delayDurationMillis) {
+    public void bgmPlayerStop(){
+        bgmPlayer.stop();
+    }
+
+    public void bgmPlayerResume(){
+        fadeInBGM(bgmPlayer);
+    }
+
+    public void bgmPlayerInterrupt(Path BGMSource, long delayDurationMillis) {
         //First unbind all connections
         bgmPlayer.volumeProperty().unbind();
         bgmPlayer.stop();
@@ -512,7 +543,7 @@ public class Theme {
     /**
      * You must first call bgmPlayerInterrupt().
      */
-    public void bgmPlayerResume(long delayDurationMillis) {
+    public void bgmPlayerResumeFromInterrupt(long delayDurationMillis) {
         if (lastBGM == null) {
             Log0j.writeInfo("Invalid bgm resume call.");
         } else {
@@ -535,7 +566,7 @@ public class Theme {
                 fadeInBGM(bgmPlayer);
             });
 
-            Platform.runLater(()->{
+            Platform.runLater(() -> {
                 fadeOutTimeline.play();
             });
         }
@@ -574,7 +605,7 @@ public class Theme {
         Platform.runLater(fadeOutTimeline::play);
     }
 
-    public void fadeInBGM(MediaPlayer bgmPlayer){
+    public void fadeInBGM(MediaPlayer bgmPlayer) {
         Timeline fadeInTimeline = new Timeline(
                 new KeyFrame(Duration.millis(300),
                         new KeyValue(bgmPlayer.volumeProperty(), bgmVolumePR.getValue())));
@@ -592,7 +623,7 @@ public class Theme {
         return chessDownSoundSourcePR;
     }
 
-    public ObjectProperty<Path> chessUpSoundSourcePR(){
+    public ObjectProperty<Path> chessUpSoundSourcePR() {
         return chessUpSoundSourcePR;
     }
 
@@ -620,7 +651,7 @@ public class Theme {
         effectVolumePR.unbind();
     }
 
-    public ObjectProperty<Background> backPanePR(){
+    public ObjectProperty<Background> backPanePR() {
         return backPaneBackgroundPR;
     }
 
@@ -632,7 +663,7 @@ public class Theme {
         backPaneBackgroundPR.unbind();
     }
 
-    public ObjectProperty<Background> frontPanePR(){
+    public ObjectProperty<Background> frontPanePR() {
         return frontPaneBackgroundPR;
     }
 
@@ -734,15 +765,15 @@ public class Theme {
         }, chessBoardGridPaintPR));
     }
 
-    public ObjectProperty<Image> playerIconPR(){
+    public ObjectProperty<Image> playerIconPR() {
         return playerIconPR;
     }
 
-    public ObjectProperty<Color> player1ChessPaintPR(){
+    public ObjectProperty<Color> player1ChessPaintPR() {
         return player1ChessPaintPR;
     }
 
-    public ObjectProperty<Color> player2ChessPaintPR(){
+    public ObjectProperty<Color> player2ChessPaintPR() {
         return player2ChessPaintPR;
     }
 

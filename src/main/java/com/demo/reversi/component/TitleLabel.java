@@ -16,4 +16,8 @@ public class TitleLabel extends Label {
         setMinHeight(PREFERRED_HEIGHT);
         setPrefHeight(PREFERRED_HEIGHT);
     }
+
+    public TitleLabel(Theme theme){
+        this("", theme);
+    }
 }

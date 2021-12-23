@@ -30,7 +30,7 @@ public class CLIGameController {
         //END TEST
 
 
-        currentPlayer = PlayerConstants.BLACK_PLAYER;
+        currentPlayer = PlayerConstants.PLAYER_1;
 
     }
 
@@ -70,7 +70,7 @@ public class CLIGameController {
                 if (i == 0 && j == 0) {
                     continue;
                 }
-                if (makeOneDirectMove(rowIndex, colIndex, i, j, currentPlayer == PlayerConstants.BLACK_PLAYER ? 1 : -1, MOVE_DETECT_ONLY) == MOVE_VALID) {
+                if (makeOneDirectMove(rowIndex, colIndex, i, j, currentPlayer == PlayerConstants.PLAYER_1 ? 1 : -1, MOVE_DETECT_ONLY) == MOVE_VALID) {
                     return MOVE_VALID;
                 }
             }
@@ -99,13 +99,13 @@ public class CLIGameController {
                 if (i == 0 && j == 0) {
                     continue;
                 }
-                cnt += makeOneDirectMove(rowIndex, colIndex, i, j, currentPlayer == PlayerConstants.BLACK_PLAYER ? 1 : -1, MOVE_MODIFY) == MOVE_COMPLETE ? 1 : 0;
+                cnt += makeOneDirectMove(rowIndex, colIndex, i, j, currentPlayer == PlayerConstants.PLAYER_1 ? 1 : -1, MOVE_MODIFY) == MOVE_COMPLETE ? 1 : 0;
             }
         }
         if (cnt == 0) {
             return MOVE_INVALID;
         }
-        board[rowIndex][colIndex] = currentPlayer == PlayerConstants.BLACK_PLAYER ? 1 : -1;
+        board[rowIndex][colIndex] = currentPlayer == PlayerConstants.PLAYER_1 ? 1 : -1;
 //        printBoard();
         makeTurn();
         for (int i = 0; i < rowSize; i++) {
@@ -175,8 +175,8 @@ public class CLIGameController {
     }
 
     public void makeTurn() {
-        currentPlayer = (currentPlayer == PlayerConstants.BLACK_PLAYER) ? PlayerConstants.WHITE_PLAYER
-                : PlayerConstants.BLACK_PLAYER;
+        currentPlayer = (currentPlayer == PlayerConstants.PLAYER_1) ? PlayerConstants.PLAYER_2
+                : PlayerConstants.PLAYER_1;
     }
 
     public GameStatus judge() {

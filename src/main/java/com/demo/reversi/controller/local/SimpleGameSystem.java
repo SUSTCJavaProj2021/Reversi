@@ -34,6 +34,11 @@ public class SimpleGameSystem implements GameSystemLayer {
     }
 
     @Override
+    public GameControllerLayer startNewGame(String playerName1, String playerName2, int rowSize, int colSize) {
+        return new SimpleGameController(new SimplePlayer(playerName1), new SimplePlayer(playerName2), rowSize, colSize, true);
+    }
+
+    @Override
     public GameControllerLayer loadGame(int index, boolean isModifiable) {
         SimpleGameController simpleGameController = new SimpleGameController(new SimplePlayer("LOAD TEST 1"), new SimplePlayer("LOAD TEST 2"), isModifiable);
         Log0j.writeInfo("loadGame method test: New GameController Created: " + simpleGameController);

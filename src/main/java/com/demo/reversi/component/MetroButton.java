@@ -52,11 +52,6 @@ public class MetroButton extends Button {
     public MetroButton(String text, Theme theme) {
         super(text);
         this.theme = theme;
-        setPrefSize(text.length() * 10 + 7, PREFERRED_HEIGHT);
-        setMinWidth(Control.USE_COMPUTED_SIZE);
-        setMinHeight(Control.USE_PREF_SIZE);
-        setMaxWidth(Control.USE_PREF_SIZE);
-        setTooltip(new Tooltip(text));
 
         fontProperty().bind(theme.menuFontFamilyPR());
         textFillProperty().bind(theme.modeRevPaintPR());
@@ -104,6 +99,11 @@ public class MetroButton extends Button {
         //Unselected
         setOpacity(OPACITY_DEFAULT);
         init();
+
+        setPrefSize(text.length() * (fontProperty().getValue().getSize() - 2) + 7, PREFERRED_HEIGHT);
+        setMinWidth(Control.USE_PREF_SIZE);
+        setMinHeight(Control.USE_PREF_SIZE);
+        setTooltip(new Tooltip(text));
     }
 
     private void init() {

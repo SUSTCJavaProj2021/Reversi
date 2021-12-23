@@ -1,15 +1,12 @@
 package com.demo.reversi.controller.local;
 
-import com.demo.reversi.controller.GameControllerLayer;
-import com.demo.reversi.controller.GameStatus;
-import com.demo.reversi.controller.GridStatus;
-import com.demo.reversi.controller.PlayerLayer;
+import com.demo.reversi.controller.*;
 import com.demo.reversi.logger.Log0j;
-import com.demo.reversi.view.Updatable;
 import com.demo.reversi.view.UpdatableGame;
-import com.demo.reversi.view.gamepages.GamePageLocal;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.concurrent.Task;
 
 public class SimpleGameController implements GameControllerLayer {
     public boolean isGameModifiable;
@@ -25,17 +22,21 @@ public class SimpleGameController implements GameControllerLayer {
 
     public boolean isCheatMode;
 
-    public SimpleGameController(PlayerLayer player1, PlayerLayer player2, boolean isGameModifiable) {
+    public SimpleGameController(PlayerLayer player1, PlayerLayer player2, int rowSize, int colSize, boolean isGameModifiable) {
         this.isGameModifiable = isGameModifiable;
         this.player1 = player1;
         this.player2 = player2;
 
         //TEST ONLY
-        controller = new CLIGameController(8,8);
+        controller = new CLIGameController(rowSize, colSize);
 
         isCheatMode = false;
         currentPlayerProperty = new SimpleObjectProperty<>(player1);
         updateCurrentPlayer();
+    }
+
+    public SimpleGameController(PlayerLayer player1, PlayerLayer player2, boolean isGameModifiable) {
+        this(player1, player2, 8, 8, isGameModifiable);
     }
 
     @Override
@@ -55,32 +56,41 @@ public class SimpleGameController implements GameControllerLayer {
     @Override
     public boolean onGridClick(int rowIndex, int colIndex) {
         Log0j.writeInfo(
-                String.format("%s Clicked Grid (%d, %d)", controller.currentPlayer.toString(), rowIndex, colIndex));
+                String.format("%s Clicked Grid (%d, %d)", controller.currentPlayer, rowIndex, colIndex));
 
         controller.makeMove(rowIndex, colIndex);
         updateCurrentPlayer();
         forceSourcedGUIUpdate(rowIndex, colIndex);
 
         GameStatus gameStatus = controller.judge();
-        if(gameStatus !=GameStatus.UNFINISHED){
-            if(gamePage!=null){
-                gamePage.curtainCallUpdate();
+        if (gameStatus != GameStatus.UNFINISHED) {
+            if (gamePage != null) {
+                new Thread(()->{
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }finally {
+                        Platform.runLater(gamePage::curtainCallUpdate);
+                    }
+                }).start();
             }
         }
         return true;
     }
+
     @Override
-    public void restartGame(){
-        controller = new CLIGameController(8,8);
+    public void restartGame() {
+        controller = new CLIGameController(8, 8);
     }
 
     public void updateCurrentPlayer() {
         switch (controller.getCurrentPlayer()) {
-            case BLACK_PLAYER:
+            case PLAYER_1:
                 currentPlayer = player1;
                 break;
 
-            case WHITE_PLAYER:
+            case PLAYER_2:
                 currentPlayer = player2;
                 break;
         }
@@ -107,7 +117,7 @@ public class SimpleGameController implements GameControllerLayer {
     }
 
     @Override
-    public ObjectProperty<PlayerLayer> currentPlayerProperty(){
+    public ObjectProperty<PlayerLayer> currentPlayerProperty() {
         return currentPlayerProperty;
     }
 
@@ -127,7 +137,7 @@ public class SimpleGameController implements GameControllerLayer {
     ;
 
     @Override
-    public boolean save(){
+    public boolean save() {
         return saveTo("/save/DefaultSave.save");
     }
 
@@ -139,7 +149,7 @@ public class SimpleGameController implements GameControllerLayer {
     ;
 
     @Override
-    public boolean bindToGamePage(UpdatableGame gamePage){
+    public boolean bindToGamePage(UpdatableGame gamePage) {
         this.gamePage = gamePage;
         return true;
     }
@@ -147,20 +157,18 @@ public class SimpleGameController implements GameControllerLayer {
     @Override
     public void forceGUIUpdate() {
 
-        if(gamePage !=null){
+        if (gamePage != null) {
             gamePage.update();
-        }
-        else{
+        } else {
             Log0j.writeInfo("Cannot update because GUI pointer is null.");
         }
     }
 
     @Override
-    public void forceSourcedGUIUpdate(int row, int col){
-        if(gamePage !=null){
+    public void forceSourcedGUIUpdate(int row, int col) {
+        if (gamePage != null) {
             gamePage.sourcedUpdate(row, col);
-        }
-        else{
+        } else {
             Log0j.writeInfo("Cannot update because GUI pointer is null.");
         }
     }
