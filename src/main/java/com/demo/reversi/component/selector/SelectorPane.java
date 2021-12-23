@@ -119,4 +119,8 @@ public class SelectorPane extends GridPane {
     public void init(){
         selector.init();
     }
+
+    public Selector getSelector(){
+        return selector;
+    }
 }

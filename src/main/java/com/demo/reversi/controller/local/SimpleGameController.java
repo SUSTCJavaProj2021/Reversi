@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -65,23 +66,22 @@ public class SimpleGameController implements GameControllerLayer {
 
         controller.makeMove(rowIndex, colIndex);
         updateCurrentPlayer();
-        forceSourcedGUIUpdate(rowIndex, colIndex);
 
-        //Judge the game
-        GameStatus gameStatus = controller.judge();
-        if (gameStatus != GameStatus.UNFINISHED) {
-            if (gamePage != null) {
-                new Thread(()->{
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }finally {
-                        curtainCallUpdate();
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                GameStatus gameStatus = controller.judge();
+                if (gameStatus != GameStatus.UNFINISHED) {
+                    if (gamePage != null) {
+                        new Thread(() -> {
+                            curtainCallUpdate();
+                        }).start();
                     }
-                }).start();
+                }
+                return null;
             }
-        }
+        };
+        forceSourcedGUIUpdate(rowIndex, colIndex, task);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class SimpleGameController implements GameControllerLayer {
 
     @Override
     public void restartGame() {
-        controller = new CLIGameController(8, 8);
+        controller = new CLIGameController(getRowSize(), getColSize());
     }
 
     @Override
@@ -142,7 +142,6 @@ public class SimpleGameController implements GameControllerLayer {
     }
 
 
-
     @Override
     public boolean setCheatMode(boolean isEnabled) {
         isCheatMode = isEnabled;
@@ -175,16 +174,34 @@ public class SimpleGameController implements GameControllerLayer {
     }
 
     @Override
-    public boolean unbindGamePage(){
+    public boolean unbindGamePage() {
         this.gamePage = null;
         return true;
     }
 
     @Override
     public void forceGUIUpdate() {
-
         if (gamePage != null) {
             gamePage.update();
+        } else {
+            Log0j.writeInfo("Cannot update because GUI pointer is null.");
+        }
+    }
+
+    @Override
+    public void forceGUIUpdate(Task<?> task) {
+        if (gamePage != null) {
+            Task<Void> task1 = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    gamePage.update();
+                    return null;
+                }
+            };
+            task1.setOnSucceeded(WorkerStateEvent -> {
+                new Thread(task).start();
+            });
+            new Thread(task1).start();
         } else {
             Log0j.writeInfo("Cannot update because GUI pointer is null.");
         }
@@ -200,7 +217,16 @@ public class SimpleGameController implements GameControllerLayer {
     }
 
     @Override
-    public void curtainCallUpdate(){
+    public void forceSourcedGUIUpdate(int row, int col, Task<?> task) {
+        if (gamePage != null) {
+            gamePage.sourcedUpdate(row, col, task);
+        } else {
+            Log0j.writeInfo("Cannot update because GUI pointer is null.");
+        }
+    }
+
+    @Override
+    public void curtainCallUpdate() {
         Platform.runLater(gamePage::curtainCallUpdate);
     }
 

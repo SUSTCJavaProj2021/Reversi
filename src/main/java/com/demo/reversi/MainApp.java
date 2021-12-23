@@ -5,6 +5,7 @@ import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.view.MainView;
 import com.demo.reversi.themes.Theme;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -64,6 +65,10 @@ public class MainApp extends Application {
 
 
         setCloseAction();
+        mainView.getMainSelectorPane().getSelector().getExitButton().setOnAction(ActionEvent->{
+            curtainCall();
+            primaryStage.close();
+        });
         Log0j.writeInfo("Stage ready.");
 
         primaryStage.show();
@@ -85,11 +90,15 @@ public class MainApp extends Application {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
-                gameSystem.save();
-                theme.saveTheme();
+                curtainCall();
             }
         });
         Log0j.writeInfo("primaryStage CloseAction set.");
+    }
+
+    public void curtainCall(){
+        gameSystem.save();
+        theme.saveTheme();
     }
 
 }

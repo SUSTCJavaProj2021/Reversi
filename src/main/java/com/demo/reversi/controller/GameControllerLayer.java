@@ -3,6 +3,7 @@ package com.demo.reversi.controller;
 import com.demo.reversi.view.Updatable;
 import com.demo.reversi.view.UpdatableGame;
 import javafx.beans.property.ObjectProperty;
+import javafx.concurrent.Task;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -87,14 +88,25 @@ public interface GameControllerLayer {
      */
     public void forceGUIUpdate();
 
+    public void forceGUIUpdate(Task<?> task);
+
     /**
      * Call the GUI to update its contents, and in addition, play an animation on the ChessBoard
      * (with directed animation.)
      * Normally, this method should be called when onGridClick is triggered, to create an animation.
-     * @param row the row position of the source
+     * @param row the column position of the source
      * @param col the column position of the source
      */
     public void forceSourcedGUIUpdate(int row, int col);
+
+    /**
+     * The only difference between this method and the former one is that it adds a task that is going
+     * to be executed after the GUI update. Therefore, no more <code>Thread.sleep()</code> is needed.
+     * @param row the column position of the source
+     * @param col the column position of the source
+     * @param task the task that is going to be executed after the GUI update
+     */
+    public void forceSourcedGUIUpdate(int row, int col, Task<?> task);
 
     /**
      * Call this when the game is finished.
@@ -162,6 +174,7 @@ public interface GameControllerLayer {
      * @return the status of the grid.
      */
     public GridStatus getGridStatus(int row, int col);
+
 
     /**
      * This will be called when the GUI tries to save the current status of the game to the GameSystem.

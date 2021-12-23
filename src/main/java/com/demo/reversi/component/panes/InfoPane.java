@@ -166,7 +166,8 @@ public class InfoPane extends StackPane implements Updatable {
 
     public void setPlayer(PlayerLayer player){
         playerNameLabel.textProperty().bind(player.nameProperty());
-        playerWinRateLabel.textProperty().setValue("QX3 LOAD TEST");
+        //todo: change this test
+        playerWinRateLabel.textProperty().setValue("QX3 SET TEST");
     }
 
     public InfoPane outer() {

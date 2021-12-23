@@ -1,6 +1,7 @@
 package com.demo.reversi.view;
 
 import com.demo.reversi.component.selector.MainSelectorPane;
+import com.demo.reversi.component.selector.SelectorPane;
 import com.demo.reversi.controller.local.SimpleGameSystem;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.res.icons.Icon;
@@ -97,5 +98,9 @@ public class MainView extends GridPane {
             Log0j.writeInfo("Background BGM isn't loaded because the pointer to BGMPlayer is null.");
         }
 
+    }
+
+    public SelectorPane getMainSelectorPane(){
+        return mainSelectorPane;
     }
 }

@@ -1,5 +1,7 @@
 package com.demo.reversi.view;
 
+import javafx.concurrent.Task;
+
 public interface UpdatableGame extends Updatable{
 
     /**
@@ -9,10 +11,13 @@ public interface UpdatableGame extends Updatable{
      */
     public void sourcedUpdate(int row, int col);
 
+    public void sourcedUpdate(int row, int col, Task<?> task);
+
     /**
      * This method is called when the game ends.
      * A series of animation will be played, and possibly the GUI will block all inputs.
      */
     public void curtainCallUpdate();
+
 
 }

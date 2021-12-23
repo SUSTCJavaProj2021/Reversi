@@ -200,8 +200,15 @@ public class GamePageLocal implements UpdatableGame {
         updateElements();
     }
 
+    @Override
     public void sourcedUpdate(int row, int col) {
         chessBoard.sourcedUpdate(row, col);
+        updateElements();
+    }
+
+    @Override
+    public void sourcedUpdate(int row, int col, Task<?> task) {
+        chessBoard.sourcedUpdate(row, col, task);
         updateElements();
     }
 

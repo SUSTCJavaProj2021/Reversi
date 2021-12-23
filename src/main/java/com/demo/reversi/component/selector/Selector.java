@@ -131,4 +131,8 @@ public class Selector extends GridPane{
         selectorContainer.getChildren().add(fillRegion);
     }
 
+    public ExitButton getExitButton(){
+        return exitButton;
+    }
+
 }

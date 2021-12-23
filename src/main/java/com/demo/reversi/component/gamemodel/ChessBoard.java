@@ -19,6 +19,13 @@ import javafx.scene.control.Control;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 /**
  * You should not in any way directly manipulate the contents of the ChessBoard instance.
  */
@@ -203,8 +210,11 @@ public class ChessBoard extends HBox implements Updatable {
         });
     }
 
-
     public void sourcedUpdate(int row, int col) {
+        sourcedUpdate(row, col, null);
+    }
+
+    public void sourcedUpdate(int row, int col, Task<?> endingTask) {
         if (controller == null) {
             return;
         }
@@ -216,7 +226,7 @@ public class ChessBoard extends HBox implements Updatable {
         Chess chess = ((Chess) gridBases[row][col].getChildren().get(1));
         chess.setChessOwner(readBlockStatus(positionPlayer));
 
-        Task<Void> tasks[] = new Task[8];
+        List<Callable<Object>> tasks = new ArrayList<>();
         int cnt = 0;
         for (int stepRow = -1; stepRow <= 1; stepRow++) {
             for (int stepCol = -1; stepCol <= 1; stepCol++) {
@@ -224,19 +234,27 @@ public class ChessBoard extends HBox implements Updatable {
                     continue;
                 }
                 final int stepR = stepRow, stepC = stepCol;
-                tasks[cnt] = new Task<Void>() {
+                tasks.add(Executors.callable(new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
                         updateByDirection(row, col, stepR, stepC);
                         return null;
                     }
-                };
+                }));
                 cnt++;
             }
         }
-        for (int i = 0; i < 8; i++) {
-            new Thread(tasks[i]).start();
-        }
+        ExecutorService es = Executors.newFixedThreadPool(8);
+        new Thread(() -> {
+            try {
+                List<Future<Object>> answers = es.invokeAll(tasks);
+                if(endingTask!=null){
+                    new Thread(endingTask).start();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     private void updateByDirection(int rowIndex, int colIndex, int stepRow, int stepCol) {
@@ -410,7 +428,7 @@ public class ChessBoard extends HBox implements Updatable {
         update();
     }
 
-    public void initBoardDemo(GameControllerLayer controller){
+    public void initBoardDemo(GameControllerLayer controller) {
         Log0j.writeInfo("Initializing the chessboard to be in demo mode.");
         this.controller = controller;
         reloadGrids();
