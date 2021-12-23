@@ -8,7 +8,6 @@ import com.demo.reversi.controller.GameControllerLayer;
 import com.demo.reversi.controller.GameSystemLayer;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
-import com.demo.reversi.view.Updatable;
 import com.demo.reversi.view.UpdatableGame;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -34,7 +33,7 @@ public class GamePageLocal implements UpdatableGame {
     public final GridPane root;
 
     public final VBox sidePanel;
-    public final HBox controlsPane;
+    public final FlowPane controlsPane;
     public final VBox configPane;
     public InfoPane player1Info;
     public InfoPane player2Info;
@@ -108,7 +107,8 @@ public class GamePageLocal implements UpdatableGame {
         /**
          * Adding controls pane
          */
-        controlsPane = new HBox();
+        controlsPane = new FlowPane();
+
         sidePanel.getChildren().add(controlsPane);
         initControls();
 
@@ -118,8 +118,7 @@ public class GamePageLocal implements UpdatableGame {
         configPane = new VBox();
         sidePanel.getChildren().add(configPane);
         VBox.setVgrow(configPane, Priority.ALWAYS);
-
-        initOptions();
+        initConfigs();
 
         loadController(index);
     }
@@ -188,7 +187,7 @@ public class GamePageLocal implements UpdatableGame {
     }
 
 
-    public void initOptions() {
+    public void initConfigs() {
         /**
          * Test board judge.
          */
