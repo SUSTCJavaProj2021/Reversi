@@ -12,13 +12,12 @@ import com.demo.reversi.view.UpdatableGame;
 import com.demo.reversi.view.prompts.PromptLoader;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-
-import java.util.Optional;
 
 public class GamePageLocal implements UpdatableGame {
     public static final double MIN_WIDTH = InfoPane.PREF_WIDTH + ChessBoard.DEFAULT_BOARD_MIN_SIZE;
@@ -41,13 +40,14 @@ public class GamePageLocal implements UpdatableGame {
     public Theme theme;
 
     /**
-     * @param gameSystem specific game system that allows overall operations.
-     * @param index      If <code>-1</code>, then a new game prompt is created. Else, it will load a game from the game system.
-     * @param theme      Your preferred theme
+     * This constructor first tries to initialize the overall layout, then it tries to load the controller.
+     *
+     * @param gameSystem     specific game system that allows overall operations.
+     * @param controller the required GameController
+     * @param theme          Your preferred theme
      */
-    public GamePageLocal(GameSystemLayer gameSystem, int index, Theme theme) {
+    public GamePageLocal(GameSystemLayer gameSystem, GameControllerLayer controller, Theme theme) {
         this.theme = theme;
-        this.gameSystem = gameSystem;
         root = new GridPane();
         root.backgroundProperty().bind(theme.backPanePR());
         root.setMinWidth(MIN_WIDTH);
@@ -86,10 +86,10 @@ public class GamePageLocal implements UpdatableGame {
 
 
         //Adding Info Pane
-        player1Info = new InfoPane(theme, theme.player1ChessPaintPR());
+        player1Info = new InfoPane(theme, theme.player1ChessColorPR());
         sidePanel.getChildren().add(player1Info);
 
-        player2Info = new InfoPane(theme, theme.player2ChessPaintPR());
+        player2Info = new InfoPane(theme, theme.player2ChessColorPR());
         sidePanel.getChildren().add(player2Info);
 
         sidePanel.getChildren().add(new TitleLabel("Settings", theme));
@@ -106,30 +106,16 @@ public class GamePageLocal implements UpdatableGame {
         VBox.setVgrow(configPane, Priority.ALWAYS);
         initConfigs();
 
-        loadController(index);
+
+        this.gameSystem = gameSystem;
+        this.controller = controller;
+        loadController();
     }
 
     /**
      * Load the controller.
-     *
-     * @param index if<code>-1</code>, then a new game will be tried to create
      */
-    public void loadController(int index) {
-        if (index == -1) {
-            Dialog<GameInfo> gameInfoDialog = PromptLoader.getGameInfoDialog(theme);
-
-            Optional<GameInfo> optionalGameInfo = gameInfoDialog.showAndWait();
-            optionalGameInfo.ifPresent((GameInfo gameInfo) -> {
-                if (gameInfo.rowSize < 0 || gameInfo.colSize < 0) {
-                    controller = gameSystem.startNewGame(gameInfo.playerName1, gameInfo.playerName2);
-                } else {
-                    controller = gameSystem.startNewGame(gameInfo.playerName1, gameInfo.playerName2,
-                            gameInfo.rowSize, gameInfo.colSize);
-                }
-            });
-        } else {
-            controller = gameSystem.registerGamePlayable(controller);
-        }
+    public void loadController() {
         if (controller != null) {
             chessBoard.initBoardPlayable(controller);
 
@@ -162,9 +148,7 @@ public class GamePageLocal implements UpdatableGame {
         //todo: This may need change.
         MetroButton restartBtn = new MetroButton("Restart", theme);
         restartBtn.setOnAction(event -> {
-            if (controller == null) {
-                loadController(-1);
-            } else {
+            if (controller != null) {
                 controller.restartGame();
                 chessBoard.initBoardPlayable(controller);
             }
@@ -229,14 +213,11 @@ public class GamePageLocal implements UpdatableGame {
                             //Show the winning prompt
 
 
-                            //This should be replaced
-                            Stage stage = new Stage();
-                            stage.setScene(new Scene(new Label("Well played!")));
-                            stage.show();
-                            stage.setOnCloseRequest(ActionEvent -> {
-                                Platform.runLater(() -> {
-                                    theme.bgmPlayerResumeFromInterrupt(100);
-                                });
+                            //todo: modify this
+
+                            Alert alert = PromptLoader.getGameFinishAlert(theme);
+                            alert.setOnCloseRequest(ActionEvent->{
+                                Platform.runLater(()->theme.bgmPlayerResumeFromInterrupt(100));
                             });
 
                         });

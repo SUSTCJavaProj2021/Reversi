@@ -24,7 +24,6 @@ import org.json.JSONObject;
 
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -278,8 +277,8 @@ public class Theme {
     public final ObjectProperty<Paint> textFontPaintPR;
 
     //Chessboard Color
-    public final ObjectProperty<Color> player1ChessPaintPR;
-    public final ObjectProperty<Color> player2ChessPaintPR;
+    public final ObjectProperty<Color> player1ChessColorPR;
+    public final ObjectProperty<Color> player2ChessColorPR;
     public final ObjectProperty<Paint> chessBoardPaintPR1;
     public final ObjectProperty<Paint> chessBoardPaintPR2;
     public final ObjectProperty<Paint> chessBoardGridPaintPR;
@@ -327,8 +326,8 @@ public class Theme {
         textFontFamilyPR = new SimpleObjectProperty<>();
         textFontPaintPR = new SimpleObjectProperty<>();
 
-        player1ChessPaintPR = new SimpleObjectProperty<>();
-        player2ChessPaintPR = new SimpleObjectProperty<>();
+        player1ChessColorPR = new SimpleObjectProperty<>();
+        player2ChessColorPR = new SimpleObjectProperty<>();
         chessBoardPaintPR1 = new SimpleObjectProperty<>();
         chessBoardPaintPR2 = new SimpleObjectProperty<>();
         chessBoardGridPaintPR = new SimpleObjectProperty<>();
@@ -406,8 +405,8 @@ public class Theme {
         textFontFamilyPR.setValue(defaultTextFontFamily);
         textFontPaintPR.setValue(defaultTextFontPaint);
 
-        player1ChessPaintPR.setValue(defaultPlayerChessColor1);
-        player2ChessPaintPR.setValue(defaultPlayerChessColor2);
+        player1ChessColorPR.setValue(defaultPlayerChessColor1);
+        player2ChessColorPR.setValue(defaultPlayerChessColor2);
         chessBoardPaintPR1.setValue(defaultChessBoardPaint1);
         chessBoardPaintPR2.setValue(defaultChessBoardPaint2);
         chessBoardGridPaintPR.setValue(defaultChessBoardGridPaint);
@@ -772,12 +771,12 @@ public class Theme {
         return playerIconPR;
     }
 
-    public ObjectProperty<Color> player1ChessPaintPR() {
-        return player1ChessPaintPR;
+    public ObjectProperty<Color> player1ChessColorPR() {
+        return player1ChessColorPR;
     }
 
-    public ObjectProperty<Color> player2ChessPaintPR() {
-        return player2ChessPaintPR;
+    public ObjectProperty<Color> player2ChessColorPR() {
+        return player2ChessColorPR;
     }
 
 

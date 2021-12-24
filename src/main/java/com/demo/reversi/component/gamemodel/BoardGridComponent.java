@@ -87,7 +87,7 @@ public class BoardGridComponent extends StackPane {
         return this;
     }
 
-    public void restore() {
+    public void setDefault() {
         viewCover.setBackground(null);
     }
 

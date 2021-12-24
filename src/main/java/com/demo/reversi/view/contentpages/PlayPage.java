@@ -43,7 +43,7 @@ public class PlayPage implements Updatable {
         this.gameSystem = gameSystem;
         this.theme = theme;
 
-        /**
+        /*
          * Overall Root Structure:
          *
          * ----------------------
@@ -54,9 +54,9 @@ public class PlayPage implements Updatable {
          *          |
          * ---------------------
          */
+
         root = new GridPane();
-        root.add(new TitleLabel(LiteralConstants.PlayPageTitle.toString(), theme), 0, 0);
-        GridPane.setColumnSpan(root.getChildren().get(0), 2);
+        root.add(new TitleLabel(LiteralConstants.PlayPageTitle.toString(), theme), 0, 0, 2, 1);
         playSelector = new SelectorPane(theme);
         root.add(playSelector, 0, 1);
 
@@ -67,13 +67,12 @@ public class PlayPage implements Updatable {
         localPlayPane.add(new TitleLabel("Play Game on Local Machine", theme), 0, 0);
 
         LANPlayPane = new GridPane();
-        LANPlayPane.add(new TitleLabel("Play Game in Local Area Network", theme), 0,0);
+        LANPlayPane.add(new TitleLabel("Play Game in Local Area Network", theme), 0, 0);
         LANPlayPane.add(new Label("Actually, there is no LAN game yet.\n QAQ"), 0, 1);
 
         onlinePlayPane = new GridPane();
         onlinePlayPane.add(new TitleLabel("Play Online Game", theme), 0, 0);
         onlinePlayPane.add(new Label("Actually, there is no online game yet.\n QAQ"), 0, 1);
-
 
 
         //Initialize the Play Selector
@@ -106,8 +105,7 @@ public class PlayPage implements Updatable {
         newLocalGameButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                GamePageLocal gameLocalPage = new GamePageLocal(gameSystem, -1, theme);
-                initGame(gameLocalPage);
+
             }
         });
         GridPane.setHalignment(newLocalGameButton, HPos.CENTER);
@@ -120,34 +118,9 @@ public class PlayPage implements Updatable {
             @Override
             public void handle(ActionEvent actionEvent) {
 
-                //todo: change default index property
-                SimpleIntegerProperty indexProperty = new SimpleIntegerProperty(2);
-
-                if (indexProperty.intValue() != -1) {
-                    //todo: change loading behavior
-                    GamePageLocal gameLocalPage = new GamePageLocal(gameSystem, -1, theme);
-                    initGame(gameLocalPage);
-                }
             }
         });
         GridPane.setHalignment(loadLocalGameButton, HPos.CENTER);
-    }
-
-    private void initGame(GamePageLocal gameLocalPage) {
-        Stage gameStage = new Stage();
-        gameStage.setScene(new Scene(gameLocalPage.root));
-        gameStage.setTitle("Local Game");
-        gameStage.getIcons().add(Theme.getAppIcon());
-
-        gameStage.setMinWidth(GamePageLocal.MIN_WIDTH);
-        gameStage.setMinHeight(GamePageLocal.MIN_HEIGHT);
-
-        gameStage.show();
-        Platform.runLater(theme::registerGame);
-        Log0j.writeInfo("LocalPlay (Load Game) initialized.");
-        gameStage.setOnCloseRequest(ActionEvent -> {
-            Platform.runLater(theme::unregisterGame);
-        });
     }
 
     @Override

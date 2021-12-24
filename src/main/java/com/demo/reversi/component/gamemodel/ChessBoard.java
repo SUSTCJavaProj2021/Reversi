@@ -10,7 +10,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -51,12 +50,12 @@ public class ChessBoard extends HBox implements Updatable {
 
     public ChessBoard(GameControllerLayer controller, Theme theme) {
         this(theme, 0);
-        initBoardPlayable(controller);
+        initBoardDemo(controller);
     }
 
     public ChessBoard(GameControllerLayer controller, Theme theme, double prefBoardSize) {
         this(theme, prefBoardSize);
-        initBoardPlayable(controller);
+        initBoardDemo(controller);
     }
 
     /**
@@ -142,8 +141,8 @@ public class ChessBoard extends HBox implements Updatable {
                 Chess chess = new Chess(15, theme, Chess.ChessOwner.PLACEHOLDER);
 
                 //todo: OK!
-                chess.playerPaint1PR().bind(theme.player1ChessPaintPR());
-                chess.playerPaint2PR().bind(theme.player2ChessPaintPR());
+                chess.playerPaint1PR().bind(theme.player1ChessColorPR());
+                chess.playerPaint2PR().bind(theme.player2ChessColorPR());
 
                 gridBases[row][col].getChildren().add(chess);
                 StackPane.setAlignment(chess, Pos.CENTER);
@@ -179,35 +178,21 @@ public class ChessBoard extends HBox implements Updatable {
 
         for (int row = 0; row < rowSize; row++) {
             for (int col = 0; col < colSize; col++) {
-
-                /**
-                 * Remove the previous chess.
-                 * A little reminder: the first child of the gridBase should be the Chess itself.
-                 */
-
-                GridStatus positionPlayer = controller.getGridStatus(row, col);
-                Chess chess = ((Chess) gridBases[row][col].getChildren().get(1));
-
-                //todo: change it to be modifiable
-                Platform.runLater(() -> {
-                    chess.setChessOwner(readBlockStatus(positionPlayer));
-                });
+                updateByPosition(row, col);
             }
-
         }
         Log0j.writeInfo("Board Updated.");
     }
 
-    public void updateByGrid(int row, int col) {
+    public void updateByPosition(int row, int col) {
         if (controller == null) {
             return;
         }
-
-        GridStatus positionPlayer = controller.getGridStatus(row, col);
+        GridStatus gridStatus = controller.getGridStatus(row, col);
         Chess chess = ((Chess) gridBases[row][col].getChildren().get(1));
-        Platform.runLater(() -> {
-            chess.setChessOwner(readBlockStatus(positionPlayer));
-        });
+        Platform.runLater(() -> chess.setChessOwner(readBlockStatus(gridStatus)));
+        final int r = row, c = col;
+        Platform.runLater(() -> updateGrid(gridStatus, r, c));
     }
 
     public void sourcedUpdate(int row, int col) {
@@ -216,15 +201,16 @@ public class ChessBoard extends HBox implements Updatable {
 
     public void sourcedUpdate(int row, int col, Task<?> endingTask) {
         if (controller == null) {
+            Log0j.writeError("GameController doesn't exist, and the board will not be updated.");
             return;
         }
 
         /**
          * Set the current chess
          */
-        GridStatus positionPlayer = controller.getGridStatus(row, col);
+        GridStatus gridStatus = controller.getGridStatus(row, col);
         Chess chess = ((Chess) gridBases[row][col].getChildren().get(1));
-        chess.setChessOwner(readBlockStatus(positionPlayer));
+        chess.setChessOwner(readBlockStatus(gridStatus));
 
         List<Callable<Object>> tasks = new ArrayList<>();
         int cnt = 0;
@@ -248,7 +234,8 @@ public class ChessBoard extends HBox implements Updatable {
         new Thread(() -> {
             try {
                 List<Future<Object>> answers = es.invokeAll(tasks);
-                if(endingTask!=null){
+                if (endingTask != null) {
+                    new Thread(this::update).start();
                     new Thread(endingTask).start();
                 }
             } catch (InterruptedException e) {
@@ -263,11 +250,11 @@ public class ChessBoard extends HBox implements Updatable {
             row += stepRow;
             col += stepCol;
 
-            GridStatus positionPlayer = controller.getGridStatus(row, col);
+            GridStatus gridStatus = controller.getGridStatus(row, col);
             Chess chess = ((Chess) gridBases[row][col].getChildren().get(1));
 
             //todo: change it to be modifiable
-            chess.setChessOwnerDirected(readBlockStatus(positionPlayer), stepCol, stepRow);
+            chess.setChessOwnerDirected(readBlockStatus(gridStatus), stepCol, stepRow);
 
             try {
                 Thread.sleep(CHESS_REVERSE_GAP_TIME);
@@ -296,10 +283,10 @@ public class ChessBoard extends HBox implements Updatable {
         int Player2Count = 0;
         for (int row = 0; row < rowSize; row++) {
             for (int col = 0; col < colSize; col++) {
-                GridStatus positionPlayer = controller.getGridStatus(row, col);
-                if (positionPlayer == GridStatus.PLAYER_1) {
+                GridStatus gridStatus = controller.getGridStatus(row, col);
+                if (gridStatus == GridStatus.PLAYER_1) {
                     Player1Count++;
-                } else if (positionPlayer == GridStatus.PLAYER_2) {
+                } else if (gridStatus == GridStatus.PLAYER_2) {
                     Player2Count++;
                 }
             }
@@ -311,6 +298,7 @@ public class ChessBoard extends HBox implements Updatable {
             for (int col = 0; col < colSize; col++) {
                 Chess chess = ((Chess) gridBases[row][col].getChildren().get(1));
                 chess.setChessOwner(Chess.ChessOwner.PLACEHOLDER);
+                updateGrid(GridStatus.UNOCCUPIED, row, col);
             }
         }
 
@@ -377,6 +365,14 @@ public class ChessBoard extends HBox implements Updatable {
         }
     }
 
+    private void updateGrid(GridStatus gridStatus, int row, int col) {
+        switch (gridStatus) {
+            case PREFERRED -> gridBases[row][col].setPreferred();
+            case BANNED -> gridBases[row][col].setBanned();
+            default -> gridBases[row][col].setDefault();
+        }
+    }
+
     public Chess.ChessOwner readBlockStatus(GridStatus gridStatus) {
         if (gridStatus == GridStatus.PLAYER_1) {
             return Chess.ChessOwner.PLAYER1;
@@ -419,6 +415,8 @@ public class ChessBoard extends HBox implements Updatable {
     }
 
     public void initBoardPlayable(GameControllerLayer controller) {
+        unloadController();
+
         Log0j.writeInfo("Initializing the chessboard to be playable.");
         this.controller = controller;
         this.rowSize = controller.getRowSize();
@@ -428,6 +426,11 @@ public class ChessBoard extends HBox implements Updatable {
         update();
     }
 
+    /**
+     * Load the chessboard without the ability to perform onGridClick
+     *
+     * @param controller the target controller
+     */
     public void initBoardDemo(GameControllerLayer controller) {
         Log0j.writeInfo("Initializing the chessboard to be in demo mode.");
         this.controller = controller;

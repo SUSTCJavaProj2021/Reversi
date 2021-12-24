@@ -16,9 +16,9 @@ import java.time.LocalDateTime;
  * The full game lifecycle is described as follows:
  *
  * 1. Initialization.
- * During the startup period of the game platform, it will try to display the game
- * using GamePreviewPane. The pane will load a read-only GameController to get the status of the game
- * and display the rendered ChessBoard to the player.
+ * During the startup period of the game platform, it will try to display the game using GamePreviewPane.
+ * The pane will load a read-only GameController to get the status of the game and display the rendered
+ * ChessBoard to the player.
  *
  * 2. Loading
  * In the play page, either a new GameController will be created or an existing GameController will be
@@ -27,6 +27,8 @@ import java.time.LocalDateTime;
  * 3. Save
  * After the game finished or actively exited, GameController will be called to save its current state,
  * but the GameController still needs to be maintained for Preview purpose.
+ *
+ *
  */
 public interface GameControllerLayer {
 

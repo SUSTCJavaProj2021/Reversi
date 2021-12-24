@@ -4,6 +4,8 @@ import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.gamepages.GameInfo;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
@@ -12,15 +14,21 @@ import javafx.scene.layout.Priority;
 
 public class PromptLoader {
 
-    public static Alert getGameFinishAlert(Theme theme){
-//        Alert alert = new Alert();
-        return null;
+    public static Alert getGameFinishAlert(Theme theme) {
+        Alert alert = new Alert(Alert.AlertType.NONE);
+        DialogPane dialogPane = alert.getDialogPane();
+
+
+        alert.setContentText("DNMD!");
+        return alert;
     }
 
     public static Dialog<GameInfo> getGameInfoDialog(Theme theme) {
         Dialog<GameInfo> gameInfoDialog = new Dialog<>();
         gameInfoDialog.setTitle("Creating a new game");
 
+
+        //Initialize layout
         DialogPane dialogPane = gameInfoDialog.getDialogPane();
         dialogPane.getButtonTypes().addAll(ButtonType.FINISH, ButtonType.CANCEL);
 
@@ -66,6 +74,21 @@ public class PromptLoader {
             gridPane.getColumnConstraints().add(colConstraints);
         }
 
+
+        //Set button content
+        dialogPane.lookupButton(ButtonType.FINISH).disableProperty().bind(Bindings.createBooleanBinding(() -> {
+            return textFields[0].getText().isEmpty()
+                    && textFields[1].getText().isEmpty()
+                    && textFields[2].getText().isEmpty()
+                    && textFields[3].getText().isEmpty()
+                    && isInteger(textFields[2].getText())
+                    && isInteger(textFields[3].getText());
+        }, textFields[0].textProperty(), textFields[1].textProperty(), textFields[2].textProperty(), textFields[3].textProperty()));
+
+        Platform.runLater(textFields[0]::requestFocus);
+
+
+        //Set result format
         dialogPane.setContent(gridPane);
         gameInfoDialog.setResultConverter((ButtonType buttonType) -> {
             if (buttonType == ButtonType.FINISH) {
@@ -74,8 +97,17 @@ public class PromptLoader {
             return null;
         });
 
-        Platform.runLater(textFields[0]::requestFocus);
 
         return gameInfoDialog;
+    }
+
+    private static boolean isInteger(String src) {
+        try {
+            Integer.parseInt(src);
+            return true;
+        } catch (NumberFormatException e) {
+//            e.printStackTrace();
+            return false;
+        }
     }
 }

@@ -2,56 +2,54 @@ package com.demo.reversi.component.panes;
 
 import com.demo.reversi.controller.PlayerLayer;
 import com.demo.reversi.controller.local.SimplePlayer;
-import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
-import javafx.animation.FadeTransition;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.skin.ProgressIndicatorSkin;
-import javafx.scene.effect.Bloom;
 import javafx.scene.effect.ColorAdjust;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.*;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
-import javafx.util.Duration;
 
+/**
+ * InfoPane defines a layout that shows player's info and is wrapped in a single node.
+ */
 public class InfoPane extends StackPane implements Updatable {
     private static final double TRANS_TIME_MILLIS = 150;
     public static final double CORNER_RADII = 15;
     public static final double PREF_HEIGHT = 80;
     public static final double PREF_WIDTH = 130;
-    public static final double INDICATOR_RATIO= 0.6;
+    public static final double VIEW_COVER_OPACITY = 0.6;
+    public static final double INDICATOR_RATIO = 0.6;
 
     public final StackPane viewCover;
     public final StackPane indicator;
     public final GridPane rootView;
     public final Label playerNameLabel;
-    public final Label playerWinRateLabel;
+    public final Label playerInfoLabel;
     public final ObjectProperty<Paint> playerColorPR;
     public final ImageView playerImage;
     public final ProgressIndicator progressIndicator;
     public final BooleanProperty isActivated;
 
+    public PlayerLayer player;
+
     public BooleanProperty isActivatedProperty() {
         return isActivated;
     }
 
+
     private final Theme theme;
 
-    public InfoPane(Theme theme, ObjectProperty<Color> playerColor){
+    public InfoPane(Theme theme, ObjectProperty<Color> playerColor) {
         this(new SimplePlayer("Unknown"), theme, playerColor);
     }
 
@@ -75,24 +73,20 @@ public class InfoPane extends StackPane implements Updatable {
             return new Background(new BackgroundFill(fill, new CornerRadii(CORNER_RADII), null));
         }, playerColor));
 
-        viewCover.setOpacity(0.6);
+        viewCover.setOpacity(VIEW_COVER_OPACITY);
 
         playerColorPR = new SimpleObjectProperty<>();
         playerColorPR.bind(playerColor);
 
         playerNameLabel = new Label();
-        playerNameLabel.textProperty().bind(player.nameProperty());
         playerNameLabel.fontProperty().bind(theme.infoTitleFontFamilyPR());
         playerNameLabel.textFillProperty().bind(theme.titleFontPaintPR());
 
-        playerWinRateLabel = new Label();
-        playerWinRateLabel.fontProperty().bind(Bindings.createObjectBinding(() -> {
+        playerInfoLabel = new Label();
+        playerInfoLabel.fontProperty().bind(Bindings.createObjectBinding(() -> {
             return new Font(theme.titleFontFamilyPR().getValue().getFamily(), 16);
         }, theme.titleFontFamilyPR()));
-        playerWinRateLabel.textFillProperty().bind(theme.titleFontPaintPR());
-        //todo: Change this test
-        playerWinRateLabel.setText("5W / 4L, 55.6%");
-
+        playerInfoLabel.textFillProperty().bind(theme.titleFontPaintPR());
 
         isActivated = new SimpleBooleanProperty(false);
         playerImage = new ImageView();
@@ -102,6 +96,7 @@ public class InfoPane extends StackPane implements Updatable {
         //Design leads to it
         playerImage.fitWidthProperty().bind(Bindings.min(widthProperty().multiply(0.4), heightProperty().multiply(0.85)));
 
+
         progressIndicator = new ProgressIndicator();
         ColorAdjust colorAdjust = new ColorAdjust();
         colorAdjust.setBrightness(-1); //Makes all non-white colors black
@@ -109,20 +104,22 @@ public class InfoPane extends StackPane implements Updatable {
         indicator.maxHeightProperty().bind(heightProperty().multiply(INDICATOR_RATIO));
         indicator.maxWidthProperty().bind(indicator.maxHeightProperty());
 
+        //Set the player
+        setPlayer(player);
         init();
     }
 
+    /**
+     * Init relations so that GUI doesn't need to frequently call its <code>update()</code> method.
+     */
     public void init() {
         initLayout();
-        isActivated.addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                //todo: Add animation
-                if (isActivated.getValue()) {
-                    indicator.getChildren().add(progressIndicator);
-                } else {
-                    indicator.getChildren().clear();
-                }
+        isActivated.addListener((observable, oldValue, newValue) -> {
+            //todo: Add animation
+            if (isActivated.getValue()) {
+                indicator.getChildren().add(progressIndicator);
+            } else {
+                indicator.getChildren().clear();
             }
         });
     }
@@ -157,17 +154,21 @@ public class InfoPane extends StackPane implements Updatable {
         rootView.add(playerNameLabel, 1, 0);
         GridPane.setConstraints(playerNameLabel, 1, 0, 1,
                 1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS, null);
-        rootView.add(playerWinRateLabel, 1, 1);
+        rootView.add(playerInfoLabel, 1, 1);
 
 
-        GridPane.setConstraints(playerWinRateLabel, 1, 1, 1,
+        GridPane.setConstraints(playerInfoLabel, 1, 1, 1,
                 1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS, null);
     }
 
-    public void setPlayer(PlayerLayer player){
+    public void setPlayer(PlayerLayer player) {
+        this.player = player;
         playerNameLabel.textProperty().bind(player.nameProperty());
         //todo: change this test
-        playerWinRateLabel.textProperty().setValue("QX3 SET TEST");
+        playerInfoLabel.textProperty().bind(Bindings.createObjectBinding(() -> {
+            return String.format("%3dW / %3dL  %3.2f", player.totalMatchCountProperty().getValue(), player.totalWinCountProperty().getValue(),
+                    player.overallWinRateProperty().getValue());
+        }, player.totalMatchCountProperty(), player.totalWinCountProperty(), player.overallWinRateProperty()));
     }
 
     public InfoPane outer() {
