@@ -207,9 +207,9 @@ public class CLIGameController {
             }
         }
         if(player1Cnt>player2Cnt){
-            return GameStatus.PLAYER1;
+            return GameStatus.WIN_PLAYER1;
         }else if(player1Cnt<player2Cnt){
-            return GameStatus.PLAYER2;
+            return GameStatus.WIN_PLAYER2;
         }else{
             return GameStatus.TIED;
         }

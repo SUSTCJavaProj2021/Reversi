@@ -13,6 +13,7 @@ import javafx.concurrent.WorkerStateEvent;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
+import java.time.Month;
 
 public class SimpleGameController implements GameControllerLayer {
     public boolean isGameModifiable;
@@ -96,17 +97,17 @@ public class SimpleGameController implements GameControllerLayer {
 
     @Override
     public LocalDateTime getGameCreatedTime() {
-        return null;
+        return LocalDateTime.of(2021, Month.DECEMBER, 24, 12, 02);
     }
 
     @Override
     public LocalDateTime getGameLastModifiedTime() {
-        return null;
+        return LocalDateTime.of(2021, Month.DECEMBER, 24, 12, 02);
     }
 
     @Override
     public GameStatus getGameStatus() {
-        return null;
+        return GameStatus.UNFINISHED;
     }
 
     public void updateCurrentPlayer() {

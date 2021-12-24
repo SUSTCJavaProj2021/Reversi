@@ -12,12 +12,9 @@ import com.demo.reversi.view.UpdatableGame;
 import com.demo.reversi.view.prompts.PromptLoader;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.geometry.*;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
 
 public class GamePageLocal implements UpdatableGame {
     public static final double MIN_WIDTH = InfoPane.PREF_WIDTH + ChessBoard.DEFAULT_BOARD_MIN_SIZE;
@@ -59,7 +56,7 @@ public class GamePageLocal implements UpdatableGame {
         //Adding chessboard
         chessBoard = new ChessBoard(theme);
         root.add(chessBoard, 0, 0, 1, 4);
-        GridPane.setMargin(chessBoard, new Insets(20, 20, 20, 20));
+        GridPane.setMargin(chessBoard, new Insets(20));
         GridPane.setHalignment(chessBoard, HPos.CENTER);
         GridPane.setValignment(chessBoard, VPos.CENTER);
         GridPane.setVgrow(chessBoard, Priority.ALWAYS);
@@ -224,7 +221,7 @@ public class GamePageLocal implements UpdatableGame {
                         return null;
                     }
                 };
-                Platform.runLater(theme::bgmPlayerStop);
+                Platform.runLater(theme::bgmPlayerPause);
                 chessBoard.curtainCall(showScorePage);
                 return null;
             }

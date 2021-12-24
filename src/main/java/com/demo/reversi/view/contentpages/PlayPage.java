@@ -11,6 +11,8 @@ import com.demo.reversi.view.Updatable;
 import com.demo.reversi.view.gamepages.GamePageLocal;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -94,8 +96,22 @@ public class PlayPage implements Updatable {
         localPlayPane.add(loadLocalGameButton, 0, 2);
 
 
+        initRelations();
         //TEST
         //END TEST
+    }
+
+    /**
+     * Switch the bgm!
+     */
+    private void initRelations() {
+        root.visibleProperty().addListener(((observable, oldValue, newValue) -> {
+            if (newValue) {
+                theme.registerPlayPageBGM();
+            } else {
+                theme.unregisterPlayPageBGM();
+            }
+        }));
     }
 
 
@@ -110,6 +126,7 @@ public class PlayPage implements Updatable {
         });
         GridPane.setHalignment(newLocalGameButton, HPos.CENTER);
     }
+
 
     private void initLoadGameButton() {
         //TEST LOAD GAME

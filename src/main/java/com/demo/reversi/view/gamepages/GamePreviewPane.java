@@ -8,10 +8,15 @@ import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.prompts.PromptLoader;
 import javafx.application.Platform;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.Optional;
@@ -36,10 +41,15 @@ public class GamePreviewPane extends GridPane {
      * ----------------------
      */
 
-    public static final double DEFAULT_MIN_HEIGHT = 500;
-    public static final double DEFAULT_MIN_WIDTH = 300;
+    public static final double MIN_HEIGHT = 300;
+    public static final double MIN_WIDTH = 250;
+    public static final double CHESSBOARD_MARGIN = 15;
+    public static final double OPACITY_DEFAULT = 0.8;
+    public static final double OPACITY_SELECTED = 1.0;
+    public static final double OPACITY_PRESSED = 0.7;
 
     public final Theme theme;
+    public final StackPane viewCover;
     public final InfoPane player1Info;
     public final InfoPane player2Info;
     public final Label gameStatusLabel;
@@ -50,6 +60,10 @@ public class GamePreviewPane extends GridPane {
     public final ChessBoard chessBoard;
 
     public GameControllerLayer controller;
+
+    public enum PreviewType {
+        NEW_GAME, LOAD_GAME_FROM_FILE, LOAD_GAME;
+    }
 
     /**
      * This constructor is used for "Preview Game" selection
@@ -64,6 +78,8 @@ public class GamePreviewPane extends GridPane {
         this.controller = controller;
         this.theme = theme;
 
+        viewCover = new StackPane();
+
         chessBoard = new ChessBoard(theme);
         chessBoard.initBoardDemo(controller);
 
@@ -73,13 +89,9 @@ public class GamePreviewPane extends GridPane {
         createdTimeLabel = new Label();
         lastModifiedTimeLabel = new Label();
 
-        initLayout();
-
+        initLayout(PreviewType.LOAD_GAME);
+        initAnimation();
         initLoadGameAction();
-    }
-
-    public enum PreviewType {
-        NEW_GAME, LOAD_GAME_FROM_FILE, DEFAULT;
     }
 
     /**
@@ -92,6 +104,8 @@ public class GamePreviewPane extends GridPane {
         this.gameSystem = gameSystem;
         this.theme = theme;
 
+        viewCover = new StackPane();
+
         chessBoard = new ChessBoard(theme);
 
         player1Info = new InfoPane(theme, theme.player1ChessColorPR());
@@ -100,16 +114,43 @@ public class GamePreviewPane extends GridPane {
         createdTimeLabel = new Label();
         lastModifiedTimeLabel = new Label();
 
-        initLayout();
 
         if (previewType == PreviewType.NEW_GAME) {
+            initLayout(PreviewType.NEW_GAME);
             initNewGameAction();
         } else {
+            initLayout(PreviewType.LOAD_GAME_FROM_FILE);
             initLoadGameFromFileAction();
         }
     }
 
-    private void initLayout(){
+    private void initLayout(PreviewType type) {
+        //todo: finish layout settings
+        setPrefWidth(MIN_WIDTH);
+        setMinHeight(MIN_HEIGHT);
+        add(chessBoard, 0, 0);
+        GridPane.setConstraints(chessBoard, 0, 0, GridPane.REMAINING, 1,
+                HPos.CENTER, VPos.CENTER, Priority.SOMETIMES, Priority.ALWAYS, new Insets(CHESSBOARD_MARGIN));
+        add(player1Info, 0, 1);
+        add(player2Info, 0, 2);
+        add(gameStatusLabel, 1, 1, 1, 2);
+        add(createdTimeLabel, 0, 3, GridPane.REMAINING, 1);
+        add(lastModifiedTimeLabel, 0, 4, GridPane.REMAINING, 1);
+
+        switch(type){
+            case NEW_GAME -> {
+
+            }
+            case LOAD_GAME -> {
+
+            }
+            case LOAD_GAME_FROM_FILE -> {
+
+            }
+        }
+    }
+
+    private void initAnimation() {
     }
 
     private void initLoadGameFromFileAction() {
@@ -122,7 +163,7 @@ public class GamePreviewPane extends GridPane {
     private void initLoadGameAction() {
         setOnMouseClicked(MouseEvent -> {
             GamePageLocal gameLocalPage = new GamePageLocal(gameSystem, gameSystem.registerGamePlayable(controller), theme);
-            initGame(gameLocalPage);
+            initGameToStage(gameLocalPage);
         });
     }
 
@@ -143,15 +184,15 @@ public class GamePreviewPane extends GridPane {
 
             if (controller != null) {
                 GamePageLocal gameLocalPage = new GamePageLocal(gameSystem, controller, theme);
-                initGame(gameLocalPage);
+                initGameToStage(gameLocalPage);
             } else {
-                Log0j.writeInfo("Game loading failed for unknown reason.");
+                Log0j.writeInfo("Game loading failed for unknown reason. The scenario was considered not going to happen.");
             }
         });
 
     }
 
-    private void initGame(GamePageLocal gameLocalPage) {
+    private void initGameToStage(GamePageLocal gameLocalPage) {
         Stage gameStage = new Stage();
         gameStage.setScene(new Scene(gameLocalPage.root));
         gameStage.setTitle("Local Game");
@@ -161,10 +202,10 @@ public class GamePreviewPane extends GridPane {
         gameStage.setMinHeight(GamePageLocal.MIN_HEIGHT);
 
         gameStage.show();
-        Platform.runLater(theme::registerGame);
+        Platform.runLater(theme::registerGameBGM);
         Log0j.writeInfo("LocalPlay (Load Game) initialized.");
         gameStage.setOnCloseRequest(ActionEvent -> {
-            Platform.runLater(theme::unregisterGame);
+            Platform.runLater(theme::unregisterGameBGM);
         });
     }
 

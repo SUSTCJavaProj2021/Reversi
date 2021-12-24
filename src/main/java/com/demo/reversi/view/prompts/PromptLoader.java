@@ -19,7 +19,8 @@ public class PromptLoader {
         DialogPane dialogPane = alert.getDialogPane();
 
 
-        alert.setContentText("DNMD!");
+        //todo: optimize this interface
+        alert.setContentText("WDNMD!");
         return alert;
     }
 

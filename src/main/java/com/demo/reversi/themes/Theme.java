@@ -27,7 +27,12 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Stack;
 
+/**
+ * I happened to realize that this class could actually be completely static.
+ * When I've got enough time, it is likely going to be refactored entirely.
+ */
 public class Theme {
 
     //Fields below are all default settings.
@@ -47,6 +52,7 @@ public class Theme {
      * In-game bgm sources
      */
     public static Path defaultMainViewBGMSource;
+    public static Path defaultPlayPageBGMSource;
     public static Path defaultGamePageBGMSource;
     public static Path defaultGameFinishBGMSource;
     public static Path defaultTutorialBGMSource;    //You shouldn't be changing this!
@@ -61,6 +67,14 @@ public class Theme {
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
             Log0j.writeError("Main View BGM loading failed. Check your path.");
+        }
+
+        try {
+            defaultPlayPageBGMSource = Paths.get(Theme.class.getResource("PlayPageBGM.mp3").toURI());
+            Log0j.writeInfo("Play Page BGM loaded on path: " + defaultGamePageBGMSource);
+        } catch (NullPointerException | URISyntaxException e) {
+            e.printStackTrace();
+            Log0j.writeError("Play Page BGM loading failed. Check your path.");
         }
 
         try {
@@ -233,8 +247,9 @@ public class Theme {
 
     //Audio related
     public MediaPlayer bgmPlayer;
-    public MediaPlayer lastBGM;
+    public Stack<MediaPlayer> bgmStack;
     public final ObjectProperty<Path> mainViewBGMSourcePR;
+    public final ObjectProperty<Path> playPageBGMSourcePR;
     public final ObjectProperty<Path> gamePageBGMSourcePR;
     public final ObjectProperty<Path> gameFinishBGMSourcePR;
     private int gameCnt;
@@ -296,8 +311,10 @@ public class Theme {
         mainWindowPrefWidth = new SimpleDoubleProperty();
         mainWindowPrefHeight = new SimpleDoubleProperty();
 
+        bgmStack = new Stack<>();
         bgmVolumePR = new SimpleDoubleProperty();
         mainViewBGMSourcePR = new SimpleObjectProperty<>();
+        playPageBGMSourcePR = new SimpleObjectProperty<>();
         gamePageBGMSourcePR = new SimpleObjectProperty<>();
         gameFinishBGMSourcePR = new SimpleObjectProperty<>();
         gameCnt = 0;
@@ -378,6 +395,7 @@ public class Theme {
         effectVolumePR.setValue(defaultEffectVolume);
 
         mainViewBGMSourcePR.setValue(defaultMainViewBGMSource);
+        playPageBGMSourcePR.setValue(defaultPlayPageBGMSource);
         gamePageBGMSourcePR.setValue(defaultGamePageBGMSource);
         gameFinishBGMSourcePR.setValue(defaultGameFinishBGMSource);
         chessDownSoundSourcePR.setValue(defaultChessDownSoundSource);
@@ -498,26 +516,46 @@ public class Theme {
         return gamePageBGMSourcePR;
     }
 
-    public void registerGame() {
+    public int getGameCnt() {
+        return gameCnt;
+    }
+
+    public void registerGameBGM() {
         if (gameCnt == 0) {
             Platform.runLater(() -> {
-                setBGMPlayerContent(gamePageBGMSourcePR.getValue(), 400);
+                bgmPlayerInterrupt(gamePageBGMSourcePR.getValue(), 400);
             });
         }
         gameCnt++;
     }
 
-    public void unregisterGame() {
+    public void unregisterGameBGM() {
         gameCnt--;
         if (gameCnt == 0) {
             Platform.runLater(() -> {
-                setBGMPlayerContent(mainViewBGMSourcePR.getValue(), 0);
+                bgmPlayerResumeFromInterrupt(100);
             });
         }
     }
 
-    public void bgmPlayerStop() {
-        bgmPlayer.stop();
+    public void registerPlayPageBGM() {
+        if (gameCnt == 0) {
+            Platform.runLater(() -> {
+                bgmPlayerInterrupt(playPageBGMSourcePR.getValue(), 100);
+            });
+        }
+    }
+
+    public void unregisterPlayPageBGM() {
+        if (gameCnt == 0) {
+            Platform.runLater(() -> {
+                bgmPlayerResumeFromInterrupt(100);
+            });
+        }
+    }
+
+    public void bgmPlayerPause() {
+        bgmPlayer.pause();
     }
 
     public void bgmPlayerResume() {
@@ -525,10 +563,13 @@ public class Theme {
     }
 
     public void bgmPlayerInterrupt(Path BGMSource, long delayDurationMillis) {
+        Log0j.writeInfo("Calling bgm player interrupt.");
         //First unbind all connections
-        bgmPlayer.volumeProperty().unbind();
-        bgmPlayer.stop();
-        lastBGM = bgmPlayer;
+        if (bgmPlayer != null) {
+            bgmPlayer.volumeProperty().unbind();
+            bgmPlayer.pause();
+            bgmStack.push(bgmPlayer);
+        }
 
 
         bgmPlayer = new MediaPlayer(new Media(BGMSource.toUri().toString()));
@@ -546,9 +587,10 @@ public class Theme {
      * You must first call bgmPlayerInterrupt().
      */
     public void bgmPlayerResumeFromInterrupt(long delayDurationMillis) {
-        if (lastBGM == null) {
+        if (bgmStack.isEmpty()) {
             Log0j.writeInfo("Invalid bgm resume call.");
         } else {
+            Log0j.writeInfo("Resuming bgm player to its previous state.");
             Platform.runLater(bgmPlayer.volumeProperty()::unbind);
 
             Timeline fadeOutTimeline = new Timeline(
@@ -556,21 +598,19 @@ public class Theme {
                             new KeyValue(bgmPlayer.volumeProperty(), 0)));
 
             fadeOutTimeline.setOnFinished(ActionEvent1 -> {
-                bgmPlayer.stop();
+                bgmPlayer.pause();
                 try {
                     Thread.sleep(delayDurationMillis);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     Log0j.writeInfo("BGM delaying failed. Normally this shouldn't happen.");
                 }
-                bgmPlayer = lastBGM;
+                bgmPlayer = bgmStack.pop();
                 bgmPlayer.setVolume(0);
                 fadeInBGM(bgmPlayer);
             });
 
-            Platform.runLater(() -> {
-                fadeOutTimeline.play();
-            });
+            Platform.runLater(fadeOutTimeline::play);
         }
     }
 
