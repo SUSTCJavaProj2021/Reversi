@@ -9,6 +9,7 @@ import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
 import com.demo.reversi.view.gamepages.GamePageLocal;
+import com.demo.reversi.view.gamepages.GamePreviewPane;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
@@ -29,13 +30,11 @@ public class PlayPage implements Updatable {
 
     // Secondary views
     public final GridPane localPlayPane;
-
     public final GridPane LANPlayPane;
     public final GridPane onlinePlayPane;
 
-
-    public final MetroButton newLocalGameButton;
-    public final MetroButton loadLocalGameButton;
+    public final GamePreviewPane newGamePreview;    //For creating a new game.
+    public final GamePreviewPane loadGamePreview;   //For loading game from file.
 
     public final SimpleGameSystem gameSystem;
     public final Theme theme;
@@ -85,16 +84,12 @@ public class PlayPage implements Updatable {
         playSelector.resetSelectorWidth(120);
         playSelector.init();
 
+        //Loading default selections
+        newGamePreview = new GamePreviewPane(gameSystem, theme, GamePreviewPane.PreviewType.NEW_GAME);
+        localPlayPane.add(newGamePreview, 0, 1);
 
-        //Buttons need not only to be initialized, but also added to the pane.
-        newLocalGameButton = new MetroButton(LiteralConstants.PlayLocalText.toString(), theme);
-        initPlayLocalGameButton();
-        localPlayPane.add(newLocalGameButton, 0, 1);
-
-        loadLocalGameButton = new MetroButton(LiteralConstants.LoadGameText.toString(), theme);
-        initLoadGameButton();
-        localPlayPane.add(loadLocalGameButton, 0, 2);
-
+        loadGamePreview = new GamePreviewPane(gameSystem,theme,GamePreviewPane.PreviewType.LOAD_GAME_FROM_FILE);
+        localPlayPane.add(loadGamePreview,1,1);
 
         initRelations();
         //TEST
@@ -115,29 +110,8 @@ public class PlayPage implements Updatable {
     }
 
 
-    private void initPlayLocalGameButton() {
-        //TEST LOCAL GAME
+    private void initLoadGamePreview(){
 
-        newLocalGameButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent arg0) {
-
-            }
-        });
-        GridPane.setHalignment(newLocalGameButton, HPos.CENTER);
-    }
-
-
-    private void initLoadGameButton() {
-        //TEST LOAD GAME
-
-        loadLocalGameButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-
-            }
-        });
-        GridPane.setHalignment(loadLocalGameButton, HPos.CENTER);
     }
 
     @Override

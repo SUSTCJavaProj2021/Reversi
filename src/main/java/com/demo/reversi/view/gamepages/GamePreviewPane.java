@@ -14,6 +14,7 @@ import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -43,6 +44,7 @@ public class GamePreviewPane extends GridPane {
 
     public static final double MIN_HEIGHT = 300;
     public static final double MIN_WIDTH = 250;
+    public static final double CHESSBOARD_SIZE = 220;
     public static final double CHESSBOARD_MARGIN = 15;
     public static final double OPACITY_DEFAULT = 0.8;
     public static final double OPACITY_SELECTED = 1.0;
@@ -80,7 +82,7 @@ public class GamePreviewPane extends GridPane {
 
         viewCover = new StackPane();
 
-        chessBoard = new ChessBoard(theme);
+        chessBoard = new ChessBoard(theme, CHESSBOARD_SIZE);
         chessBoard.initBoardDemo(controller);
 
         player1Info = new InfoPane(theme, theme.player1ChessColorPR());
@@ -92,6 +94,8 @@ public class GamePreviewPane extends GridPane {
         initLayout(PreviewType.LOAD_GAME);
         initAnimation();
         initLoadGameAction();
+
+        initRelations();
     }
 
     /**
@@ -106,7 +110,7 @@ public class GamePreviewPane extends GridPane {
 
         viewCover = new StackPane();
 
-        chessBoard = new ChessBoard(theme);
+        chessBoard = new ChessBoard(theme, CHESSBOARD_SIZE);
 
         player1Info = new InfoPane(theme, theme.player1ChessColorPR());
         player2Info = new InfoPane(theme, theme.player2ChessColorPR());
@@ -122,22 +126,39 @@ public class GamePreviewPane extends GridPane {
             initLayout(PreviewType.LOAD_GAME_FROM_FILE);
             initLoadGameFromFileAction();
         }
+
+        initRelations();
+    }
+
+    private void initRelations() {
+        if (controller == null) {
+
+        } else {
+
+        }
     }
 
     private void initLayout(PreviewType type) {
         //todo: finish layout settings
         setPrefWidth(MIN_WIDTH);
         setMinHeight(MIN_HEIGHT);
+        backgroundProperty().bind(theme.frontPanePR());
+
         add(chessBoard, 0, 0);
         GridPane.setConstraints(chessBoard, 0, 0, GridPane.REMAINING, 1,
                 HPos.CENTER, VPos.CENTER, Priority.SOMETIMES, Priority.ALWAYS, new Insets(CHESSBOARD_MARGIN));
+
+
+        player1Info.setPrefWidth(195);
+        player2Info.setPrefWidth(195);
         add(player1Info, 0, 1);
         add(player2Info, 0, 2);
+
         add(gameStatusLabel, 1, 1, 1, 2);
         add(createdTimeLabel, 0, 3, GridPane.REMAINING, 1);
         add(lastModifiedTimeLabel, 0, 4, GridPane.REMAINING, 1);
 
-        switch(type){
+        switch (type) {
             case NEW_GAME -> {
 
             }
