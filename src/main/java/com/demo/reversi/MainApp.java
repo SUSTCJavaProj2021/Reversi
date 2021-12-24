@@ -74,6 +74,7 @@ public class MainApp extends Application {
         primaryStage.show();
         Log0j.writeInfo("Stage shown.");
 
+        Log0j.writeInfo(mainView.playPage.loadGamePreview.player1Info.widthProperty().getValue().toString());
 //        primaryStage.setFullScreen(true);
 //        primaryStage.setFullScreenExitHint("Press Esc to exit fullscreen.");
 //        primaryStage.setFullScreenExitKeyCombination(KeyCombination.valueOf("Esc"));

@@ -187,18 +187,21 @@ public class Chess extends StackPane implements Updatable {
                 /**
                  * Play chess dropping sound.
                  */
-                try {
-                    AudioClip chessDownSound = new AudioClip(theme.chessDownSoundSourcePR().getValue().toUri().toString());
-                    chessDownSound.setVolume(theme.getEffectVolume());
-                    chessDownSound.play();
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                    Log0j.writeInfo("Not able to play down chess sound.");
-                }
+                new Thread(() ->
+                {
+                    try {
+                        AudioClip chessDownSound = new AudioClip(theme.chessDownSoundSourcePR().getValue().toUri().toString());
+                        chessDownSound.setVolume(theme.getEffectVolume());
+                        chessDownSound.play();
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                        Log0j.writeInfo("Not able to play down chess sound.");
+                    }
+                }).start();
             }
         });
         ParallelTransition firstTransition = new ParallelTransition(rotator1, scale1);
-        Platform.runLater(() -> {
+        new Thread(() -> {
             /**
              * Play chess up sound.
              */
@@ -210,7 +213,7 @@ public class Chess extends StackPane implements Updatable {
                 e.printStackTrace();
                 Log0j.writeInfo("Not able to play chess up sound.");
             }
-        });
+        }).start();
         SequentialTransition transition = new SequentialTransition(firstTransition, rotator2);
         Platform.runLater(transition::play);
     }

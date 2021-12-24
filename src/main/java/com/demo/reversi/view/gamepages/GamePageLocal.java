@@ -216,6 +216,7 @@ public class GamePageLocal implements UpdatableGame {
                             alert.setOnCloseRequest(ActionEvent->{
                                 Platform.runLater(()->theme.bgmPlayerResumeFromInterrupt(100));
                             });
+                            alert.show();
 
                         });
                         return null;

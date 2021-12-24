@@ -17,7 +17,7 @@ public class PromptLoader {
     public static Alert getGameFinishAlert(Theme theme) {
         Alert alert = new Alert(Alert.AlertType.NONE);
         DialogPane dialogPane = alert.getDialogPane();
-
+        dialogPane.getButtonTypes().add(ButtonType.OK);
 
         //todo: optimize this interface
         alert.setContentText("WDNMD!");

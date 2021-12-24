@@ -91,7 +91,6 @@ public class MainView extends GridPane {
         //todo: ?
         if (theme.getBGMPlayer() != null) {
             add(new MediaView(theme.getBGMPlayer()), 0, 0);
-            theme.getBGMPlayer().play();
             Log0j.writeInfo("BGMPlayer component loaded to Main View. Attention: Controls are still embedded in class Theme.");
         }
         else{

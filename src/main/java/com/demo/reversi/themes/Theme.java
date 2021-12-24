@@ -363,6 +363,7 @@ public class Theme {
     }
 
     public void initMedia() {
+        bgmStack.clear();
         if (bgmPlayer != null) {
             bgmPlayer.stop();
         }
@@ -378,6 +379,7 @@ public class Theme {
             bgmPlayer = new MediaPlayer(media);
             bgmPlayer.setCycleCount(MediaPlayer.INDEFINITE);
             bgmPlayer.volumeProperty().bind(bgmVolumePR);
+            bgmPlayer.play();
             Log0j.writeInfo("BGM Player Initialized.");
 
         } catch (NullPointerException e) {

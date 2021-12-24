@@ -4,6 +4,7 @@ import com.demo.reversi.controller.PlayerLayer;
 import com.demo.reversi.controller.local.SimplePlayer;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
@@ -26,12 +27,23 @@ public class InfoPane extends StackPane implements Updatable {
     private static final double TRANS_TIME_MILLIS = 150;
     public static final double CORNER_RADII = 15;
     public static final double PREF_HEIGHT = 80;
-    public static final double PREF_WIDTH = 190;
+    public static final double PREF_WIDTH = 300;
     public static final double VIEW_COVER_OPACITY = 0.6;
     public static final double INDICATOR_RATIO = 0.6;
 
+    /**
+     * The background which displays player color
+     */
     public final StackPane viewCover;
+
+    /**
+     * The background on which the status of the player is indicated
+     */
     public final StackPane indicator;
+
+    /**
+     * Used to format the labels
+     */
     public final GridPane rootView;
     public final Label playerNameLabel;
     public final Label playerInfoLabel;
@@ -62,7 +74,6 @@ public class InfoPane extends StackPane implements Updatable {
         viewCover = new StackPane();
         indicator = new StackPane();
         rootView = new GridPane();
-        getChildren().addAll(viewCover, indicator, rootView);
         /**
          * Initialize background
          */
@@ -81,9 +92,6 @@ public class InfoPane extends StackPane implements Updatable {
         playerNameLabel = new Label();
         playerNameLabel.fontProperty().bind(theme.infoTitleFontFamilyPR());
         playerNameLabel.textFillProperty().bind(theme.titleFontPaintPR());
-
-        playerNameLabel.scaleYProperty().bind(playerNameLabel.scaleXProperty());
-        playerNameLabel.scaleXProperty().bind(widthProperty().divide(PREF_WIDTH));
 
         playerInfoLabel = new Label();
         playerInfoLabel.fontProperty().bind(Bindings.createObjectBinding(() -> {
@@ -120,21 +128,23 @@ public class InfoPane extends StackPane implements Updatable {
         isActivated.addListener((observable, oldValue, newValue) -> {
             //todo: Add animation
             if (isActivated.getValue()) {
-                indicator.getChildren().add(progressIndicator);
+                Platform.runLater(() -> indicator.getChildren().add(progressIndicator));
             } else {
-                indicator.getChildren().clear();
+                Platform.runLater(() -> indicator.getChildren().clear());
             }
         });
+
     }
 
     public void initLayout() {
+        getChildren().addAll(viewCover, indicator, rootView);
         {
             ColumnConstraints constraints[] = new ColumnConstraints[2];
             for (int i = 0; i < 2; i++) {
                 constraints[i] = new ColumnConstraints();
                 rootView.getColumnConstraints().add(constraints[i]);
             }
-            constraints[1].setHgrow(Priority.ALWAYS);
+            constraints[0].setPercentWidth(35);
         }
 
 
@@ -150,18 +160,22 @@ public class InfoPane extends StackPane implements Updatable {
 
 
         rootView.add(playerImage, 0, 0);
-        GridPane.setConstraints(playerImage, 0, 0, 1,
-                GridPane.REMAINING, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS, null);
+        GridPane.setConstraints(playerImage, 0, 0, 1, GridPane.REMAINING,
+                HPos.RIGHT, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS, null);
 
 
         rootView.add(playerNameLabel, 1, 0);
-        GridPane.setConstraints(playerNameLabel, 1, 0, 1,
-                1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS, null);
+        GridPane.setConstraints(playerNameLabel, 1, 0, 1, 1,
+                HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS, null);
+        playerNameLabel.scaleYProperty().bind(playerNameLabel.scaleXProperty());
+        playerNameLabel.scaleXProperty().bind(widthProperty().divide(PREF_WIDTH));
+
+
         rootView.add(playerInfoLabel, 1, 1);
-
-
-        GridPane.setConstraints(playerInfoLabel, 1, 1, 1,
-                1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS, null);
+        GridPane.setConstraints(playerInfoLabel, 1, 1, 1, 1,
+                HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS, null);
+        playerInfoLabel.scaleYProperty().bind(playerNameLabel.scaleXProperty());
+        playerInfoLabel.scaleXProperty().bind(widthProperty().divide(PREF_WIDTH));
     }
 
     public void setPlayer(PlayerLayer player) {

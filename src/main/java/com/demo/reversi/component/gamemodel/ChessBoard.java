@@ -190,9 +190,9 @@ public class ChessBoard extends HBox implements Updatable {
         }
         GridStatus gridStatus = controller.getGridStatus(row, col);
         Chess chess = ((Chess) gridBases[row][col].getChildren().get(1));
-        Platform.runLater(() -> chess.setChessOwner(readBlockStatus(gridStatus)));
+        chess.setChessOwner(readBlockStatus(gridStatus));
         final int r = row, c = col;
-        Platform.runLater(() -> updateGrid(gridStatus, r, c));
+        updateGrid(gridStatus, r, c);
     }
 
     public void sourcedUpdate(int row, int col) {
@@ -289,6 +289,7 @@ public class ChessBoard extends HBox implements Updatable {
                 } else if (gridStatus == GridStatus.PLAYER_2) {
                     Player2Count++;
                 }
+                updateGrid(GridStatus.UNOCCUPIED, row, col);
             }
         }
         Log0j.writeInfo("Player 1 counted: " + Player1Count);
@@ -298,10 +299,10 @@ public class ChessBoard extends HBox implements Updatable {
             for (int col = 0; col < colSize; col++) {
                 Chess chess = ((Chess) gridBases[row][col].getChildren().get(1));
                 chess.setChessOwner(Chess.ChessOwner.PLACEHOLDER);
-                updateGrid(GridStatus.UNOCCUPIED, row, col);
             }
         }
 
+        Log0j.writeInfo("Board rewriting completed");
         /**
          * Listing Player Chess
          */
@@ -309,6 +310,11 @@ public class ChessBoard extends HBox implements Updatable {
         Task<Void> showPlayer1Chess = new Task<Void>() {
             @Override
             protected Void call() {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 Log0j.writeInfo("Performing curtain call.");
                 if (rowSize % 2 == 0) {
                     placePlayerChess(cnt1, Chess.ChessOwner.PLAYER1, rowSize - 1, 0, -1, 1);
@@ -336,6 +342,7 @@ public class ChessBoard extends HBox implements Updatable {
                 new Thread(endingTask).start();
             }
         });
+        Log0j.writeInfo("Reached CurtainCall end. This info is for debug use.");
         new Thread(showPlayer1Chess).start();
     }
 

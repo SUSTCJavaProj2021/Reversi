@@ -3,14 +3,18 @@ package com.demo.reversi.view.contentpages;
 import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.panes.SmoothishScrollPane;
 import com.demo.reversi.component.selector.SelectorPane;
+import com.demo.reversi.controller.GameControllerLayer;
 import com.demo.reversi.controller.local.SimpleGameSystem;
+import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.res.lang.LiteralConstants;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
 import com.demo.reversi.view.gamepages.GamePreviewPane;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayPage implements Updatable {
     public static final double SELECTOR_WIDTH = 180;
@@ -35,7 +39,6 @@ public class PlayPage implements Updatable {
     public PlayPage(SimpleGameSystem gameSystem, Theme theme) {
         this.gameSystem = gameSystem;
         this.theme = theme;
-
         /*
          * Overall Root Structure:
          *
@@ -49,6 +52,7 @@ public class PlayPage implements Updatable {
          */
 
         root = new GridPane();
+        root.setCache(true);
         root.add(new TitleLabel(LiteralConstants.PlayPageTitle.toString(), theme), 0, 0, 2, 1);
         playSelector = new SelectorPane(theme);
         root.add(playSelector, 0, 1);
@@ -61,11 +65,17 @@ public class PlayPage implements Updatable {
 
         LANPlayContainer = new GridPane();
         LANPlayContainer.add(new TitleLabel("Play Game in Local Area Network", theme), 0, 0);
-        LANPlayContainer.add(new Label("Actually, there is no LAN game yet.\n QAQ"), 0, 1);
+        Label labelLAN = new Label("Actually, there is no LAN game yet.\nQAQ");
+        labelLAN.setFont(theme.textFontFamilyPR().getValue());
+        labelLAN.setTextFill(theme.textFontPaintPR().getValue());
+        LANPlayContainer.add(labelLAN, 0, 1);
 
         onlinePlayContainer = new GridPane();
         onlinePlayContainer.add(new TitleLabel("Play Online Game", theme), 0, 0);
-        onlinePlayContainer.add(new Label("Actually, there is no online game yet.\n QAQ"), 0, 1);
+        Label labelONLINE = new Label("Actually, there is no online game yet.\nQAQ");
+        labelONLINE.setFont(theme.textFontFamilyPR().getValue());
+        labelONLINE.setTextFill(theme.textFontPaintPR().getValue());
+        onlinePlayContainer.add(labelONLINE, 0, 1);
 
 
         //Initialize the Play Selector
@@ -76,7 +86,7 @@ public class PlayPage implements Updatable {
         playSelector.resetSelectorWidth(120);
         playSelector.init();
 
-        localPlayPane = new FlowPane();
+        localPlayPane = new FlowPane(15, 15);
         SmoothishScrollPane container = new SmoothishScrollPane(localPlayPane);
         GridPane.setHgrow(container, Priority.ALWAYS);
         GridPane.setVgrow(container, Priority.ALWAYS);
@@ -91,8 +101,11 @@ public class PlayPage implements Updatable {
 
         initLayout();
         initRelations();
-        //TEST
-        //END TEST
+
+
+        loadLocalGamePreview();
+
+        //todo: delete test
     }
 
     private void initLayout() {
@@ -112,8 +125,11 @@ public class PlayPage implements Updatable {
     }
 
 
-    private void initLoadGamePreview() {
-
+    private void loadLocalGamePreview() {
+        List<GameControllerLayer> gameControllers = gameSystem.queryGameControllerAllSorted();
+        for (GameControllerLayer controller : gameControllers) {
+            localPlayPane.getChildren().add(new GamePreviewPane(gameSystem, controller, theme));
+        }
     }
 
     @Override

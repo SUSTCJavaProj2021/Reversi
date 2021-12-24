@@ -1,5 +1,6 @@
 package com.demo.reversi.view.gamepages;
 
+import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.gamemodel.ChessBoard;
 import com.demo.reversi.component.panes.InfoPane;
 import com.demo.reversi.controller.GameControllerLayer;
@@ -7,6 +8,10 @@ import com.demo.reversi.controller.GameSystemLayer;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.prompts.PromptLoader;
+import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -14,14 +19,16 @@ import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
+import javafx.scene.effect.BoxBlur;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-public class GamePreviewPane extends GridPane {
+public class GamePreviewPane extends StackPane {
     //todo: set the following animations:
     /*
      * Animation list:
@@ -42,15 +49,18 @@ public class GamePreviewPane extends GridPane {
      */
 
     public static final double MIN_HEIGHT = 300;
-    public static final double MIN_WIDTH = 250;
-    public static final double CHESSBOARD_SIZE = 220;
+    public static final double MIN_WIDTH = 300;
+    public static final double CHESSBOARD_SIZE = 270;
     public static final double PREF_MARGIN = 15;
     public static final double OPACITY_DEFAULT = 0.8;
     public static final double OPACITY_SELECTED = 1.0;
     public static final double OPACITY_PRESSED = 0.7;
+    public static final double TRANS_TIME_MILLIS = 150;
+
 
     public final Theme theme;
-    public final StackPane viewCover;
+    public final GridPane container;
+    public final StackPane viewCover; //Used to display hovering animations
     public final GridPane infoSumPane;
     public final InfoPane player1Info;
     public final InfoPane player2Info;
@@ -76,9 +86,12 @@ public class GamePreviewPane extends GridPane {
      * @param theme      Theme
      */
     public GamePreviewPane(GameSystemLayer gameSystem, GameControllerLayer controller, Theme theme) {
+        setCache(true);
         this.gameSystem = gameSystem;
         this.controller = controller;
         this.theme = theme;
+
+        container = new GridPane();
 
         viewCover = new StackPane();
 
@@ -97,7 +110,7 @@ public class GamePreviewPane extends GridPane {
         initAnimation();
         initLoadGameAction();
 
-        initRelations();
+        refreshInfo();
     }
 
     /**
@@ -107,10 +120,14 @@ public class GamePreviewPane extends GridPane {
      * @param theme      Theme
      */
     public GamePreviewPane(GameSystemLayer gameSystem, Theme theme, PreviewType previewType) {
+        setCache(true);
         this.gameSystem = gameSystem;
         this.theme = theme;
 
+        container = new GridPane();
+
         viewCover = new StackPane();
+
         infoSumPane = new GridPane();
 
         chessBoard = new ChessBoard(theme, CHESSBOARD_SIZE);
@@ -124,60 +141,137 @@ public class GamePreviewPane extends GridPane {
 
         if (previewType == PreviewType.NEW_GAME) {
             initLayout(PreviewType.NEW_GAME);
+            initAnimation();
             initNewGameAction();
         } else {
             initLayout(PreviewType.LOAD_GAME_FROM_FILE);
+            initAnimation();
             initLoadGameFromFileAction();
         }
 
-        initRelations();
+        refreshInfo();
     }
 
-    private void initRelations() {
-        if (controller == null) {
-
+    /**
+     * Initialize InfoPanes, Labels
+     */
+    public void refreshInfo() {
+        if (controller != null) {
+            //todo: change this
+            String s = "Undefined";
+            switch (controller.getGameStatus()) {
+                case UNFINISHED -> s = "Unfinished";
+                case TIED -> s = "Tied";
+                case WIN_PLAYER1 -> s = "Winner\n" + controller.getPlayer1().nameProperty().getValue();
+                case WIN_PLAYER2 -> s = "Winner\n" + controller.getPlayer2().nameProperty().getValue();
+            }
+            player1Info.setPlayer(controller.getPlayer1());
+            player2Info.setPlayer(controller.getPlayer2());
+            gameStatusLabel.setText(s);
+            lastModifiedTimeLabel.setText("Last modified on:\t" +
+                    controller.getGameLastModifiedTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd, HH:mm")));
+            createdTimeLabel.setText("Created on:\t\t" +
+                    controller.getGameCreatedTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd, HH:mm")));
         } else {
-
+            gameStatusLabel.setText("Null");
+            lastModifiedTimeLabel.setText("Last modified on:\t2000-0-0, 00:00");
+            createdTimeLabel.setText("Created on:\t\t2000-0-0, 00:00");
         }
     }
 
     private void initLayout(PreviewType type) {
         //todo: finish layout settings
-        setPrefWidth(MIN_WIDTH);
-        setMinHeight(MIN_HEIGHT);
-        backgroundProperty().bind(theme.frontPanePR());
+        container.setPrefWidth(MIN_WIDTH);
+        container.setMinHeight(MIN_HEIGHT);
+        container.backgroundProperty().bind(theme.frontPanePR());
 
-        add(chessBoard, 0, 0);
+        container.add(chessBoard, 0, 0);
         GridPane.setConstraints(chessBoard, 0, 0, 1, 1,
                 HPos.CENTER, VPos.CENTER, Priority.SOMETIMES, Priority.ALWAYS, new Insets(PREF_MARGIN));
 
 
-        add(infoSumPane,0,1);
+        container.add(infoSumPane, 0, 1);
         infoSumPane.add(player1Info, 0, 0);
         infoSumPane.add(player2Info, 0, 1);
         infoSumPane.add(gameStatusLabel, 1, 0, 1, 2);
-        GridPane.setMargin(infoSumPane,new Insets(PREF_MARGIN));
+        ColumnConstraints constraints = new ColumnConstraints();
+        constraints.setPercentWidth(70);
+        infoSumPane.getColumnConstraints().add(constraints);
+        GridPane.setMargin(infoSumPane, new Insets(PREF_MARGIN));
+
+        GridPane.setHalignment(gameStatusLabel, HPos.CENTER);
+        GridPane.setValignment(gameStatusLabel, VPos.CENTER);
+        GridPane.setVgrow(gameStatusLabel, Priority.SOMETIMES);
+        GridPane.setHgrow(gameStatusLabel, Priority.SOMETIMES);
+        gameStatusLabel.textFillProperty().bind(theme.textFontPaintPR());
+        gameStatusLabel.fontProperty().bind(theme.textFontFamilyPR());
+        gameStatusLabel.setWrapText(true);
 
 
-        add(lastModifiedTimeLabel, 0, 2);
-        add(createdTimeLabel, 0, 3);
-        GridPane.setMargin(lastModifiedTimeLabel, new Insets(0,PREF_MARGIN,0,PREF_MARGIN));
-        GridPane.setMargin(createdTimeLabel, new Insets(0,PREF_MARGIN,0,PREF_MARGIN));
+        lastModifiedTimeLabel.textFillProperty().bind(theme.textFontPaintPR());
+        createdTimeLabel.textFillProperty().bind(theme.textFontPaintPR());
+        lastModifiedTimeLabel.fontProperty().bind(theme.textFontFamilyPR());
+        createdTimeLabel.fontProperty().bind(theme.textFontFamilyPR());
+        container.add(lastModifiedTimeLabel, 0, 2);
+        container.add(createdTimeLabel, 0, 3);
+        GridPane.setMargin(lastModifiedTimeLabel, new Insets(0, PREF_MARGIN, 0, PREF_MARGIN));
+        GridPane.setMargin(createdTimeLabel, new Insets(0, PREF_MARGIN, 0, PREF_MARGIN));
 
+        TitleLabel indicator;
         switch (type) {
-            case NEW_GAME -> {
-
-            }
-            case LOAD_GAME -> {
-
-            }
-            case LOAD_GAME_FROM_FILE -> {
-
-            }
+            case NEW_GAME -> indicator = new TitleLabel("New Game", theme);
+            case LOAD_GAME -> indicator = new TitleLabel("Load", theme);
+            case LOAD_GAME_FROM_FILE -> indicator = new TitleLabel("Load From File", theme);
+            default -> indicator = new TitleLabel("Demo", theme);
         }
+        indicator.setWrapText(true);
+        viewCover.getChildren().add(indicator);
+
+        getChildren().addAll(container, viewCover);
     }
 
     private void initAnimation() {
+        viewCover.setVisible(false);
+
+        BoxBlur blur = new BoxBlur();
+        blur.setIterations(0);
+        container.setEffect(blur);
+
+        setOnMouseEntered(event -> {
+
+            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(TRANS_TIME_MILLIS),
+                    new KeyValue(blur.iterationsProperty(), 3)));
+
+            FadeTransition ft = new FadeTransition(Duration.millis(TRANS_TIME_MILLIS), viewCover);
+            ft.setFromValue(OPACITY_DEFAULT);
+            ft.setToValue(OPACITY_SELECTED);
+            ft.setCycleCount(1);
+
+            Platform.runLater(() -> {
+                viewCover.setVisible(true);
+                ft.play();
+                timeline.play();
+            });
+        });
+
+        setOnMouseExited(event -> {
+            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(TRANS_TIME_MILLIS),
+                    new KeyValue(blur.iterationsProperty(), 0)));
+
+            FadeTransition ft = new FadeTransition(Duration.millis(TRANS_TIME_MILLIS), viewCover);
+            ft.setFromValue(OPACITY_SELECTED);
+            ft.setToValue(OPACITY_DEFAULT);
+            ft.setCycleCount(1);
+
+            ft.setOnFinished(ActionEvent -> {
+                viewCover.setVisible(false);
+            });
+
+            Platform.runLater(() -> {
+                ft.play();
+                timeline.play();
+            });
+        });
     }
 
     private void initLoadGameFromFileAction() {

@@ -21,7 +21,7 @@ import javafx.util.Duration;
  */
 public class SmoothishScrollPane extends ScrollPane {
     private final static int TRANSITION_DURATION = 200;
-    private final static double BASE_MODIFIER = 6; //Changed from 1 to 6
+    private final static double BASE_MODIFIER = 4; //Changed from 1 to 6
 
     /**
      * @param content Item to be wrapped in the ScrollPane.
