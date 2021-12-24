@@ -107,7 +107,20 @@ public class SimpleGameController implements GameControllerLayer {
 
     @Override
     public GameStatus getGameStatus() {
-        return GameStatus.UNFINISHED;
+        switch(controller.judge()){
+            case WIN_PLAYER1 -> {
+                return GameStatus.WIN_PLAYER1;
+            }
+            case WIN_PLAYER2 -> {
+                return GameStatus.WIN_PLAYER2;
+            }
+            case TIED -> {
+                return GameStatus.TIED;
+            }
+            default -> {
+                return GameStatus.UNFINISHED;
+            }
+        }
     }
 
     public void updateCurrentPlayer() {

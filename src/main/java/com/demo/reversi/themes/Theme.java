@@ -1,5 +1,6 @@
 package com.demo.reversi.themes;
 
+import com.demo.reversi.MainApp;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.view.MainView;
 import javafx.animation.KeyFrame;
@@ -835,10 +836,15 @@ public class Theme {
     public void loadThemeFromFileExplorer() {
         try {
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Load theme file from File Explorer");
-//            fileChooser.setInitialDirectory(new File(Theme.class.getResource("theme.json").toURI().toString()).getParentFile());
-            fileChooser.getExtensionFilters().addAll(
-                    new ExtensionFilter("Theme Config", "*.json"));
+            fileChooser.setTitle("Select theme file");
+
+            try {
+                fileChooser.setInitialDirectory(new File(MainApp.class.getResource("themes/").toURI().toString()));
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+
+            fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Theme Config", "*.json"));
             File selectedFile = fileChooser.showOpenDialog(primaryStage);
             loadTheme(selectedFile);
             Log0j.writeInfo("Trying to load them from external environment.");

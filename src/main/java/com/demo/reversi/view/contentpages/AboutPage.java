@@ -23,7 +23,7 @@ public class AboutPage implements Updatable {
         ver.fontProperty().bind(theme.textFontFamilyPR());
         ver.textFillProperty().bind(theme.titleFontPaintPR());
 
-        Label aut = new Label("Author: sorrymaker");
+        Label aut = new Label("Authors: Sorry makers, ");
 
         aut.fontProperty().bind(theme.textFontFamilyPR());
         aut.textFillProperty().bind(theme.textFontPaintPR());

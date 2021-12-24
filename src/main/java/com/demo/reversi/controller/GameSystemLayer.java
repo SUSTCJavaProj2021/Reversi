@@ -82,6 +82,11 @@ public interface GameSystemLayer {
      */
     public GameControllerLayer startNewGame(String playerName1, String playerName2, int rowSize, int colSize);
 
+    /**
+     * Load the Game from the specific path.
+     * @param file  File source.
+     */
+    public GameControllerLayer loadGame(File file);
 
     /**
      * Update all the rankings.

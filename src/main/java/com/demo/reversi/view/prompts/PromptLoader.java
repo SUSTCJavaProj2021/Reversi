@@ -1,6 +1,7 @@
 package com.demo.reversi.view.prompts;
 
 import com.demo.reversi.component.TitleLabel;
+import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.gamepages.GameInfo;
 import javafx.application.Platform;
@@ -77,14 +78,12 @@ public class PromptLoader {
 
 
         //Set button content
-        dialogPane.lookupButton(ButtonType.FINISH).disableProperty().bind(Bindings.createBooleanBinding(() -> {
-            return textFields[0].getText().isEmpty()
-                    && textFields[1].getText().isEmpty()
-                    && textFields[2].getText().isEmpty()
-                    && textFields[3].getText().isEmpty()
-                    && isInteger(textFields[2].getText())
-                    && isInteger(textFields[3].getText());
-        }, textFields[0].textProperty(), textFields[1].textProperty(), textFields[2].textProperty(), textFields[3].textProperty()));
+        dialogPane.lookupButton(ButtonType.FINISH).disableProperty().bind(Bindings.createBooleanBinding(() -> textFields[0].getText().isEmpty()
+                || textFields[1].getText().isEmpty()
+                || textFields[2].getText().isEmpty()
+                || textFields[3].getText().isEmpty()
+                || !isInteger(textFields[2].getText())
+                || !isInteger(textFields[3].getText()), textFields[0].textProperty(), textFields[1].textProperty(), textFields[2].textProperty(), textFields[3].textProperty()));
 
         Platform.runLater(textFields[0]::requestFocus);
 

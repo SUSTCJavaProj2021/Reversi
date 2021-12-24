@@ -1,11 +1,11 @@
 package com.demo.reversi.view.contentpages;
 
+import com.demo.reversi.component.MetroButton;
 import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.panes.SmoothishScrollPane;
 import com.demo.reversi.component.selector.SelectorPane;
 import com.demo.reversi.controller.GameControllerLayer;
 import com.demo.reversi.controller.local.SimpleGameSystem;
-import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.res.lang.LiteralConstants;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
@@ -13,7 +13,6 @@ import com.demo.reversi.view.gamepages.GamePreviewPane;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PlayPage implements Updatable {
@@ -28,6 +27,7 @@ public class PlayPage implements Updatable {
     public final GridPane onlinePlayContainer;
 
     public final FlowPane localPlayPane;
+    public final MetroButton localRefBtn;
 
     public final GamePreviewPane newGamePreview;    //For creating a new game.
     public final GamePreviewPane loadGamePreview;   //For loading game from file.
@@ -60,8 +60,9 @@ public class PlayPage implements Updatable {
 
         //Initialize all secondary panes.
 
+        localRefBtn = new MetroButton("Refresh List", theme);
         localPlayContainer = new GridPane();
-        localPlayContainer.add(new TitleLabel("Play Game on Local Machine", theme), 0, 0);
+        localPlayContainer.add(new HBox(100, new TitleLabel("Play Game on Local Machine", theme), localRefBtn), 0, 0);
 
         LANPlayContainer = new GridPane();
         LANPlayContainer.add(new TitleLabel("Play Game in Local Area Network", theme), 0, 0);
@@ -86,7 +87,7 @@ public class PlayPage implements Updatable {
         playSelector.resetSelectorWidth(120);
         playSelector.init();
 
-        localPlayPane = new FlowPane(15, 15);
+        localPlayPane = new FlowPane(5, 10);
         SmoothishScrollPane container = new SmoothishScrollPane(localPlayPane);
         GridPane.setHgrow(container, Priority.ALWAYS);
         GridPane.setVgrow(container, Priority.ALWAYS);
@@ -122,10 +123,28 @@ public class PlayPage implements Updatable {
                 theme.unregisterPlayPageBGM();
             }
         }));
+
+        localRefBtn.setOnAction(ActionEvent -> {
+            refreshLocalGamePreview();
+        });
+
     }
 
 
     private void loadLocalGamePreview() {
+        List<GameControllerLayer> gameControllers = gameSystem.queryGameControllerAllSorted();
+        for (GameControllerLayer controller : gameControllers) {
+            localPlayPane.getChildren().add(new GamePreviewPane(gameSystem, controller, theme));
+        }
+    }
+
+    private void refreshLocalGamePreview() {
+        //Clear all the children except for the first two panes
+        if (localPlayPane.getChildren().size() > 2) {
+            localPlayPane.getChildren().subList(2, localPlayPane.getChildren().size()).clear();
+        }
+
+        //Load new panes
         List<GameControllerLayer> gameControllers = gameSystem.queryGameControllerAllSorted();
         for (GameControllerLayer controller : gameControllers) {
             localPlayPane.getChildren().add(new GamePreviewPane(gameSystem, controller, theme));

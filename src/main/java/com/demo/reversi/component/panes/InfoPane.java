@@ -37,6 +37,11 @@ public class InfoPane extends StackPane implements Updatable {
     public final StackPane viewCover;
 
     /**
+     *
+     */
+    public final StackPane statusCover;
+
+    /**
      * The background on which the status of the player is indicated
      */
     public final StackPane indicator;
@@ -58,7 +63,6 @@ public class InfoPane extends StackPane implements Updatable {
         return isActivated;
     }
 
-
     private final Theme theme;
 
     public InfoPane(Theme theme, ObjectProperty<Color> playerColor) {
@@ -72,6 +76,7 @@ public class InfoPane extends StackPane implements Updatable {
         setPrefWidth(PREF_WIDTH);
 
         viewCover = new StackPane();
+        statusCover = new StackPane();
         indicator = new StackPane();
         rootView = new GridPane();
         /**
@@ -137,7 +142,7 @@ public class InfoPane extends StackPane implements Updatable {
     }
 
     public void initLayout() {
-        getChildren().addAll(viewCover, indicator, rootView);
+        getChildren().addAll(viewCover, statusCover, indicator, rootView);
         {
             ColumnConstraints constraints[] = new ColumnConstraints[2];
             for (int i = 0; i < 2; i++) {
@@ -195,6 +200,27 @@ public class InfoPane extends StackPane implements Updatable {
     @Override
     public void update() {
 
+    }
+
+    public enum Status {
+        WINNER, TIED, LOSER;
+    }
+
+    public void setFinished(Status status) {
+        Platform.runLater(() -> indicator.getChildren().clear());
+        if (status == Status.WINNER) {
+            Platform.runLater(() ->
+                    statusCover.setBackground(new Background(
+                            new BackgroundFill(Color.rgb(255, 235, 37, 0.39), new CornerRadii(CORNER_RADII), null))));
+        } else if (status == Status.TIED) {
+            Platform.runLater(() ->
+                    statusCover.setBackground(new Background(
+                            new BackgroundFill(Color.rgb(233, 233, 233, 0.39), new CornerRadii(CORNER_RADII), null))));
+        }
+    }
+
+    public void reInit() {
+        statusCover.setBackground(null);
     }
 
 }

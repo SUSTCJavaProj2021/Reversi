@@ -1,5 +1,6 @@
 package com.demo.reversi.view.gamepages;
 
+import com.demo.reversi.MainApp;
 import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.gamemodel.ChessBoard;
 import com.demo.reversi.component.panes.InfoPane;
@@ -21,10 +22,12 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.File;
+import java.net.URISyntaxException;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -110,7 +113,7 @@ public class GamePreviewPane extends StackPane {
         initAnimation();
         initLoadGameAction();
 
-        refreshInfo();
+        loadInfo();
     }
 
     /**
@@ -139,6 +142,8 @@ public class GamePreviewPane extends StackPane {
         lastModifiedTimeLabel = new Label();
 
 
+        loadInfo();
+
         if (previewType == PreviewType.NEW_GAME) {
             initLayout(PreviewType.NEW_GAME);
             initAnimation();
@@ -149,13 +154,12 @@ public class GamePreviewPane extends StackPane {
             initLoadGameFromFileAction();
         }
 
-        refreshInfo();
     }
 
     /**
      * Initialize InfoPanes, Labels
      */
-    public void refreshInfo() {
+    public void loadInfo() {
         if (controller != null) {
             //todo: change this
             String s = "Undefined";
@@ -219,9 +223,15 @@ public class GamePreviewPane extends StackPane {
 
         TitleLabel indicator;
         switch (type) {
-            case NEW_GAME -> indicator = new TitleLabel("New Game", theme);
+            case NEW_GAME -> {
+                indicator = new TitleLabel("New Game", theme);
+                gameStatusLabel.setText("New Game");
+            }
             case LOAD_GAME -> indicator = new TitleLabel("Load", theme);
-            case LOAD_GAME_FROM_FILE -> indicator = new TitleLabel("Load From File", theme);
+            case LOAD_GAME_FROM_FILE -> {
+                indicator = new TitleLabel("Load from File", theme);
+                gameStatusLabel.setText("Load from File");
+            }
             default -> indicator = new TitleLabel("Demo", theme);
         }
         indicator.setWrapText(true);
@@ -240,7 +250,7 @@ public class GamePreviewPane extends StackPane {
         setOnMouseEntered(event -> {
 
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(TRANS_TIME_MILLIS),
-                    new KeyValue(blur.iterationsProperty(), 3)));
+                    new KeyValue(blur.iterationsProperty(), 6)));
 
             FadeTransition ft = new FadeTransition(Duration.millis(TRANS_TIME_MILLIS), viewCover);
             ft.setFromValue(OPACITY_DEFAULT);
@@ -277,6 +287,25 @@ public class GamePreviewPane extends StackPane {
     private void initLoadGameFromFileAction() {
         setOnMouseClicked(MouseEvent -> {
             //todo: finish this.
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Select theme file");
+            try {
+                fileChooser.setInitialDirectory(new File(MainApp.class.getResource("save/").toURI().toString()));
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Theme Config", "*.json"));
+            File selectedFile = fileChooser.showOpenDialog(getScene().getWindow());
+            if (selectedFile != null) {
+                GameControllerLayer controller = gameSystem.loadGame(selectedFile);
+                if (controller != null) {
+                    GamePageLocal gamePageLocal = new GamePageLocal(gameSystem, controller, theme);
+                    initGameToStage(gamePageLocal);
+                }
+            } else {
+                Log0j.writeError("No file is selected. Loading failed.");
+            }
         });
     }
 

@@ -52,6 +52,11 @@ public class SimpleGameSystem implements GameSystemLayer {
     }
 
     @Override
+    public GameControllerLayer loadGame(File file) {
+        return new SimpleGameController(new SimplePlayer("Loaded Player"), new SimplePlayer("Loaded Player"), true);
+    }
+
+    @Override
     public GameControllerLayer registerGamePlayable(GameControllerLayer controller) {
         if (controller == null) {
             SimpleGameController simpleGameController = new SimpleGameController(new SimplePlayer("LOAD TEST 1"), new SimplePlayer("LOAD TEST 2"), true);

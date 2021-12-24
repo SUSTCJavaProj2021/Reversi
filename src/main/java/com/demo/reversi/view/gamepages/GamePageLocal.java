@@ -148,8 +148,10 @@ public class GamePageLocal implements UpdatableGame {
             if (controller != null) {
                 controller.restartGame();
                 chessBoard.initBoardPlayable(controller);
+                update();
+                player1Info.reInit();
+                player2Info.reInit();
             }
-            update();
         });
         controlsPane.getChildren().add(restartBtn);
 
@@ -209,7 +211,20 @@ public class GamePageLocal implements UpdatableGame {
 
                             //Show the winning prompt
 
-
+                            switch(controller.getGameStatus()){
+                                case WIN_PLAYER1 -> {
+                                    player1Info.setFinished(InfoPane.Status.WINNER);
+                                    player2Info.setFinished(InfoPane.Status.LOSER);
+                                }
+                                case WIN_PLAYER2 -> {
+                                    player2Info.setFinished(InfoPane.Status.WINNER);
+                                    player1Info.setFinished(InfoPane.Status.LOSER);
+                                }
+                                case TIED -> {
+                                    player1Info.setFinished(InfoPane.Status.TIED);
+                                    player2Info.setFinished(InfoPane.Status.TIED);
+                                }
+                            }
                             //todo: modify this
 
                             Alert alert = PromptLoader.getGameFinishAlert(theme);
@@ -242,6 +257,7 @@ public class GamePageLocal implements UpdatableGame {
             player2Info.isActivatedProperty().setValue(true);
         }
         //todo: add updates
+
     }
 
 
