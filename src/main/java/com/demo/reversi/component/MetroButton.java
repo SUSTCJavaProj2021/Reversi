@@ -1,20 +1,15 @@
 package com.demo.reversi.component;
 
-import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
 import javafx.scene.control.Button;
 import javafx.scene.control.Control;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.util.Duration;
@@ -98,15 +93,16 @@ public class MetroButton extends Button {
 
         //Unselected
         setOpacity(OPACITY_DEFAULT);
-        init();
+        initEvents();
 
         setPrefSize(text.length() * (fontProperty().getValue().getSize() - 2) + 7, PREFERRED_HEIGHT);
         setMinWidth(Control.USE_PREF_SIZE);
         setMinHeight(Control.USE_PREF_SIZE);
         setTooltip(new Tooltip(text));
+
     }
 
-    private void init() {
+    private void initEvents() {
         setOnMouseEntered(event -> {
             FadeTransition ft = new FadeTransition(Duration.millis(TRANS_TIME_MILLIS), outer());
             ft.setFromValue(OPACITY_DEFAULT);

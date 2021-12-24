@@ -1,26 +1,16 @@
 package com.demo.reversi.view.contentpages;
 
-import com.demo.reversi.component.MetroButton;
 import com.demo.reversi.component.TitleLabel;
+import com.demo.reversi.component.panes.SmoothishScrollPane;
 import com.demo.reversi.component.selector.SelectorPane;
 import com.demo.reversi.controller.local.SimpleGameSystem;
 import com.demo.reversi.res.lang.LiteralConstants;
-import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
-import com.demo.reversi.view.gamepages.GamePageLocal;
 import com.demo.reversi.view.gamepages.GamePreviewPane;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.HPos;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
+import javafx.scene.paint.Color;
 
 public class PlayPage implements Updatable {
     public static final double SELECTOR_WIDTH = 180;
@@ -29,9 +19,11 @@ public class PlayPage implements Updatable {
     public final SelectorPane playSelector;
 
     // Secondary views
-    public final GridPane localPlayPane;
-    public final GridPane LANPlayPane;
-    public final GridPane onlinePlayPane;
+    public final GridPane localPlayContainer;
+    public final GridPane LANPlayContainer;
+    public final GridPane onlinePlayContainer;
+
+    public final FlowPane localPlayPane;
 
     public final GamePreviewPane newGamePreview;    //For creating a new game.
     public final GamePreviewPane loadGamePreview;   //For loading game from file.
@@ -64,36 +56,46 @@ public class PlayPage implements Updatable {
 
         //Initialize all secondary panes.
 
-        localPlayPane = new GridPane();
-        localPlayPane.add(new TitleLabel("Play Game on Local Machine", theme), 0, 0);
+        localPlayContainer = new GridPane();
+        localPlayContainer.add(new TitleLabel("Play Game on Local Machine", theme), 0, 0);
 
-        LANPlayPane = new GridPane();
-        LANPlayPane.add(new TitleLabel("Play Game in Local Area Network", theme), 0, 0);
-        LANPlayPane.add(new Label("Actually, there is no LAN game yet.\n QAQ"), 0, 1);
+        LANPlayContainer = new GridPane();
+        LANPlayContainer.add(new TitleLabel("Play Game in Local Area Network", theme), 0, 0);
+        LANPlayContainer.add(new Label("Actually, there is no LAN game yet.\n QAQ"), 0, 1);
 
-        onlinePlayPane = new GridPane();
-        onlinePlayPane.add(new TitleLabel("Play Online Game", theme), 0, 0);
-        onlinePlayPane.add(new Label("Actually, there is no online game yet.\n QAQ"), 0, 1);
+        onlinePlayContainer = new GridPane();
+        onlinePlayContainer.add(new TitleLabel("Play Online Game", theme), 0, 0);
+        onlinePlayContainer.add(new Label("Actually, there is no online game yet.\n QAQ"), 0, 1);
 
 
         //Initialize the Play Selector
 
-        playSelector.addPage("Local", localPlayPane);
-        playSelector.addPage("LAN", LANPlayPane);
-        playSelector.addPage("Online", onlinePlayPane);
+        playSelector.addPage("Local", localPlayContainer);
+        playSelector.addPage("LAN", LANPlayContainer);
+        playSelector.addPage("Online", onlinePlayContainer);
         playSelector.resetSelectorWidth(120);
         playSelector.init();
 
+        localPlayPane = new FlowPane();
+        SmoothishScrollPane container = new SmoothishScrollPane(localPlayPane);
+        GridPane.setHgrow(container, Priority.ALWAYS);
+        GridPane.setVgrow(container, Priority.ALWAYS);
+        localPlayContainer.add(container, 0, 1);
         //Loading default selections
+
         newGamePreview = new GamePreviewPane(gameSystem, theme, GamePreviewPane.PreviewType.NEW_GAME);
-        localPlayPane.add(newGamePreview, 0, 1);
+        localPlayPane.getChildren().add(newGamePreview);
 
-        loadGamePreview = new GamePreviewPane(gameSystem,theme,GamePreviewPane.PreviewType.LOAD_GAME_FROM_FILE);
-        localPlayPane.add(loadGamePreview,1,1);
+        loadGamePreview = new GamePreviewPane(gameSystem, theme, GamePreviewPane.PreviewType.LOAD_GAME_FROM_FILE);
+        localPlayPane.getChildren().add(loadGamePreview);
 
+        initLayout();
         initRelations();
         //TEST
         //END TEST
+    }
+
+    private void initLayout() {
     }
 
     /**
@@ -110,7 +112,7 @@ public class PlayPage implements Updatable {
     }
 
 
-    private void initLoadGamePreview(){
+    private void initLoadGamePreview() {
 
     }
 

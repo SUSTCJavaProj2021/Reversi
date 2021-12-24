@@ -26,7 +26,7 @@ public class InfoPane extends StackPane implements Updatable {
     private static final double TRANS_TIME_MILLIS = 150;
     public static final double CORNER_RADII = 15;
     public static final double PREF_HEIGHT = 80;
-    public static final double PREF_WIDTH = 130;
+    public static final double PREF_WIDTH = 190;
     public static final double VIEW_COVER_OPACITY = 0.6;
     public static final double INDICATOR_RATIO = 0.6;
 
@@ -81,6 +81,9 @@ public class InfoPane extends StackPane implements Updatable {
         playerNameLabel = new Label();
         playerNameLabel.fontProperty().bind(theme.infoTitleFontFamilyPR());
         playerNameLabel.textFillProperty().bind(theme.titleFontPaintPR());
+
+        playerNameLabel.scaleYProperty().bind(playerNameLabel.scaleXProperty());
+        playerNameLabel.scaleXProperty().bind(widthProperty().divide(PREF_WIDTH));
 
         playerInfoLabel = new Label();
         playerInfoLabel.fontProperty().bind(Bindings.createObjectBinding(() -> {

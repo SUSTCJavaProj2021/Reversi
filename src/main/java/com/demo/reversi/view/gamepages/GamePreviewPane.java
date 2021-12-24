@@ -14,7 +14,6 @@ import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -45,13 +44,14 @@ public class GamePreviewPane extends GridPane {
     public static final double MIN_HEIGHT = 300;
     public static final double MIN_WIDTH = 250;
     public static final double CHESSBOARD_SIZE = 220;
-    public static final double CHESSBOARD_MARGIN = 15;
+    public static final double PREF_MARGIN = 15;
     public static final double OPACITY_DEFAULT = 0.8;
     public static final double OPACITY_SELECTED = 1.0;
     public static final double OPACITY_PRESSED = 0.7;
 
     public final Theme theme;
     public final StackPane viewCover;
+    public final GridPane infoSumPane;
     public final InfoPane player1Info;
     public final InfoPane player2Info;
     public final Label gameStatusLabel;
@@ -82,6 +82,8 @@ public class GamePreviewPane extends GridPane {
 
         viewCover = new StackPane();
 
+        infoSumPane = new GridPane();
+
         chessBoard = new ChessBoard(theme, CHESSBOARD_SIZE);
         chessBoard.initBoardDemo(controller);
 
@@ -109,6 +111,7 @@ public class GamePreviewPane extends GridPane {
         this.theme = theme;
 
         viewCover = new StackPane();
+        infoSumPane = new GridPane();
 
         chessBoard = new ChessBoard(theme, CHESSBOARD_SIZE);
 
@@ -145,18 +148,21 @@ public class GamePreviewPane extends GridPane {
         backgroundProperty().bind(theme.frontPanePR());
 
         add(chessBoard, 0, 0);
-        GridPane.setConstraints(chessBoard, 0, 0, GridPane.REMAINING, 1,
-                HPos.CENTER, VPos.CENTER, Priority.SOMETIMES, Priority.ALWAYS, new Insets(CHESSBOARD_MARGIN));
+        GridPane.setConstraints(chessBoard, 0, 0, 1, 1,
+                HPos.CENTER, VPos.CENTER, Priority.SOMETIMES, Priority.ALWAYS, new Insets(PREF_MARGIN));
 
 
-        player1Info.setPrefWidth(195);
-        player2Info.setPrefWidth(195);
-        add(player1Info, 0, 1);
-        add(player2Info, 0, 2);
+        add(infoSumPane,0,1);
+        infoSumPane.add(player1Info, 0, 0);
+        infoSumPane.add(player2Info, 0, 1);
+        infoSumPane.add(gameStatusLabel, 1, 0, 1, 2);
+        GridPane.setMargin(infoSumPane,new Insets(PREF_MARGIN));
 
-        add(gameStatusLabel, 1, 1, 1, 2);
-        add(createdTimeLabel, 0, 3, GridPane.REMAINING, 1);
-        add(lastModifiedTimeLabel, 0, 4, GridPane.REMAINING, 1);
+
+        add(lastModifiedTimeLabel, 0, 2);
+        add(createdTimeLabel, 0, 3);
+        GridPane.setMargin(lastModifiedTimeLabel, new Insets(0,PREF_MARGIN,0,PREF_MARGIN));
+        GridPane.setMargin(createdTimeLabel, new Insets(0,PREF_MARGIN,0,PREF_MARGIN));
 
         switch (type) {
             case NEW_GAME -> {
