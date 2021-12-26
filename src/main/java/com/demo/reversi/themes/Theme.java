@@ -74,7 +74,7 @@ public class Theme {
 
         try {
             defaultPlayPageBGMSource = Paths.get(Theme.class.getResource("PlayPageBGM.mp3").toURI());
-            Log0j.writeInfo("Play Page BGM loaded on path: " + defaultGamePageBGMSource);
+            Log0j.writeInfo("Play Page BGM loaded on path: " + defaultPlayPageBGMSource);
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
             Log0j.writeError("Play Page BGM loading failed. Check your path.");

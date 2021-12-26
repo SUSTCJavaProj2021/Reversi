@@ -1,14 +1,12 @@
 package com.demo.reversi.component.panes;
 
-import com.demo.reversi.controller.PlayerLayer;
+import com.demo.reversi.controller.interfaces.PlayerLayer;
 import com.demo.reversi.controller.local.SimplePlayer;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Control;

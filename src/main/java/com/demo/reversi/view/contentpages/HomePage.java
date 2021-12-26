@@ -1,41 +1,43 @@
 package com.demo.reversi.view.contentpages;
 
+import com.demo.reversi.MainApp;
+import com.demo.reversi.component.TextLabel;
 import com.demo.reversi.component.TitleLabel;
+import com.demo.reversi.component.gamemodel.ChessBoard;
+import com.demo.reversi.component.panes.SmoothishScrollPane;
+import com.demo.reversi.controller.local.SimpleGameController;
 import com.demo.reversi.controller.local.SimpleGameSystem;
+import com.demo.reversi.controller.local.SimplePlayer;
+import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.res.lang.LiteralConstants;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.geometry.HPos;
-import javafx.geometry.Pos;
-import javafx.geometry.Side;
-import javafx.scene.chart.PieChart;
-import javafx.scene.chart.PieChart.Data;
-import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class HomePage implements Updatable {
     public final GridPane root;
 
+    public final GridPane welcomePane;
+    public final SmoothishScrollPane displayContainer;
     public final GridPane displayPane;
 
-
-    public PieChart winRateChart;
-    public Data winCntData;
-    public Data lossCntData;
-
-    public Label welcomeText;
+    public final TitleLabel welcomeLabel;
+    public final TextLabel clockLabel;
 
     public Theme theme;
 
@@ -46,88 +48,62 @@ public class HomePage implements Updatable {
         root = new GridPane();
         root.addRow(0, new TitleLabel(LiteralConstants.HomePageTitle.toString(), theme));
 
-        welcomeText = new Label("Welcome to Reversi!");
+        Separator s = new Separator();
+        s.setOpacity(0);
+        root.addRow(1, s);
 
+        welcomePane = new GridPane();
+        root.addRow(2, welcomePane);
 
-        welcomeText.setFont(new Font("Cambria", 24));
-        welcomeText.setTextFill(Color.WHITE);
-        welcomeText.setWrapText(true);
+        welcomeLabel = new TitleLabel(LiteralConstants.WelcomeText.toString(), theme);
+        welcomeLabel.setWrapText(true);
 
-        winCntData = new Data("Win", 0.02);
-        lossCntData = new Data("Loss", 0.98);
-
-        ObservableList<PieChart.Data> WRChartData = FXCollections.observableArrayList(winCntData, lossCntData);
-
-        winRateChart = new PieChart(WRChartData);
-        winRateChart.setTitle("Poor win rate");
-        winRateChart.setLegendSide(Side.LEFT);
-        try {
-            winRateChart.getStylesheets().add(theme.getClass().getResource("piechart.css").toURI().toString());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-        /*
-         Why is that the color must be changed using stylesheet? wtf?
-         winCntData.getNode().setStyle("-fx-pie-color: GREEN");
-         lossCntData.getNode().setStyle("-fx-pie-color: RED");
-        */
+        clockLabel = new TextLabel(theme);
+        clockLabel.setWrapText(true);
 
         displayPane = new GridPane();
-
-        GridPane statPane = new GridPane();
-        statPane.add(winRateChart, 0, 0);
-        displayPane.add(statPane, 0, 1);
-
-//        Image img = new Image(imageSrc);
-//        BackgroundImage bkig = new BackgroundImage(img, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
-//                BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, false, false, false, true));
-//        Background bg = new Background(bkig);
-//        rootPane.setBackground(bg);
-
-        GridPane.setHalignment(statPane, HPos.CENTER);
-
-        Label welcomeText = new Label(LiteralConstants.WelcomeText.toString());
-        welcomeText.setFont(new Font("Constantia", 30));
-        welcomeText.setAlignment(Pos.CENTER_LEFT);
-        welcomeText.setTextFill(Color.WHITE);
-        welcomeText.setWrapText(true);
-
-        Label welcomeText2 = new Label();
-        welcomeText2.setFont(new Font("Constantia", 17));
-        welcomeText2.setAlignment(Pos.CENTER_LEFT);
-        welcomeText2.setTextFill(Color.WHITE);
-        welcomeText2.setWrapText(true);
+        displayContainer = new SmoothishScrollPane(displayPane);
+        root.addRow(3, displayContainer);
+        GridPane.setHgrow(displayContainer, Priority.ALWAYS);
+        GridPane.setVgrow(displayContainer, Priority.ALWAYS);
 
         //Initialize the Clock
-        {
-            Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
-                welcomeText2.setText("It's " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("hh:MM:ss , LLLL dd")) + " now.\n" +
-                        "Get to rest if you have played for too long.");
-            }),
-                    new KeyFrame(Duration.seconds(1))
-            );
-            clock.setCycleCount(Animation.INDEFINITE);
-            clock.play();
+        initClock();
+
+        initLayout();
+    }
+
+    private void initLayout() {
+        welcomePane.add(welcomeLabel, 0, 1);
+        welcomePane.add(clockLabel, 0, 2);
+
+        displayPane.add(new TitleLabel("Introduction to Reversi!", theme), 0, 0, GridPane.REMAINING, 1);
+        TextFlow textFlow = new TextFlow();
+        Text text = new Text();
+        try {
+            text.setText(Files.readString(Paths.get(MainApp.class.getResource("TutorialText.txt").toURI())));
+            Log0j.writeInfo("Succeeded on reading tutorial text.");
+        } catch (URISyntaxException | IOException e) {
+            Log0j.writeError("Failed to read tutorial text. It will not be initialized.");
+            e.printStackTrace();
         }
+        text.fontProperty().bind(theme.textFontFamilyPR());
+        text.fillProperty().bind(theme.titleFontPaintPR());
+        textFlow.getChildren().add(text);
+        displayPane.add(textFlow, 0, 1);
+        displayPane.add(new ChessBoard(
+                new SimpleGameController(new SimplePlayer("TEST PLAYER 1"), new SimplePlayer("TEST PLAYER 2"), true), theme), 1, 1);
+    }
 
-
-        root.addRow(1, welcomeText);
-        root.addRow(2,welcomeText2);
-        root.addRow(3, displayPane);
-
-        {
-            RowConstraints rootRowConstraints[] = new RowConstraints[4];
-            for (int i = 0; i < 4; i++) {
-                rootRowConstraints[i] = new RowConstraints();
-                root.getRowConstraints().add(rootRowConstraints[i]);
-            }
-
-            rootRowConstraints[1].setPercentHeight(20);
-            rootRowConstraints[2].setPercentHeight(10);
-            rootRowConstraints[3].setPercentHeight(50);
-        }
-
+    private void initClock() {
+        Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
+            clockLabel.setText("Current Time: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("hh:mm:ss , LLLL dd")) + "\n" +
+                    "Get to rest if you have played for too long. (Or, are you still debugging late at night?)");
+        }),
+                new KeyFrame(Duration.seconds(1))
+        );
+        clock.setCycleCount(Animation.INDEFINITE);
+        clock.play();
     }
 
     @Override

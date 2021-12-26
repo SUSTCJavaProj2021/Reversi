@@ -2,6 +2,7 @@ package com.demo.reversi.component;
 
 import com.demo.reversi.themes.Theme;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 
 public class TitleLabel extends Label {
     public static final double FONT_SIZE = 25;
@@ -15,6 +16,8 @@ public class TitleLabel extends Label {
 
         setMinHeight(PREFERRED_HEIGHT);
         setPrefHeight(PREFERRED_HEIGHT);
+
+        setTooltip(new Tooltip(title));
     }
 
     public TitleLabel(Theme theme){

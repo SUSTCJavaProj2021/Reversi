@@ -5,7 +5,7 @@ import com.demo.reversi.component.TextLabel;
 import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.gamemodel.ChessBoard;
 import com.demo.reversi.component.panes.InfoPane;
-import com.demo.reversi.component.switches.TitledToggleSwitch;
+import com.demo.reversi.component.switches.IndicatedToggleSwitch;
 import com.demo.reversi.controller.interfaces.GameControllerLayer;
 import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.logger.Log0j;
@@ -134,12 +134,12 @@ public class GamePageLocal implements UpdatableGame {
 
     public void initControls() {
         {
-            TitledToggleSwitch cheatToggle = new TitledToggleSwitch(theme);
+            IndicatedToggleSwitch cheatToggle = new IndicatedToggleSwitch(theme);
             cheatToggle.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
                 controller.setCheatMode(newValue);
             }));
 
-            TitledToggleSwitch cheatPlayer = new TitledToggleSwitch(theme, "Player 1", "Player 2");
+            IndicatedToggleSwitch cheatPlayer = new IndicatedToggleSwitch(theme, "Player 1", "Player 2");
             cheatPlayer.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
                 controller.setCheatAsPlayer(newValue);
             }));
@@ -190,7 +190,7 @@ public class GamePageLocal implements UpdatableGame {
                     player2Info.reInit();
                 }
             });
-            controlsPane.add(restartBtn, 0, 3);
+            controlsPane.add(restartBtn, 1, 3);
         }
 
     }
@@ -207,12 +207,12 @@ public class GamePageLocal implements UpdatableGame {
         }
 
         {
-            TitledToggleSwitch cheatToggle = new TitledToggleSwitch(theme);
+            IndicatedToggleSwitch cheatToggle = new IndicatedToggleSwitch(theme);
             cheatToggle.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
                 controller.setCheatMode(newValue);
             }));
 
-            TitledToggleSwitch cheatPlayer = new TitledToggleSwitch(theme, "Player 1", "Player 2");
+            IndicatedToggleSwitch cheatPlayer = new IndicatedToggleSwitch(theme, "Player 1", "Player 2");
             cheatPlayer.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
                 controller.setCheatAsPlayer(newValue);
             }));

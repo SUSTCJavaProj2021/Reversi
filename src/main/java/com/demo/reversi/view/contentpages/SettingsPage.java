@@ -1,31 +1,22 @@
 package com.demo.reversi.view.contentpages;
 
-import com.demo.reversi.MainApp;
 import com.demo.reversi.component.MetroButton;
 import com.demo.reversi.component.TextLabel;
 import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.panes.SmoothishScrollPane;
-import com.demo.reversi.component.switches.TitledToggleSwitch;
+import com.demo.reversi.component.switches.IndicatedToggleSwitch;
 import com.demo.reversi.controller.local.SimpleGameSystem;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.res.lang.LiteralConstants;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
-import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.ColorPicker;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.media.Media;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
 import java.io.File;
-import java.net.URISyntaxException;
 
 /**
  * Page that contains overall settings
@@ -188,7 +179,7 @@ public class SettingsPage implements Updatable {
 
         {
             //Init Mode Color Settings
-            TitledToggleSwitch toggleSwitch = new TitledToggleSwitch(theme, "Dark Mode Enabled", "Light Mode Enabled");
+            IndicatedToggleSwitch toggleSwitch = new IndicatedToggleSwitch(theme, "Dark Mode Enabled", "Light Mode Enabled");
             toggleSwitch.switchedOnProperty().setValue(theme.modeSwitchPR().getValue());
             toggleSwitch.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
                 theme.setDarkMode(newValue);
@@ -284,7 +275,7 @@ public class SettingsPage implements Updatable {
             });
 
             //Init Background Pure Color Settings
-            TitledToggleSwitch toggleSwitch = new TitledToggleSwitch(theme, "Theme Color Background", "Image Background");
+            IndicatedToggleSwitch toggleSwitch = new IndicatedToggleSwitch(theme, "Theme Color Background", "Image Background");
             toggleSwitch.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
                 if (newValue) {
                     theme.bindToThemeColorBackground(theme.backPanePR());

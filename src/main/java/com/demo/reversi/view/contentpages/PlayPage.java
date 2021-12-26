@@ -29,6 +29,7 @@ public class PlayPage implements Updatable {
     public final FlowPane localPlayPane;
     public final MetroButton localRefBtn;
 
+    public final GamePreviewPane tutorialPreview;
     public final GamePreviewPane newGamePreview;    //For creating a new game.
     public final GamePreviewPane loadGamePreview;   //For loading game from file.
 
@@ -93,6 +94,9 @@ public class PlayPage implements Updatable {
         GridPane.setVgrow(container, Priority.ALWAYS);
         localPlayContainer.add(container, 0, 1);
         //Loading default selections
+
+        tutorialPreview = new GamePreviewPane(gameSystem, theme, GamePreviewPane.PreviewType.TUTORIAL);
+        localPlayPane.getChildren().add(tutorialPreview);
 
         newGamePreview = new GamePreviewPane(gameSystem, theme, GamePreviewPane.PreviewType.NEW_GAME);
         localPlayPane.getChildren().add(newGamePreview);

@@ -1,20 +1,11 @@
 package com.demo.reversi;
 
-import com.demo.reversi.component.panes.InfoPane;
-import com.demo.reversi.component.statistics.PlayerItem;
-import com.demo.reversi.component.switches.ToggleSwitch;
-import com.demo.reversi.controller.GridStatus;
-import com.demo.reversi.controller.local.SimplePlayer;
 import com.demo.reversi.themes.Theme;
 import javafx.application.Application;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.net.URISyntaxException;

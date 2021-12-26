@@ -6,19 +6,20 @@ import javafx.beans.property.BooleanProperty;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
-public class TitledToggleSwitch extends HBox {
+public class IndicatedToggleSwitch extends HBox {
     public static final double SPACING = 15;
     public final ToggleSwitch toggleSwitch;
     public final Label label;
 
     private final Theme theme;
 
-    public TitledToggleSwitch(Theme theme) {
+    public IndicatedToggleSwitch(Theme theme) {
         this(theme, null, null);
     }
 
-    public TitledToggleSwitch(Theme theme, String onText, String offText) {
+    public IndicatedToggleSwitch(Theme theme, String onText, String offText) {
         super(SPACING);
+        setCache(true);
         this.theme = theme;
 
         toggleSwitch = new ToggleSwitch(theme);

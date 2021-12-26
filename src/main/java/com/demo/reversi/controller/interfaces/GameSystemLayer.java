@@ -117,6 +117,13 @@ public interface GameSystemLayer {
     public GameControllerLayer unregisterGamePlayable(GameControllerLayer controller);
 
     /**
+     * Load the GameSystem instance from the selected file.
+     * @param file The GameSystem File
+     * @return <code>true</code> if the operation succeeds
+     */
+    public boolean load(File file);
+
+    /**
      * Save the current state of the GameSystem instance
      * @return <code>true</code> if the operation succeeds
      */
@@ -129,4 +136,10 @@ public interface GameSystemLayer {
      * @return <code>true</code> if the operation succeeds
      */
     public boolean saveTo(File file);
+
+    /**
+     * Reset the GameSystem. Including all settings and user data.
+     * @return <code>true</code> if the operation succeeds
+     */
+    public boolean reset();
 }

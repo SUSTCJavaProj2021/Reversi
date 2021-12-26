@@ -2,6 +2,7 @@ package com.demo.reversi.component;
 
 import com.demo.reversi.themes.Theme;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 
 public class TextLabel extends Label {
 
@@ -16,6 +17,7 @@ public class TextLabel extends Label {
         super(text);
         this.theme = theme;
         initRelations();
+        setTooltip(new Tooltip(text));
     }
 
     private void initRelations(){

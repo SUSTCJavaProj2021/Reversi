@@ -75,6 +75,11 @@ public class SimpleGameSystem implements GameSystemLayer {
     }
 
     @Override
+    public boolean load(File file) {
+        return false;
+    }
+
+    @Override
     public boolean updateRanking() {
         return true;
     }
@@ -121,6 +126,11 @@ public class SimpleGameSystem implements GameSystemLayer {
     @Override
     public boolean saveTo(File file) {
         return true;
+    }
+
+    @Override
+    public boolean reset() {
+        return false;
     }
 
 }

@@ -106,7 +106,7 @@ public class BoardGridComponent extends StackPane {
         if (status != BoardStatus.PREFERRED) {
             Circle circle = new Circle();
             circle.radiusProperty().bind(widthProperty().multiply(0.2));
-            circle.fillProperty().bind(theme.modeColorPR());
+            circle.fillProperty().bind(theme.chessBoardGridColorPR());
             Platform.runLater(() -> {
                 viewCover.getChildren().add(circle);
             });

@@ -1,5 +1,6 @@
 package com.demo.reversi.view.contentpages;
 
+import com.demo.reversi.component.TextLabel;
 import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.res.lang.LiteralConstants;
 import com.demo.reversi.themes.Theme;
@@ -18,15 +19,11 @@ public class AboutPage implements Updatable {
         root = new GridPane();
         root.add(new TitleLabel(LiteralConstants.AboutPageTitle.toString(), theme), 0, 0);
 
-        Label ver = new Label("Version: 0.01; All controls are hard coded.\n" +
-                "All Controls are coded using NATIVE javafx controls. Animations are customized to suit Fluent Design Style.");
-        ver.fontProperty().bind(theme.textFontFamilyPR());
-        ver.textFillProperty().bind(theme.titleFontPaintPR());
+        TextLabel ver = new TextLabel("Version: 0.01\n" +
+                "All controls are hard coded.\n" +
+                "All Controls are coded using NATIVE javafx controls. Animations are customized to suit Fluent Design Style.", theme);
 
-        Label aut = new Label("Authors: Sorry makers, ");
-
-        aut.fontProperty().bind(theme.textFontFamilyPR());
-        aut.textFillProperty().bind(theme.textFontPaintPR());
+        TextLabel aut = new TextLabel("Authors (In alphabetical order): IskXCr, kchgod.", theme);
 
         root.add(ver, 0, 1);
         root.add(aut, 0, 2);

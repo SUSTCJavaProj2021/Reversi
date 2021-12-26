@@ -77,7 +77,7 @@ public class GamePreviewPane extends StackPane {
     public GameControllerLayer controller;
 
     public enum PreviewType {
-        NEW_GAME, LOAD_GAME_FROM_FILE, LOAD_GAME;
+        NEW_GAME, LOAD_GAME_FROM_FILE, LOAD_GAME, TUTORIAL;
     }
 
     /**
@@ -141,17 +141,20 @@ public class GamePreviewPane extends StackPane {
         createdTimeLabel = new Label();
         lastModifiedTimeLabel = new Label();
 
-
         loadInfo();
 
         if (previewType == PreviewType.NEW_GAME) {
             initLayout(PreviewType.NEW_GAME);
             initAnimation();
             initNewGameAction();
-        } else {
+        } else if (previewType == PreviewType.LOAD_GAME_FROM_FILE) {
             initLayout(PreviewType.LOAD_GAME_FROM_FILE);
             initAnimation();
             initLoadGameFromFileAction();
+        } else if (previewType == PreviewType.TUTORIAL) {
+            initLayout(PreviewType.TUTORIAL);
+            initAnimation();
+            initTutorialAction();
         }
 
     }
@@ -232,6 +235,10 @@ public class GamePreviewPane extends StackPane {
                 indicator = new TitleLabel("Load from File", theme);
                 gameStatusLabel.setText("Load from File");
             }
+            case TUTORIAL -> {
+                indicator = new TitleLabel("Start Tutorial", theme);
+                gameStatusLabel.setText("Tutorial");
+            }
             default -> indicator = new TitleLabel("Demo", theme);
         }
         indicator.setWrapText(true);
@@ -248,7 +255,6 @@ public class GamePreviewPane extends StackPane {
         container.setEffect(blur);
 
         setOnMouseEntered(event -> {
-
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(TRANS_TIME_MILLIS),
                     new KeyValue(blur.iterationsProperty(), 6)));
 
@@ -338,6 +344,29 @@ public class GamePreviewPane extends StackPane {
             } else {
                 Log0j.writeInfo("Game loading failed for unknown reason. The scenario was considered not going to happen.");
             }
+        });
+
+    }
+
+    private void initTutorialAction() {
+        setOnMouseClicked(MouseEvent -> {
+            controller = gameSystem.startNewGame("Test Player 1", "Test Player 2");
+            TutorialPage tutorialPage = new TutorialPage(gameSystem, controller, theme);
+            Stage gameStage = new Stage();
+            gameStage.setScene(new Scene(tutorialPage.root));
+            gameStage.setTitle("Tutorial Game");
+            gameStage.getIcons().add(Theme.getAppIcon());
+
+            gameStage.setMinWidth(GamePageLocal.MIN_WIDTH);
+            gameStage.setMinHeight(GamePageLocal.MIN_HEIGHT);
+
+            gameStage.show();
+            Platform.runLater(theme::registerGameBGM);
+            Log0j.writeInfo("Tutorial Game initialized.");
+            gameStage.setOnCloseRequest(ActionEvent -> {
+                tutorialPage.performOnCloseAction();
+                Platform.runLater(theme::unregisterGameBGM);
+            });
         });
 
     }

@@ -1,10 +1,9 @@
 package com.demo.reversi.component.statistics;
 
-import com.demo.reversi.controller.PlayerLayer;
+import com.demo.reversi.controller.interfaces.PlayerLayer;
 import com.demo.reversi.themes.Theme;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
@@ -14,7 +13,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
-import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 public class PlayerItem extends GridPane {

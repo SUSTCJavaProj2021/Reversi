@@ -175,11 +175,21 @@ public class SimpleGameController implements GameControllerLayer {
         return false;
     }
 
+    @Override
+    public boolean isPlayer1AI() {
+        return false;
+    }
+
+    @Override
+    public boolean isPlayer2AI() {
+        return false;
+    }
+
 
     @Override
     public boolean save() {
         try {
-            return saveTo(new File(SaveLoader.class.getResource("DefaultSave.save").toURI().toString()));
+            return saveTo(new File(SaveLoader.class.getResource("DefaultSave.sav").toURI().toString()));
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return false;
