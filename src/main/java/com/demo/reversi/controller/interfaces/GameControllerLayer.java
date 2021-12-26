@@ -128,7 +128,7 @@ public interface GameControllerLayer {
     /**
      * Call this when the game is finished.
      * In the method, you should call Updatable::curtainCallUpdate
-     * The specific method can be found in
+     * The specific method can be found in SimpleGameController
      */
     public void curtainCallUpdate();
 
@@ -164,7 +164,7 @@ public interface GameControllerLayer {
     /**
      * Get Player 1 (namely, the black player.)
      * The reason why "BlackPlayer" is not used is because that custom player color is allowed.
-     * @return
+     * @return Player 1
      */
     public PlayerLayer getPlayer1();
 
