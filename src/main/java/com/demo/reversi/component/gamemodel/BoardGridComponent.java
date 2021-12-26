@@ -123,5 +123,4 @@ public class BoardGridComponent extends StackPane {
             status = BoardStatus.BANNED;
         }
     }
-
 }

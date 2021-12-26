@@ -88,6 +88,11 @@ public class SimpleGameController implements GameControllerLayer {
     }
 
     @Override
+    public void pause() {
+
+    }
+
+    @Override
     public void replayGame() {
 
     }

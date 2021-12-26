@@ -174,7 +174,10 @@ public class GamePageLocal implements UpdatableGame {
 
         {
             MetroButton pauseBtn = new MetroButton("Pause", theme);
-            pauseBtn.setOnAction(event -> Log0j.writeInfo("Game paused on request."));
+            pauseBtn.setOnAction(event -> {
+                Log0j.writeInfo("Game paused on request.");
+                controller.pause();
+            });
             controlsPane.add(pauseBtn, 0, 3);
         }
 
@@ -212,12 +215,12 @@ public class GamePageLocal implements UpdatableGame {
                 controller.setCheatMode(newValue);
             }));
 
-            IndicatedToggleSwitch cheatPlayer = new IndicatedToggleSwitch(theme, "Player 1", "Player 2");
-            cheatPlayer.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
+            IndicatedToggleSwitch cheatPlayerToggle = new IndicatedToggleSwitch(theme, "Player 1", "Player 2");
+            cheatPlayerToggle.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
                 controller.setCheatAsPlayer(newValue);
             }));
             controlsPane.add(new HBox(10, new TextLabel("Cheat Mode", theme), cheatToggle), 0, 0);
-            controlsPane.add(new HBox(10, new TextLabel("As which player", theme), cheatPlayer), 0, 1);
+            controlsPane.add(new HBox(10, new TextLabel("As which player", theme), cheatPlayerToggle), 0, 1);
         }
 
     }

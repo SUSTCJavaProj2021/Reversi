@@ -78,6 +78,12 @@ public interface GameControllerLayer {
      */
     public void onGridClick(int row, int col);
 
+    /**
+     * This is method is called when the current player abandons his chance
+     * to place a chess.
+     */
+    public void pause();
+
 
     /**
      * When called, the controller should replay the game from start itself.
