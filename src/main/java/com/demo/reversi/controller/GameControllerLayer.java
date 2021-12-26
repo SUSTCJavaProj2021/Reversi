@@ -46,17 +46,22 @@ public interface GameControllerLayer {
      */
     public boolean bindToGamePage(UpdatableGame gamePage);
 
+
     /**
      * This will be called when the GamePage is closed or thrown away.
      * @return <code>true</code> if the operation succeeds
      */
     public boolean unbindGamePage();
 
+
 //    public boolean bindToChessBoard();
+
 
     public int getRowSize();
 
+
     public int getColSize();
+
 
     /**
      * Respond to GUI onGridClick event.
@@ -75,6 +80,7 @@ public interface GameControllerLayer {
      */
     public void onGridClick(int row, int col);
 
+
     /**
      * When called, the controller should replay the game from start itself.
      *
@@ -83,6 +89,7 @@ public interface GameControllerLayer {
      */
     public void replayGame();
 
+
     /**
      * Call the GUI to update its contents, including ChessBoard (without directed animation, but
      * basic animation still remains) and Current Player Indicator. (Currently. In the future may
@@ -90,7 +97,9 @@ public interface GameControllerLayer {
      */
     public void forceGUIUpdate();
 
+
     public void forceGUIUpdate(Task<?> task);
+
 
     /**
      * Call the GUI to update its contents, and in addition, play an animation on the ChessBoard
@@ -101,6 +110,7 @@ public interface GameControllerLayer {
      */
     public void forceSourcedGUIUpdate(int row, int col);
 
+
     /**
      * The only difference between this method and the former one is that it adds a task that is going
      * to be executed after the GUI update. Therefore, no more <code>Thread.sleep()</code> is needed.
@@ -110,6 +120,7 @@ public interface GameControllerLayer {
      */
     public void forceSourcedGUIUpdate(int row, int col, Task<?> task);
 
+
     /**
      * Call this when the game is finished.
      * In the method, you should call Updatable::curtainCallUpdate
@@ -117,11 +128,13 @@ public interface GameControllerLayer {
      */
     public void curtainCallUpdate();
 
+
     /**
      * Reset the CLI game.
      * No GUI calling is required in this method, because the ChessBoard will be redrawn.
      */
     public void restartGame();
+
 
     /**
      * Return the created time.
@@ -129,17 +142,20 @@ public interface GameControllerLayer {
      */
     public LocalDateTime getGameCreatedTime();
 
+
     /**
      * Return the last modified time.
      * @return last modified time
      */
     public LocalDateTime getGameLastModifiedTime();
 
+
     /**
      * Return the status of the game instance.
      * @return the status of the current game
      */
     public GameStatus getGameStatus();
+
 
     /**
      * Get Player 1 (namely, the black player.)
@@ -148,11 +164,13 @@ public interface GameControllerLayer {
      */
     public PlayerLayer getPlayer1();
 
+
     /**
      * Get Player 2 (namely, the white player.)
      * @return Player 2
      */
     public PlayerLayer getPlayer2();
+
 
     /**
      * Get the current player
@@ -168,6 +186,7 @@ public interface GameControllerLayer {
      */
     public boolean setCheatMode(boolean isEnabled);
 
+
     /**
      * Change the player that the cheater want to play as.
      * @param isPlayer1 If <code>true</code>, then the next step should be placed as Player1's step.
@@ -177,11 +196,13 @@ public interface GameControllerLayer {
      */
     public boolean setCheatAsPlayer(boolean isPlayer1);
 
+
     /**
      * Undo the last step made.
      * @return <code>true</code> If the undo process succeeds.
      */
     public boolean undoLastStep();
+
 
     /**
      * Get the status of the specific grid.
@@ -200,6 +221,7 @@ public interface GameControllerLayer {
      * @return <code>true</code> if the operation succeeds.
      */
     public boolean save();
+
 
     /**
      * Save the status of the current game to a specific file.
