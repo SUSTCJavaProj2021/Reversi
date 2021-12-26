@@ -169,6 +169,21 @@ public interface GameControllerLayer {
     public boolean setCheatMode(boolean isEnabled);
 
     /**
+     * Change the player that the cheater want to play as.
+     * @param isPlayer1 If <code>true</code>, then the next step should be placed as Player1's step.
+     *                  Validity check should not be performed, and you should not make a turn.
+     *                  However, you should still flip chess according to the rule.
+     * @return <code>true</code> If the operation succeeds.
+     */
+    public boolean cheatAsPlayer(boolean isPlayer1);
+
+    /**
+     * Undo the last step made.
+     * @return <code>true</code> If the undo process succeeds.
+     */
+    public boolean undoLastStep();
+
+    /**
      * Get the status of the specific grid.
      * This method will be called frequently to iterate through all the available grids.
      * @param row row position required

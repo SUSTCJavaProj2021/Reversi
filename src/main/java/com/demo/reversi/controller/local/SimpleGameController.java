@@ -162,6 +162,16 @@ public class SimpleGameController implements GameControllerLayer {
         return true;
     }
 
+    @Override
+    public boolean cheatAsPlayer(boolean isPlayer1) {
+        return false;
+    }
+
+    @Override
+    public boolean undoLastStep() {
+        return false;
+    }
+
 
     @Override
     public boolean save() {
