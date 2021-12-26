@@ -41,3 +41,8 @@
     -fx-background-radius: 2em;
 
 }
+
+.scroll-bar:vertical,
+.scroll-bar:horizontal{
+    -fx-background-color: transparent;
+}

@@ -43,6 +43,8 @@ public class ChessBoard extends HBox implements Updatable {
 
     private final Theme theme;
 
+    public boolean showAvailablePos = false;
+
     public ChessBoard(Theme theme) {
         this(theme, 0);
     }
@@ -168,6 +170,10 @@ public class ChessBoard extends HBox implements Updatable {
     public void bindToSize(DoubleProperty width, DoubleProperty height) {
         this.prefWidthProperty().bind(width);
         this.prefHeightProperty().bind(height);
+    }
+
+    public void setShowAvailablePos(boolean value){
+        showAvailablePos = value;
     }
 
     @Override
@@ -376,10 +382,14 @@ public class ChessBoard extends HBox implements Updatable {
     }
 
     private void updateGrid(GridStatus gridStatus, int row, int col) {
-        switch (gridStatus) {
-            case PREFERRED -> gridBases[row][col].setPreferred();
-            case BANNED -> gridBases[row][col].setBanned();
-            default -> gridBases[row][col].setDefault();
+        if(showAvailablePos){
+            switch (gridStatus) {
+                case PREFERRED -> gridBases[row][col].setPreferred();
+                case BANNED -> gridBases[row][col].setBanned();
+                default -> gridBases[row][col].setDefault();
+            }
+        }else{
+            gridBases[row][col].setDefault();
         }
     }
 

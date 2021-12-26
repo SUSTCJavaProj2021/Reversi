@@ -20,7 +20,7 @@ public enum LiteralConstants {
     HomePageTitle("Home"),
     PlayPageTitle("Play"),
     StatisticsPageTitle("Statistics"),
-    SettingsPageTitle("Settings"),
+    SettingsPageTitle("Overall Settings"),
     GameSystemPageTitle("Game System"),
     AboutPageTitle("About");
 

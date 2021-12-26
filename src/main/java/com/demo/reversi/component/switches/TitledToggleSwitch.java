@@ -13,6 +13,10 @@ public class TitledToggleSwitch extends HBox {
 
     private final Theme theme;
 
+    public TitledToggleSwitch(Theme theme) {
+        this(theme, null, null);
+    }
+
     public TitledToggleSwitch(Theme theme, String onText, String offText) {
         super(SPACING);
         this.theme = theme;

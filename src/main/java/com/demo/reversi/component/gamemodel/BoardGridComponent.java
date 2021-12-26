@@ -21,10 +21,15 @@ public class BoardGridComponent extends StackPane {
 
     public static final double TRANS_TIME_MILLIS = 100;
 
-
     public final StackPane viewCover;
 
     private final Theme theme;
+
+    private enum BoardStatus {
+        DEFAULT, PREFERRED, BANNED;
+    }
+
+    private BoardStatus status;
 
     public BoardGridComponent(Theme theme) {
         setCache(true);
@@ -80,6 +85,7 @@ public class BoardGridComponent extends StackPane {
             }
         });
 
+        status = BoardStatus.DEFAULT;
     }
 
     public BoardGridComponent outer() {
@@ -87,26 +93,35 @@ public class BoardGridComponent extends StackPane {
     }
 
     public void setDefault() {
-        Platform.runLater(() -> {
-            viewCover.getChildren().clear();
-            viewCover.setBackground(null);
-        });
+        if (status != BoardStatus.DEFAULT) {
+            Platform.runLater(() -> {
+                viewCover.getChildren().clear();
+                viewCover.setBackground(null);
+            });
+            status = BoardStatus.DEFAULT;
+        }
     }
 
     public void setPreferred() {
-        Circle circle = new Circle();
-        circle.radiusProperty().bind(widthProperty().multiply(0.2));
-        circle.fillProperty().bind(theme.modeColorPR());
-        Platform.runLater(() -> {
-            viewCover.getChildren().add(circle);
-        });
+        if (status != BoardStatus.PREFERRED) {
+            Circle circle = new Circle();
+            circle.radiusProperty().bind(widthProperty().multiply(0.2));
+            circle.fillProperty().bind(theme.modeColorPR());
+            Platform.runLater(() -> {
+                viewCover.getChildren().add(circle);
+            });
+            status = BoardStatus.PREFERRED;
+        }
 //        viewCover.setBackground(new Background(new BackgroundFill(Color.rgb(5, 245, 240, 0.35), null, null)));
     }
 
     public void setBanned() {
-        Platform.runLater(() -> {
-            viewCover.setBackground(new Background(new BackgroundFill(Color.rgb(120, 120, 120, 0.5), null, null)));
-        });
+        if (status != BoardStatus.BANNED) {
+            Platform.runLater(() -> {
+                viewCover.setBackground(new Background(new BackgroundFill(Color.rgb(120, 120, 120, 0.5), null, null)));
+            });
+            status = BoardStatus.BANNED;
+        }
     }
 
 }

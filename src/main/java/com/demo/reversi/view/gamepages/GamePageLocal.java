@@ -1,9 +1,11 @@
 package com.demo.reversi.view.gamepages;
 
 import com.demo.reversi.component.MetroButton;
+import com.demo.reversi.component.TextLabel;
 import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.gamemodel.ChessBoard;
 import com.demo.reversi.component.panes.InfoPane;
+import com.demo.reversi.component.switches.TitledToggleSwitch;
 import com.demo.reversi.controller.GameControllerLayer;
 import com.demo.reversi.controller.GameSystemLayer;
 import com.demo.reversi.logger.Log0j;
@@ -13,8 +15,10 @@ import com.demo.reversi.view.prompts.PromptLoader;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.geometry.*;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 public class GamePageLocal implements UpdatableGame {
     public static final double MIN_WIDTH = InfoPane.PREF_WIDTH + ChessBoard.DEFAULT_BOARD_MIN_SIZE;
@@ -26,7 +30,7 @@ public class GamePageLocal implements UpdatableGame {
     public final GridPane root;
 
     public final VBox sidePanel;
-    public final VBox controlsPane;
+    public final GridPane controlsPane;
     public final VBox configPane;
     public InfoPane player1Info;
     public InfoPane player2Info;
@@ -55,6 +59,7 @@ public class GamePageLocal implements UpdatableGame {
 
         //Adding chessboard
         chessBoard = new ChessBoard(theme);
+        chessBoard.setShowAvailablePos(true);
         root.add(chessBoard, 0, 0, 1, 4);
         GridPane.setMargin(chessBoard, new Insets(20));
         GridPane.setHalignment(chessBoard, HPos.CENTER);
@@ -92,7 +97,7 @@ public class GamePageLocal implements UpdatableGame {
         sidePanel.getChildren().add(new TitleLabel("Settings", theme));
 
         //Adding controls pane
-        controlsPane = new VBox(5);
+        controlsPane = new GridPane();
         VBox.setVgrow(controlsPane, Priority.ALWAYS);
         sidePanel.getChildren().add(controlsPane);
         initControls();
@@ -127,33 +132,52 @@ public class GamePageLocal implements UpdatableGame {
     }
 
     public void initControls() {
+        {
+            TitledToggleSwitch cheatToggle = new TitledToggleSwitch(theme);
+            cheatToggle.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
+                controller.setCheatMode(newValue);
+            }));
 
-        //todo: switch it to a toggleSwitch
-        MetroButton cheatBtn = new MetroButton("Cheat", theme);
-        cheatBtn.setOnAction(event -> controller.setCheatMode(true));
-        controlsPane.getChildren().add(cheatBtn);
+            TitledToggleSwitch cheatPlayer = new TitledToggleSwitch(theme, "Player 1", "Player 2");
+            cheatPlayer.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
+                if(newValue){
+                    //Cheat as Player 1
+                }
+                else{
+                    //Cheat as Player 2
+                }
+            }));
+            controlsPane.add(new HBox(10, new TextLabel("Cheat Mode", theme), cheatToggle), 0, 0);
+            controlsPane.add(new HBox(10, new TextLabel("As which player", theme), cheatPlayer), 0, 1);
+        }
 
         //todo: the following buttons shall all be rewritten
-        MetroButton undoBtn = new MetroButton("Undo", theme);
-        undoBtn.setOnAction(event -> Log0j.writeInfo("GamePage tried to undo the last operation."));
-        controlsPane.getChildren().add(undoBtn);
+        {
+            MetroButton undoBtn = new MetroButton("Undo", theme);
+            undoBtn.setOnAction(event -> Log0j.writeInfo("GamePage tried to undo the last operation."));
+            controlsPane.add(undoBtn, 0, 2);
+        }
 
-        MetroButton pauseBtn = new MetroButton("Pause", theme);
-        pauseBtn.setOnAction(event -> Log0j.writeInfo("Game paused on request."));
-        controlsPane.getChildren().add(pauseBtn);
+        {
+            MetroButton pauseBtn = new MetroButton("Pause", theme);
+            pauseBtn.setOnAction(event -> Log0j.writeInfo("Game paused on request."));
+            controlsPane.add(pauseBtn, 1, 2);
+        }
 
-        //todo: This may need change.
-        MetroButton restartBtn = new MetroButton("Restart", theme);
-        restartBtn.setOnAction(event -> {
-            if (controller != null) {
-                controller.restartGame();
-                chessBoard.initBoardPlayable(controller);
-                update();
-                player1Info.reInit();
-                player2Info.reInit();
-            }
-        });
-        controlsPane.getChildren().add(restartBtn);
+        {
+            //todo: This may need change.
+            MetroButton restartBtn = new MetroButton("Restart", theme);
+            restartBtn.setOnAction(event -> {
+                if (controller != null) {
+                    controller.restartGame();
+                    chessBoard.initBoardPlayable(controller);
+                    update();
+                    player1Info.reInit();
+                    player2Info.reInit();
+                }
+            });
+            controlsPane.add(restartBtn, 0, 3);
+        }
 
     }
 
@@ -168,6 +192,7 @@ public class GamePageLocal implements UpdatableGame {
 
         MetroButton loadAIBtn = new MetroButton("Replace Player to AI", theme);
         loadAIBtn.setOnAction(event -> {
+            //todo: finish AI usage
             Log0j.writeInfo("Loading AI player.");
         });
         configPane.getChildren().add(loadAIBtn);

@@ -2,6 +2,7 @@ package com.demo.reversi.view.contentpages;
 
 import com.demo.reversi.MainApp;
 import com.demo.reversi.component.MetroButton;
+import com.demo.reversi.component.TextLabel;
 import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.panes.SmoothishScrollPane;
 import com.demo.reversi.component.switches.TitledToggleSwitch;
@@ -13,10 +14,14 @@ import com.demo.reversi.view.Updatable;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -40,7 +45,7 @@ import java.net.URISyntaxException;
  */
 public class SettingsPage implements Updatable {
     public static final double ITEM_GAP = 20;
-    public static final double PREF_CONTAINER_HEIGHT = 100;
+    public static final double PREF_CONTAINER_HEIGHT = 40;
     public final GridPane root;
     public final SmoothishScrollPane scrollPane;
     public final GridPane contentWrapper;
@@ -118,8 +123,8 @@ public class SettingsPage implements Updatable {
             theme.saveTheme();
         });
         resetButton.setOnAction(ActionEvent -> {
-            refreshContent();
             theme.applyDefaultTheme();
+            refreshContent();
         });
     }
 
@@ -178,6 +183,9 @@ public class SettingsPage implements Updatable {
          * Grid Sound Source
          */
 
+        //Colors
+        addToContentWrapper(new TitleLabel("Colors", theme));
+
         {
             //Init Mode Color Settings
             TitledToggleSwitch toggleSwitch = new TitledToggleSwitch(theme, "Dark Mode Enabled", "Light Mode Enabled");
@@ -186,7 +194,7 @@ public class SettingsPage implements Updatable {
                 theme.setDarkMode(newValue);
             }));
 
-            contentWrapper.add(createItemContainer("Theme Color", toggleSwitch), 0, contentWrapper.getRowCount());
+            addToContentWrapper(createItemContainer("Theme Color", toggleSwitch));
 
         }
 
@@ -199,7 +207,7 @@ public class SettingsPage implements Updatable {
                 theme.themeColorPR().setValue(newValue);
             }));
 
-            contentWrapper.add(createItemContainer("Theme Color", cp), 0, contentWrapper.getRowCount());
+            addToContentWrapper(createItemContainer("Theme Color", cp));
         }
 
         {
@@ -210,7 +218,7 @@ public class SettingsPage implements Updatable {
                 theme.player1ChessColorPR().setValue(newValue);
             }));
 
-            contentWrapper.add(createItemContainer("Player 1 Chess Color", cp), 0, contentWrapper.getRowCount());
+            addToContentWrapper(createItemContainer("Player 1 Chess Color", cp));
         }
 
         {
@@ -221,7 +229,7 @@ public class SettingsPage implements Updatable {
                 theme.player2ChessColorPR().setValue(newValue);
             }));
 
-            contentWrapper.add(createItemContainer("Player 2 Chess Color", cp), 0, contentWrapper.getRowCount());
+            addToContentWrapper(createItemContainer("Player 2 Chess Color", cp));
         }
 
         {
@@ -232,7 +240,7 @@ public class SettingsPage implements Updatable {
                 theme.chessBoardColor1PR().setValue(newValue);
             }));
 
-            contentWrapper.add(createItemContainer("ChessBoard Color 1", cp), 0, contentWrapper.getRowCount());
+            addToContentWrapper(createItemContainer("ChessBoard Color 1", cp));
         }
 
         {
@@ -243,7 +251,7 @@ public class SettingsPage implements Updatable {
                 theme.chessBoardColor2PR().setValue(newValue);
             }));
 
-            contentWrapper.add(createItemContainer("ChessBoard Color 2", cp), 0, contentWrapper.getRowCount());
+            addToContentWrapper(createItemContainer("ChessBoard Color 2", cp));
         }
 
         {
@@ -254,8 +262,11 @@ public class SettingsPage implements Updatable {
                 theme.chessBoardGridColorPR().setValue(newValue);
             }));
 
-            contentWrapper.add(createItemContainer("Chess Grid Color", cp), 0, contentWrapper.getRowCount());
+            addToContentWrapper(createItemContainer("Chess Grid Color", cp));
         }
+
+        //Backgrounds
+        addToContentWrapper(new TitleLabel("Backgrounds", theme));
 
         {
             //Init Background Image Loader
@@ -265,7 +276,7 @@ public class SettingsPage implements Updatable {
                 File selectedFile = fileChooser.showOpenDialog(root.getScene().getWindow());
 
                 if (selectedFile != null) {
-                    theme.backPanePR().setValue(new Background(new BackgroundImage(new Image(selectedFile.getPath()),
+                    theme.backPanePR().setValue(new Background(new BackgroundImage(new Image(selectedFile.toURI().toString()),
                             BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                 } else {
                     Log0j.writeError("Image file is null. Cannot load background image.");
@@ -274,19 +285,19 @@ public class SettingsPage implements Updatable {
 
             //Init Background Pure Color Settings
             TitledToggleSwitch toggleSwitch = new TitledToggleSwitch(theme, "Theme Color Background", "Image Background");
-            toggleSwitch.switchedOnProperty().setValue(theme.modeSwitchPR().getValue());
             toggleSwitch.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
                 if (newValue) {
-                    theme.setBackPanePureColor(theme.themeColorPR().getValue());
+                    theme.bindToThemeColorBackground(theme.backPanePR());
                     loadButton.setDisable(true);
                 } else {
+                    theme.unbindBackPane();
                     theme.backPanePR().setValue(Theme.defaultBackPaneBKGND);
                     loadButton.setDisable(false);
                 }
             }));
 
-            contentWrapper.add(createItemContainer("Is background pure color?", toggleSwitch), 0, contentWrapper.getRowCount());
-            contentWrapper.add(createItemContainer("Background Image Source", loadButton), 0, contentWrapper.getRowCount());
+            addToContentWrapper(createItemContainer("Is background pure color?", toggleSwitch));
+            addToContentWrapper(createItemContainer("Background Image Source", loadButton));
         }
 
         {
@@ -298,14 +309,17 @@ public class SettingsPage implements Updatable {
                 File selectedFile = fileChooser.showOpenDialog(root.getScene().getWindow());
 
                 if (selectedFile != null) {
-                    theme.chessBoardBackgroundPR().setValue(new Background(new BackgroundImage(new Image(selectedFile.getPath()),
+                    theme.chessBoardBackgroundPR().setValue(new Background(new BackgroundImage(new Image(selectedFile.toURI().toString()),
                             BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                 } else {
                     Log0j.writeError("Image file is null. Cannot load ChessBoard image.");
                 }
             });
-            contentWrapper.add(createItemContainer("ChessBoard Image Source", loadButton), 0, contentWrapper.getRowCount());
+            addToContentWrapper(createItemContainer("ChessBoard Image Source", loadButton));
         }
+
+        //Playing
+        addToContentWrapper(new TitleLabel("In-game", theme));
 
         {
             //Init PlayerIcon Image Loader
@@ -316,37 +330,147 @@ public class SettingsPage implements Updatable {
                 File selectedFile = fileChooser.showOpenDialog(root.getScene().getWindow());
 
                 if (selectedFile != null) {
-                    theme.playerIconPR().setValue(new Image(selectedFile.getPath()));
+                    theme.playerIconPR().setValue(new Image(selectedFile.toURI().toString()));
                 } else {
                     Log0j.writeError("Image file is null. Cannot load PlayerIcon image.");
                 }
             });
-            contentWrapper.add(createItemContainer("Player Icon Image Source", loadButton), 0, contentWrapper.getRowCount());
+            addToContentWrapper(createItemContainer("Player Icon Image Source", loadButton));
+        }
+
+        //todo: Add font settings
+//        {
+//            ComboBox comboBox = new ComboBox();
+//            comboBox.backgroundProperty().bind(theme.backPanePR());
+//            addToContentWrapper(createItemContainer("Font Select", comboBox));
+//        }
+
+        //Audio Settings
+        addToContentWrapper(new TitleLabel("Audio", theme));
+
+        {
+            //Init MainView BGM Loader
+            MetroButton loadButton = new MetroButton("Load from File", theme);
+            loadButton.setOnAction(ActionEvent -> {
+                FileChooser fileChooser = createAudioFileChooser("Select MainView BGM");
+
+                File selectedFile = fileChooser.showOpenDialog(root.getScene().getWindow());
+
+                if (selectedFile != null) {
+                    theme.mainViewBGMSourcePR().setValue(selectedFile.toPath());
+                } else {
+                    Log0j.writeError("Audio file is null. Cannot load audio file.");
+                }
+            });
+            addToContentWrapper(createItemContainer("MainView BGM Source", loadButton));
         }
 
         {
-            
+            //Init PlayPage BGM Loader
+            MetroButton loadButton = new MetroButton("Load from File", theme);
+            loadButton.setOnAction(ActionEvent -> {
+                FileChooser fileChooser = createAudioFileChooser("Select PlayPage BGM");
+
+                File selectedFile = fileChooser.showOpenDialog(root.getScene().getWindow());
+
+                if (selectedFile != null) {
+                    theme.playPageBGMSourcePR().setValue(selectedFile.toPath());
+                } else {
+                    Log0j.writeError("Audio file is null. Cannot load audio file.");
+                }
+            });
+            addToContentWrapper(createItemContainer("PlayPage BGM Source", loadButton));
         }
+
+        {
+            //Init GamePage BGM Loader
+            MetroButton loadButton = new MetroButton("Load from File", theme);
+            loadButton.setOnAction(ActionEvent -> {
+                FileChooser fileChooser = createAudioFileChooser("Select GamePage BGM");
+
+                File selectedFile = fileChooser.showOpenDialog(root.getScene().getWindow());
+
+                if (selectedFile != null) {
+                    theme.gamePageBGMSourcePR().setValue(selectedFile.toPath());
+                } else {
+                    Log0j.writeError("Audio file is null. Cannot load audio file.");
+                }
+            });
+            addToContentWrapper(createItemContainer("GamePage BGM Source", loadButton));
+        }
+
+        {
+            //Init GameFinish BGM Loader
+            MetroButton loadButton = new MetroButton("Load from File", theme);
+            loadButton.setOnAction(ActionEvent -> {
+                FileChooser fileChooser = createAudioFileChooser("Select GameFinish BGM");
+
+                File selectedFile = fileChooser.showOpenDialog(root.getScene().getWindow());
+
+                if (selectedFile != null) {
+                    theme.gameFinishBGMSourcePR().setValue(selectedFile.toPath());
+                } else {
+                    Log0j.writeError("Audio file is null. Cannot load audio file.");
+                }
+            });
+            addToContentWrapper(createItemContainer("GameFinish BGM Source", loadButton));
+        }
+
+        {
+            //Init Chess Down Audio Loader
+            MetroButton loadButton = new MetroButton("Load from File", theme);
+            loadButton.setOnAction(ActionEvent -> {
+                FileChooser fileChooser = createAudioFileChooser("Select Chess Down Audio");
+
+                File selectedFile = fileChooser.showOpenDialog(root.getScene().getWindow());
+
+                if (selectedFile != null) {
+                    theme.chessDownSoundSourcePR().setValue(selectedFile.toPath());
+                } else {
+                    Log0j.writeError("Audio file is null. Cannot load audio file.");
+                }
+            });
+            addToContentWrapper(createItemContainer("Chess Down Audio", loadButton));
+        }
+
+        {
+            //Init Chess Up Audio Loader
+            MetroButton loadButton = new MetroButton("Load from File", theme);
+            loadButton.setOnAction(ActionEvent -> {
+                FileChooser fileChooser = createAudioFileChooser("Select Chess Up Audio");
+
+                File selectedFile = fileChooser.showOpenDialog(root.getScene().getWindow());
+
+                if (selectedFile != null) {
+                    theme.chessUpSoundSourcePR().setValue(selectedFile.toPath());
+                } else {
+                    Log0j.writeError("Audio file is null. Cannot load audio file.");
+                }
+            });
+            addToContentWrapper(createItemContainer("Chess Up Audio", loadButton));
+        }
+
+
+
+
     }
 
-    public HBox createItemContainer(String text, Node node) {
+    private HBox createItemContainer(String text, Node node) {
         HBox container = createItemBaseContainer();
-        Label label = createItemLabel(text);
+        TextLabel label = new TextLabel(text, theme);
         container.getChildren().addAll(label, node);
         return container;
     }
 
-    public HBox createItemBaseContainer() {
+    private HBox createItemBaseContainer() {
         HBox container = new HBox(ITEM_GAP);
         container.setPrefHeight(PREF_CONTAINER_HEIGHT);
         return container;
     }
 
-    public Label createItemLabel(String text) {
-        Label label = new Label(text);
-        label.fontProperty().bind(theme.textFontFamilyPR());
-        label.textFillProperty().bind(theme.textFontPaintPR());
-        return label;
+
+    private void addToContentWrapper(Node node) {
+        contentWrapper.add(node, 0, contentWrapper.getRowCount());
     }
 
     @Override
@@ -354,18 +478,24 @@ public class SettingsPage implements Updatable {
 
     }
 
-    private FileChooser createImageFileChooser(String title){
+    private FileChooser createImageFileChooser(String title) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);
 
-        try {
-            fileChooser.setInitialDirectory(new File(MainApp.class.getResource("themes/").toURI().toString()));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image File",
                 "*.bmp", "*.jpg", "*.jpeg", "*.png", "*.gif"));
+
+        return fileChooser;
+    }
+
+    private FileChooser createAudioFileChooser(String title) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(title);
+
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("MP3 File",
+                "*.mp3", "*.wav", "*.aac"));
 
         return fileChooser;
     }

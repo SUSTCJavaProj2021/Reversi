@@ -95,7 +95,7 @@ public class MetroButton extends Button {
         setOpacity(OPACITY_DEFAULT);
         initEvents();
 
-        setPrefSize(text.length() * (fontProperty().getValue().getSize() - 2) + 7, PREFERRED_HEIGHT);
+        setPrefSize(text.length() * (fontProperty().getValue().getSize() - 2) + 12, PREFERRED_HEIGHT);
         setMinWidth(Control.USE_PREF_SIZE);
         setMinHeight(Control.USE_PREF_SIZE);
         setTooltip(new Tooltip(text));

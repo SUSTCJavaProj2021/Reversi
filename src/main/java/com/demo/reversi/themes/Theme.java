@@ -48,6 +48,7 @@ public class Theme {
     public static final int DEFAULT_MAIN_WINDOW_PREF_HEIGHT = 800;
     public static final int DEFAULT_MAIN_WINDOW_MIN_WIDTH = 600;
     public static final int DEFAULT_MAIN_WINDOW_MIN_HEIGHT = 450;
+    public static final long DEFAULT_BGM_TRANS_TIME = 100;
 
 
     /**
@@ -433,6 +434,11 @@ public class Theme {
 
         modeRevColorPR.unbind();
 
+        unbindBackPane();
+        unbindFrontPane();
+        unbindBGMVolume();
+        unbindEffectVolume();
+
         titleFontPaintPR.unbind();
         infoTitleFontPaintPR.unbind();
         menuFontPaintPR.unbind();
@@ -492,14 +498,6 @@ public class Theme {
         return bgmPlayer;
     }
 
-    public ObjectProperty<Path> getMainViewBgmSource() {
-        return mainViewBGMSourcePR;
-    }
-
-    public ObjectProperty<Path> getGamePageBGMSource() {
-        return gamePageBGMSourcePR;
-    }
-
     public int getGameCnt() {
         return gameCnt;
     }
@@ -507,7 +505,7 @@ public class Theme {
     public void registerGameBGM() {
         if (gameCnt == 0) {
             Platform.runLater(() -> {
-                bgmPlayerInterrupt(gamePageBGMSourcePR.getValue(), 400);
+                bgmPlayerInterrupt(gamePageBGMSourcePR.getValue(), DEFAULT_BGM_TRANS_TIME * 4);
             });
         }
         gameCnt++;
@@ -517,7 +515,7 @@ public class Theme {
         gameCnt--;
         if (gameCnt == 0) {
             Platform.runLater(() -> {
-                bgmPlayerResumeFromInterrupt(100);
+                bgmPlayerResumeFromInterrupt(DEFAULT_BGM_TRANS_TIME);
             });
         }
     }
@@ -525,7 +523,7 @@ public class Theme {
     public void registerPlayPageBGM() {
         if (gameCnt == 0) {
             Platform.runLater(() -> {
-                bgmPlayerInterrupt(playPageBGMSourcePR.getValue(), 100);
+                bgmPlayerInterrupt(playPageBGMSourcePR.getValue(), DEFAULT_BGM_TRANS_TIME);
             });
         }
     }
@@ -533,7 +531,7 @@ public class Theme {
     public void unregisterPlayPageBGM() {
         if (gameCnt == 0) {
             Platform.runLater(() -> {
-                bgmPlayerResumeFromInterrupt(100);
+                bgmPlayerResumeFromInterrupt(DEFAULT_BGM_TRANS_TIME);
             });
         }
     }
@@ -543,7 +541,7 @@ public class Theme {
     }
 
     public void bgmPlayerResume() {
-        fadeInBGM(bgmPlayer);
+        fadeInBGM(bgmPlayer, DEFAULT_BGM_TRANS_TIME);
     }
 
     public void bgmPlayerInterrupt(Path BGMSource, long delayDurationMillis) {
@@ -559,12 +557,7 @@ public class Theme {
         bgmPlayer = new MediaPlayer(new Media(BGMSource.toUri().toString()));
         bgmPlayer.setVolume(bgmVolumePR.getValue());
         bgmPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-        try {
-            Thread.sleep(delayDurationMillis);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        fadeInBGM(bgmPlayer);
+        fadeInBGM(bgmPlayer, delayDurationMillis);
     }
 
     /**
@@ -578,28 +571,18 @@ public class Theme {
             Platform.runLater(bgmPlayer.volumeProperty()::unbind);
 
             Timeline fadeOutTimeline = new Timeline(
-                    new KeyFrame(Duration.millis(100),
+                    new KeyFrame(Duration.millis(delayDurationMillis),
                             new KeyValue(bgmPlayer.volumeProperty(), 0)));
 
             fadeOutTimeline.setOnFinished(ActionEvent1 -> {
                 bgmPlayer.pause();
-                try {
-                    Thread.sleep(delayDurationMillis);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    Log0j.writeInfo("BGM delaying failed. Normally this shouldn't happen.");
-                }
                 bgmPlayer = bgmStack.pop();
                 bgmPlayer.setVolume(0);
-                fadeInBGM(bgmPlayer);
+                fadeInBGM(bgmPlayer, delayDurationMillis);
             });
 
             Platform.runLater(fadeOutTimeline::play);
         }
-    }
-
-    public ObjectProperty<Path> gameFinishBGMSourcePR() {
-        return gameFinishBGMSourcePR;
     }
 
     /**
@@ -612,28 +595,22 @@ public class Theme {
         Platform.runLater(bgmPlayer.volumeProperty()::unbind);
 
         Timeline fadeOutTimeline = new Timeline(
-                new KeyFrame(Duration.millis(100),
+                new KeyFrame(Duration.millis(delayDurationMillis / 2),
                         new KeyValue(bgmPlayer.volumeProperty(), 0)));
 
         fadeOutTimeline.setOnFinished(ActionEvent1 -> {
             bgmPlayer.stop();
-            try {
-                Thread.sleep(delayDurationMillis);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                Log0j.writeInfo("BGM delaying failed. Normally this shouldn't happen.");
-            }
             bgmPlayer = new MediaPlayer(new Media(path.toUri().toString()));
             bgmPlayer.setCycleCount(MediaPlayer.INDEFINITE);
             bgmPlayer.setVolume(0);
-            fadeInBGM(bgmPlayer);
+            fadeInBGM(bgmPlayer, delayDurationMillis / 2);
         });
         Platform.runLater(fadeOutTimeline::play);
     }
 
-    public void fadeInBGM(MediaPlayer bgmPlayer) {
+    public void fadeInBGM(MediaPlayer bgmPlayer, long delayDurationMillis) {
         Timeline fadeInTimeline = new Timeline(
-                new KeyFrame(Duration.millis(300),
+                new KeyFrame(Duration.millis(delayDurationMillis),
                         new KeyValue(bgmPlayer.volumeProperty(), bgmVolumePR.getValue())));
         fadeInTimeline.setOnFinished(ActionEvent2 -> {
             bgmPlayer.volumeProperty().bind(bgmVolumePR);
@@ -642,6 +619,23 @@ public class Theme {
             fadeInTimeline.play();
             bgmPlayer.play();
         });
+    }
+
+
+    public ObjectProperty<Path> mainViewBGMSourcePR() {
+        return mainViewBGMSourcePR;
+    }
+
+    public ObjectProperty<Path> playPageBGMSourcePR(){
+        return playPageBGMSourcePR;
+    }
+
+    public ObjectProperty<Path> gamePageBGMSourcePR() {
+        return gamePageBGMSourcePR;
+    }
+
+    public ObjectProperty<Path> gameFinishBGMSourcePR() {
+        return gameFinishBGMSourcePR;
     }
 
 
