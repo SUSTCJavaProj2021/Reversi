@@ -2,57 +2,106 @@ package com.demo.reversi.component.switches;
 
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
+import javafx.animation.Interpolator;
+import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.paint.Paint;
+import javafx.geometry.Insets;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.util.Duration;
 
 public class ToggleSwitch extends HBox implements Updatable {
-    private final double DEFAULT_WIDTH = 60;
-    private final double DEFAULT_HEIGHT = 30;
-    private final double CORNER_RADII = 15;
-    private final double INDICATOR_RADII = 10;
+    public static final double TRANS_TIME_MILLIS = 100;
+    public static final double DEFAULT_WIDTH = 40;
+    public static final double DEFAULT_HEIGHT = 20;
+    public static final double CORNER_RADII = 10;
+    public static final double INDICATOR_RADII = 6;
+    public static final double BORDER_WIDTH = 1;
 
     private final Circle indicator;
 
 
-    private SimpleBooleanProperty switchedOn;
-    public SimpleBooleanProperty switchedOnProperty(){
+    private final SimpleBooleanProperty switchedOn;
+
+    public SimpleBooleanProperty switchedOnProperty() {
         return switchedOn;
     }
 
     private Theme theme;
 
-    private void init(){
-        switchedOn.addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+    public ToggleSwitch(Theme theme) {
+        this.theme = theme;
+        switchedOn = new SimpleBooleanProperty(false);
 
-            }
-        });
-        switchedOn.setValue(false);
+        setMinWidth(DEFAULT_WIDTH);
+        setMaxWidth(DEFAULT_WIDTH);
+        setMinHeight(DEFAULT_HEIGHT);
+        setMaxHeight(DEFAULT_HEIGHT);
+
+        indicator = new Circle(INDICATOR_RADII);
+        getChildren().add(indicator);
+        HBox.setMargin(indicator, new Insets(CORNER_RADII - INDICATOR_RADII - BORDER_WIDTH));
+//        indicator.setCenterX(15);
+//        indicator.setCenterY(15);
+
+        init();
     }
 
-    public void update(){
+    private void init() {
+        switchedOn.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                TranslateTransition transition = new TranslateTransition(Duration.millis(TRANS_TIME_MILLIS), indicator);
+                transition.setByX(DEFAULT_WIDTH - 2 * CORNER_RADII);
+                transition.setInterpolator(Interpolator.EASE_BOTH);
+                Platform.runLater(transition::play);
+            } else {
+                TranslateTransition transition = new TranslateTransition(Duration.millis(TRANS_TIME_MILLIS), indicator);
+                transition.setByX(-DEFAULT_WIDTH + 2 * CORNER_RADII);
+                transition.setInterpolator(Interpolator.EASE_BOTH);
+                Platform.runLater(transition::play);
+            }
+        });
+
+        indicator.fillProperty().bind(Bindings.createObjectBinding(() -> {
+            if (switchedOn.getValue()) {
+                return theme.modeColorPR().getValue();
+            } else {
+                return theme.modeRevColorPR().getValue();
+            }
+        }, switchedOn));
+
+//        setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
+
+        backgroundProperty().bind(Bindings.createObjectBinding(() -> {
+            if (switchedOn.getValue()) {
+                return new Background(new BackgroundFill(theme.themeColorPR().getValue(), new CornerRadii(CORNER_RADII), null));
+            } else {
+                return null;
+            }
+        }, switchedOn));
+
+        borderProperty().bind(Bindings.createObjectBinding(() -> {
+            if (switchedOn.getValue()) {
+                return new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.SOLID, new CornerRadii(CORNER_RADII), new BorderWidths(BORDER_WIDTH)));
+            } else {
+                return new Border(new BorderStroke(theme.modeRevColorPR().getValue(), BorderStrokeStyle.SOLID, new CornerRadii(CORNER_RADII), new BorderWidths(BORDER_WIDTH)));
+            }
+        }, switchedOn));
+
+
+        setOnMouseClicked(MouseEvent -> {
+            switchedOn.setValue(!switchedOn.getValue());
+        });
+    }
+
+    public void update() {
         updateIndicator();
     }
 
-    private void updateIndicator(){
-        if(switchedOn.getValue()){
-
-        }
-        else{
-
-        }
-    }
-
-    public ToggleSwitch(Theme theme){
-        this.theme = theme;
-        indicator = new Circle(INDICATOR_RADII);
-        init();
+    private void updateIndicator() {
     }
 
 }

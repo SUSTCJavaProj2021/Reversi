@@ -12,8 +12,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
-import java.util.Stack;
-
 public class BoardGridComponent extends StackPane {
     public static final double CORNER_RADII = 0;
 
@@ -89,20 +87,26 @@ public class BoardGridComponent extends StackPane {
     }
 
     public void setDefault() {
-        Platform.runLater(() -> viewCover.getChildren().clear());
-        viewCover.setBackground(null);
+        Platform.runLater(() -> {
+            viewCover.getChildren().clear();
+            viewCover.setBackground(null);
+        });
     }
 
     public void setPreferred() {
         Circle circle = new Circle();
         circle.radiusProperty().bind(widthProperty().multiply(0.2));
-        circle.fillProperty().bind(theme.modePaintPR());
-        viewCover.getChildren().add(circle);
+        circle.fillProperty().bind(theme.modeColorPR());
+        Platform.runLater(() -> {
+            viewCover.getChildren().add(circle);
+        });
 //        viewCover.setBackground(new Background(new BackgroundFill(Color.rgb(5, 245, 240, 0.35), null, null)));
     }
 
     public void setBanned() {
-        viewCover.setBackground(new Background(new BackgroundFill(Color.rgb(120, 120, 120, 0.5), null, null)));
+        Platform.runLater(() -> {
+            viewCover.setBackground(new Background(new BackgroundFill(Color.rgb(120, 120, 120, 0.5), null, null)));
+        });
     }
 
 }

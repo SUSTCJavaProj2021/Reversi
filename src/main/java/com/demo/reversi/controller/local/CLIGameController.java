@@ -34,12 +34,19 @@ public class CLIGameController {
 
     }
 
-    public GridStatus getBlockStatus(int rowIndex, int colIndex) {
+    public GridStatus getGridStatus(int rowIndex, int colIndex) {
         if (board[rowIndex][colIndex] == 1) {
             return GridStatus.PLAYER_1;
+
         } else if (board[rowIndex][colIndex] == -1) {
             return GridStatus.PLAYER_2;
+
         } else {
+
+            if (checkMove(rowIndex, colIndex) == MOVE_VALID) {
+                return GridStatus.PREFERRED;
+            }
+
             return GridStatus.UNOCCUPIED;
         }
     }
@@ -206,11 +213,11 @@ public class CLIGameController {
                 }
             }
         }
-        if(player1Cnt>player2Cnt){
+        if (player1Cnt > player2Cnt) {
             return GameStatus.WIN_PLAYER1;
-        }else if(player1Cnt<player2Cnt){
+        } else if (player1Cnt < player2Cnt) {
             return GameStatus.WIN_PLAYER2;
-        }else{
+        } else {
             return GameStatus.TIED;
         }
     }

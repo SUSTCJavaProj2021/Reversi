@@ -49,7 +49,7 @@ public class MetroButton extends Button {
         this.theme = theme;
 
         fontProperty().bind(theme.menuFontFamilyPR());
-        textFillProperty().bind(theme.modeRevPaintPR());
+        textFillProperty().bind(theme.modeRevColorPR());
 
         //Initialize default background
         if (theme.modeSwitchPR().getValue()) {

@@ -39,9 +39,9 @@ public class GamePageLocal implements UpdatableGame {
     /**
      * This constructor first tries to initialize the overall layout, then it tries to load the controller.
      *
-     * @param gameSystem     specific game system that allows overall operations.
+     * @param gameSystem specific game system that allows overall operations.
      * @param controller the required GameController
-     * @param theme          Your preferred theme
+     * @param theme      Your preferred theme
      */
     public GamePageLocal(GameSystemLayer gameSystem, GameControllerLayer controller, Theme theme) {
         this.theme = theme;
@@ -211,7 +211,7 @@ public class GamePageLocal implements UpdatableGame {
 
                             //Show the winning prompt
 
-                            switch(controller.getGameStatus()){
+                            switch (controller.getGameStatus()) {
                                 case WIN_PLAYER1 -> {
                                     player1Info.setFinished(InfoPane.Status.WINNER);
                                     player2Info.setFinished(InfoPane.Status.LOSER);
@@ -227,9 +227,9 @@ public class GamePageLocal implements UpdatableGame {
                             }
                             //todo: modify this
 
-                            Alert alert = PromptLoader.getGameFinishAlert(theme);
-                            alert.setOnCloseRequest(ActionEvent->{
-                                Platform.runLater(()->theme.bgmPlayerResumeFromInterrupt(100));
+                            Alert alert = PromptLoader.getGameFinishAlert(controller, theme);
+                            alert.setOnCloseRequest(ActionEvent -> {
+                                Platform.runLater(() -> theme.bgmPlayerResumeFromInterrupt(100));
                             });
                             alert.show();
 

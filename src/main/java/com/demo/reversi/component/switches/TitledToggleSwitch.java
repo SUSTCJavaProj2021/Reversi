@@ -1,4 +1,55 @@
 package com.demo.reversi.component.switches;
 
-public class TitledToggleSwitch {
+import com.demo.reversi.themes.Theme;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+
+public class TitledToggleSwitch extends HBox {
+    public static final double SPACING = 15;
+    public final ToggleSwitch toggleSwitch;
+    public final Label label;
+
+    private final Theme theme;
+
+    public TitledToggleSwitch(Theme theme, String onText, String offText) {
+        super(SPACING);
+        this.theme = theme;
+
+        toggleSwitch = new ToggleSwitch(theme);
+
+        label = new Label();
+        label.fontProperty().bind(theme.textFontFamilyPR());
+        label.textFillProperty().bind(theme.textFontPaintPR());
+
+        getChildren().add(toggleSwitch);
+        getChildren().add(label);
+
+        initRelations(onText, offText);
+    }
+
+
+    private void initRelations(String onText, String offText) {
+        if (onText == null) {
+            onText = "On";
+        }
+        if (offText == null) {
+            offText = "Off";
+        }
+        final String onText1 = onText;
+        final String offText1 = offText;
+        label.textProperty().bind(Bindings.createObjectBinding(() -> {
+            if (toggleSwitch.switchedOnProperty().getValue()) {
+                return onText1;
+            } else {
+                return offText1;
+            }
+        }, toggleSwitch.switchedOnProperty()));
+    }
+
+    public BooleanProperty switchedOnProperty() {
+        return toggleSwitch.switchedOnProperty();
+    }
+
 }

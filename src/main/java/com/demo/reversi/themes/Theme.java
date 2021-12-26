@@ -25,6 +25,7 @@ import org.json.JSONObject;
 
 
 import java.io.*;
+import java.net.HttpCookie;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -183,8 +184,7 @@ public class Theme {
      * Theme colors & paints
      * Theme Paint is by default bound to Theme Color
      */
-    public static final Color defaultThemeColor = Color.rgb(29, 31, 44);
-    public static final Paint defaultThemePaint = Color.rgb(29, 31, 44);
+    public static final Color defaultThemeColor = Color.rgb(107, 117, 171);
 
     /**
      * Fonts: Title, Menu, Text
@@ -203,10 +203,10 @@ public class Theme {
      */
     public static final Color defaultPlayerChessColor1 = Color.BLACK;
     public static final Color defaultPlayerChessColor2 = Color.WHITE;
-    public static final Paint defaultChessBoardPaint1 = Color.rgb(29, 31, 44);
-    public static final Paint defaultChessBoardPaint2 = Color.rgb(55, 58, 84);
-    public static final Paint defaultChessBoardGridPaint = Color.rgb(255, 255, 255, 0.50);
-    public static final Background defaultChessBoardBackground = new Background(new BackgroundFill(Color.TRANSPARENT, new CornerRadii(DEFAULT_CORNER_RADII), null));
+    public static final Color defaultChessBoardColor1 = Color.rgb(29, 31, 44);
+    public static final Color defaultChessBoardColor2 = Color.rgb(55, 58, 84);
+    public static final Color defaultChessBoardGridColor = Color.rgb(255, 255, 255, 0.50);
+    public static final Background defaultChessBoardBackground = null;
 
     /**
      * Players
@@ -260,9 +260,6 @@ public class Theme {
     public final DoubleProperty bgmVolumePR;
     public final DoubleProperty effectVolumePR;
 
-    //Audio File Related
-    public final BooleanProperty bgmSourceMoved;
-
 
     //Theme related
     public final ObjectProperty<Background> backPaneBackgroundPR;
@@ -278,7 +275,6 @@ public class Theme {
     public final ObjectProperty<Color> modeRevColorPR;
 
     public final ObjectProperty<Color> themeColorPR;
-    public final ObjectProperty<Paint> themePaintPR;
 
     public final ObjectProperty<Font> titleFontFamilyPR;
     public final ObjectProperty<Paint> titleFontPaintPR;
@@ -295,9 +291,9 @@ public class Theme {
     //Chessboard Color
     public final ObjectProperty<Color> player1ChessColorPR;
     public final ObjectProperty<Color> player2ChessColorPR;
-    public final ObjectProperty<Paint> chessBoardPaintPR1;
-    public final ObjectProperty<Paint> chessBoardPaintPR2;
-    public final ObjectProperty<Paint> chessBoardGridPaintPR;
+    public final ObjectProperty<Color> chessBoardColor1PR;
+    public final ObjectProperty<Color> chessBoardColor2PR;
+    public final ObjectProperty<Color> chessBoardGridColorPR;
     public final ObjectProperty<Background> chessBoardBackgroundPR;
 
     public final ObjectProperty<Image> playerIconPR;
@@ -324,8 +320,6 @@ public class Theme {
         gridSoundSourcePR = new SimpleObjectProperty<>();
         effectVolumePR = new SimpleDoubleProperty();
 
-        bgmSourceMoved = new SimpleBooleanProperty();
-
         backPaneBackgroundPR = new SimpleObjectProperty<>();
         frontPaneBackgroundPR = new SimpleObjectProperty<>();
 
@@ -334,7 +328,6 @@ public class Theme {
         modeRevColorPR = new SimpleObjectProperty<>();
 
         themeColorPR = new SimpleObjectProperty<>();
-        themePaintPR = new SimpleObjectProperty<>();
         titleFontFamilyPR = new SimpleObjectProperty<>();
         titleFontPaintPR = new SimpleObjectProperty<>();
         infoTitleFontFamilyPR = new SimpleObjectProperty<>();
@@ -346,9 +339,9 @@ public class Theme {
 
         player1ChessColorPR = new SimpleObjectProperty<>();
         player2ChessColorPR = new SimpleObjectProperty<>();
-        chessBoardPaintPR1 = new SimpleObjectProperty<>();
-        chessBoardPaintPR2 = new SimpleObjectProperty<>();
-        chessBoardGridPaintPR = new SimpleObjectProperty<>();
+        chessBoardColor1PR = new SimpleObjectProperty<>();
+        chessBoardColor2PR = new SimpleObjectProperty<>();
+        chessBoardGridColorPR = new SimpleObjectProperty<>();
         chessBoardBackgroundPR = new SimpleObjectProperty<>();
 
         playerIconPR = new SimpleObjectProperty<>();
@@ -371,12 +364,8 @@ public class Theme {
         try {
             Media media;
             //todo: modify this
-            if (!bgmSourceMoved.getValue()) {
-                media = new Media(mainViewBGMSourcePR.getValue().toUri().toString());
-            } else {
-                Log0j.writeInfo("Default BGM Source initialized on path: " + defaultMainViewBGMSource.toUri().toString());
-                media = new Media(defaultMainViewBGMSource.toUri().toString());
-            }
+            media = new Media(mainViewBGMSourcePR.getValue().toUri().toString());
+
             bgmPlayer = new MediaPlayer(media);
             bgmPlayer.setCycleCount(MediaPlayer.INDEFINITE);
             bgmPlayer.volumeProperty().bind(bgmVolumePR);
@@ -405,8 +394,6 @@ public class Theme {
         chessUpSoundSourcePR.setValue(defaultChessUpSoundSource);
         gridSoundSourcePR.setValue(defaultGridSoundSource);
 
-        bgmSourceMoved.setValue(false);
-
         backPaneBackgroundPR.setValue(defaultBackPaneBKGND);
         frontPaneBackgroundPR.setValue(defaultFrontPaneBKGND);
 
@@ -415,7 +402,6 @@ public class Theme {
         modeRevColorPR.setValue(defaultLightModeColor);
 
         themeColorPR.setValue(defaultThemeColor);
-        themePaintPR.setValue(defaultThemePaint);
 
         titleFontFamilyPR.setValue(defaultTitleFontFamily);
         titleFontPaintPR.setValue(defaultTitleFontPaint);
@@ -428,9 +414,9 @@ public class Theme {
 
         player1ChessColorPR.setValue(defaultPlayerChessColor1);
         player2ChessColorPR.setValue(defaultPlayerChessColor2);
-        chessBoardPaintPR1.setValue(defaultChessBoardPaint1);
-        chessBoardPaintPR2.setValue(defaultChessBoardPaint2);
-        chessBoardGridPaintPR.setValue(defaultChessBoardGridPaint);
+        chessBoardColor1PR.setValue(defaultChessBoardColor1);
+        chessBoardColor2PR.setValue(defaultChessBoardColor2);
+        chessBoardGridColorPR.setValue(defaultChessBoardGridColor);
         chessBoardBackgroundPR.setValue(defaultChessBoardBackground);
 
         playerIconPR.setValue(defaultPlayerIcon);
@@ -453,7 +439,6 @@ public class Theme {
         textFontPaintPR.unbind();
 
         //Bind theme paint to theme color
-        themePaintPR.unbind();
 
         Log0j.writeInfo("Relation removed.");
     }
@@ -481,10 +466,6 @@ public class Theme {
         infoTitleFontPaintPR.bind(modeRevColorPR);
         menuFontPaintPR.bind(modeRevColorPR);
         textFontPaintPR.bind(modeRevColorPR);
-
-
-        //Bind theme paint to theme color
-        themePaintPR.bind(Bindings.createObjectBinding(themeColorPR::getValue, themeColorPR));
 
 
         Log0j.writeInfo("Relation initialized.");
@@ -696,6 +677,10 @@ public class Theme {
         effectVolumePR.unbind();
     }
 
+    public void setBackPanePureColor(Color color) {
+        backPanePR().setValue(new Background(new BackgroundFill(color, null, null)));
+    }
+
     public ObjectProperty<Background> backPanePR() {
         return backPaneBackgroundPR;
     }
@@ -720,25 +705,29 @@ public class Theme {
         frontPaneBackgroundPR.unbind();
     }
 
+    public void setDarkMode(boolean isOn) {
+        modeSwitchPR.setValue(isOn);
+    }
+
     public BooleanProperty modeSwitchPR() {
         return modeSwitchPR;
     }
 
-    public ObjectProperty<Color> modePaintPR() {
+    public ObjectProperty<Color> modeColorPR() {
         return modeColorPR;
     }
 
-    public ObjectProperty<Color> modeRevPaintPR() {
+    public ObjectProperty<Color> modeRevColorPR() {
         return modeRevColorPR;
     }
 
-    public void bindToModePaintBackground(ObjectProperty<Background> background) {
+    public void bindToModeColorBackground(ObjectProperty<Background> background) {
         background.bind(Bindings.createObjectBinding(() -> {
             return new Background(new BackgroundFill(modeColorPR.getValue(), null, null));
         }, modeSwitchPR));
     }
 
-    public void bindToModeRevPaintBackground(ObjectProperty<Background> background) {
+    public void bindToModeRevColorBackground(ObjectProperty<Background> background) {
         background.bind(Bindings.createObjectBinding(() -> {
             return new Background(new BackgroundFill(modeRevColorPR.getValue(), null, null));
         }, modeSwitchPR));
@@ -748,14 +737,10 @@ public class Theme {
         return themeColorPR;
     }
 
-    public ObjectProperty<Paint> themePaintPR() {
-        return themePaintPR;
-    }
-
-    public void bindToPaintBackground(ObjectProperty<Background> background) {
+    public void bindToThemeColorBackground(ObjectProperty<Background> background) {
         background.bind(Bindings.createObjectBinding(() -> {
-            return new Background(new BackgroundFill(themePaintPR.getValue(), null, null));
-        }, themePaintPR));
+            return new Background(new BackgroundFill(themeColorPR.getValue(), null, null));
+        }, themeColorPR));
     }
 
     public ObjectProperty<Font> titleFontFamilyPR() {
@@ -792,22 +777,38 @@ public class Theme {
         return textFontPaintPR;
     }
 
-    public void bindToChessBoardPaint1(ObjectProperty<Background> background) {
-        background.bind(Bindings.createObjectBinding(() -> {
-            return new Background(new BackgroundFill(chessBoardPaintPR1.getValue(), null, null));
-        }, chessBoardPaintPR1));
+    public ObjectProperty<Color> chessBoardColor1PR() {
+        return chessBoardColor1PR;
     }
 
-    public void bindToChessBoardPaint2(ObjectProperty<Background> background) {
-        background.bind(Bindings.createObjectBinding(() -> {
-            return new Background(new BackgroundFill(chessBoardPaintPR2.getValue(), null, null));
-        }, chessBoardPaintPR2));
+    public ObjectProperty<Color> chessBoardColor2PR() {
+        return chessBoardColor2PR;
     }
 
-    public void bindToBorderPaint(ObjectProperty<Border> borderProperty) {
+    public ObjectProperty<Color> chessBoardGridColorPR() {
+        return chessBoardGridColorPR;
+    }
+
+    public void bindToChessBoardColor1(ObjectProperty<Background> background) {
+        background.bind(Bindings.createObjectBinding(() -> {
+            return new Background(new BackgroundFill(chessBoardColor1PR.getValue(), null, null));
+        }, chessBoardColor1PR));
+    }
+
+    public void bindToChessBoardColor2(ObjectProperty<Background> background) {
+        background.bind(Bindings.createObjectBinding(() -> {
+            return new Background(new BackgroundFill(chessBoardColor2PR.getValue(), null, null));
+        }, chessBoardColor2PR));
+    }
+
+    public void bindToBorderColor(ObjectProperty<Border> borderProperty) {
         borderProperty.bind(Bindings.createObjectBinding(() -> {
-            return new Border(new BorderStroke(chessBoardGridPaintPR.getValue(), BorderStrokeStyle.SOLID, null, BorderWidths.DEFAULT));
-        }, chessBoardGridPaintPR));
+            return new Border(new BorderStroke(chessBoardGridColorPR.getValue(), BorderStrokeStyle.SOLID, null, BorderWidths.DEFAULT));
+        }, chessBoardGridColorPR));
+    }
+
+    public ObjectProperty<Background> chessBoardBackgroundPR() {
+        return chessBoardBackgroundPR;
     }
 
     public ObjectProperty<Image> playerIconPR() {
@@ -872,5 +873,4 @@ public class Theme {
 
         Log0j.writeInfo("Theme saved.");
     }
-
 }

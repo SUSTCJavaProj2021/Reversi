@@ -8,7 +8,6 @@ import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -137,7 +136,7 @@ public class SimpleGameController implements GameControllerLayer {
     }
 
     public GridStatus getGridStatus(int rowIndex, int colIndex) {
-        return controller.getBlockStatus(rowIndex, colIndex);
+        return controller.getGridStatus(rowIndex, colIndex);
     }
 
     @Override

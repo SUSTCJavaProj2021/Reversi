@@ -5,7 +5,6 @@ import com.demo.reversi.controller.GameControllerLayer;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.DoubleProperty;
@@ -69,6 +68,7 @@ public class ChessBoard extends HBox implements Updatable {
         this.rowSize = 8;
         this.colSize = 8;
         grid = new GridPane();
+        backgroundProperty().bind(theme.chessBoardBackgroundPR());
 
         if (prefBoardSize <= 0) {
             boardSize = DEFAULT_BOARD_MIN_SIZE;
@@ -128,11 +128,11 @@ public class ChessBoard extends HBox implements Updatable {
                 gridBases[row][col] = new BoardGridComponent(theme);
                 gridBases[row][col].setMinHeight(cellMinSize);
                 gridBases[row][col].setMinWidth(cellMinSize);
-                theme.bindToBorderPaint(gridBases[row][col].borderProperty());
+                theme.bindToBorderColor(gridBases[row][col].borderProperty());
                 if ((row + col) % 2 == 0) {
-                    theme.bindToChessBoardPaint1(gridBases[row][col].backgroundProperty());
+                    theme.bindToChessBoardColor1(gridBases[row][col].backgroundProperty());
                 } else {
-                    theme.bindToChessBoardPaint2(gridBases[row][col].backgroundProperty());
+                    theme.bindToChessBoardColor2(gridBases[row][col].backgroundProperty());
                 }
 
                 grid.add(gridBases[row][col], col, row);
@@ -205,7 +205,7 @@ public class ChessBoard extends HBox implements Updatable {
             return;
         }
 
-        /**
+        /*
          * Set the current chess
          */
         GridStatus gridStatus = controller.getGridStatus(row, col);
@@ -230,6 +230,9 @@ public class ChessBoard extends HBox implements Updatable {
                 cnt++;
             }
         }
+        /*
+         * Use the ExecutorService to run parallel animations.
+         */
         ExecutorService es = Executors.newFixedThreadPool(8);
         new Thread(() -> {
             try {

@@ -1,6 +1,7 @@
 package com.demo.reversi.view.prompts;
 
 import com.demo.reversi.component.TitleLabel;
+import com.demo.reversi.controller.GameControllerLayer;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.gamepages.GameInfo;
@@ -15,13 +16,49 @@ import javafx.scene.layout.Priority;
 
 public class PromptLoader {
 
-    public static Alert getGameFinishAlert(Theme theme) {
+    public static Alert getGameFinishAlert(GameControllerLayer controller, Theme theme) {
         Alert alert = new Alert(Alert.AlertType.NONE);
+        alert.setTitle("Game Result");
+
         DialogPane dialogPane = alert.getDialogPane();
         dialogPane.getButtonTypes().add(ButtonType.OK);
 
+        dialogPane.backgroundProperty().bind(theme.backPanePR());
+
+        GridPane gridPane = new GridPane();
+        dialogPane.setContent(gridPane);
+        gridPane.add(new TitleLabel("Current Game has finished!", theme), 0, 0);
+
+        Separator separator1 = new Separator(Orientation.HORIZONTAL);
+        separator1.setOpacity(0);
+        gridPane.add(separator1, 0, 1);
+
+        String res = "";
+        switch (controller.getGameStatus()) {
+            case TIED -> res = "Two players have tied. You are evenly powerful.";
+            case WIN_PLAYER1 -> res = "Congratulations for Player " + controller.getPlayer1().nameProperty().getValue()
+                    + " for his extraordinary performance during the entire game.";
+            case WIN_PLAYER2 -> res = "Congratulations for Player " + controller.getPlayer2().nameProperty().getValue()
+                    + " for his extraordinary performance during the entire game.";
+            default -> res = "This could be a result test, or debugging issue.";
+        }
+        Label indicatorLabel = new Label(res);
+        indicatorLabel.setWrapText(true);
+        indicatorLabel.fontProperty().bind(theme.textFontFamilyPR());
+        indicatorLabel.textFillProperty().bind(theme.textFontPaintPR());
+        gridPane.add(indicatorLabel, 0, 2);
+
+        Separator separator2 = new Separator(Orientation.HORIZONTAL);
+        separator2.setOpacity(0);
+        gridPane.add(separator2, 0, 3);
+
+        Label label = new Label("Go back to see more details.");
+        label.fontProperty().bind(theme.textFontFamilyPR());
+        label.textFillProperty().bind(theme.textFontPaintPR());
+        gridPane.add(label, 0, 4);
+
+
         //todo: optimize this interface
-        alert.setContentText("WDNMD!");
         return alert;
     }
 
@@ -33,6 +70,19 @@ public class PromptLoader {
         //Initialize layout
         DialogPane dialogPane = gameInfoDialog.getDialogPane();
         dialogPane.getButtonTypes().addAll(ButtonType.FINISH, ButtonType.CANCEL);
+
+        dialogPane.backgroundProperty().bind(theme.backPanePR());
+
+        GridPane gridPane = new GridPane();
+        dialogPane.setContent(gridPane);
+
+        TitleLabel titleLabel = new TitleLabel("Provide the required info to complete the game setup.", theme);
+        titleLabel.setWrapText(true);
+        gridPane.add(titleLabel, 0, 0, 2, 1);
+
+        Separator separator = new Separator(Orientation.HORIZONTAL);
+        separator.setOpacity(0);
+        gridPane.add(separator, 0, 1, 2, 1);
 
         TextField[] textFields = new TextField[4];
         for (int i = 0; i < 4; i++) {
@@ -54,15 +104,7 @@ public class PromptLoader {
         labels[1].setText("Player 2 Name: ");
         labels[2].setText("Row size: (Integer)");
         labels[3].setText("Column Size: (Integer)");
-        dialogPane.backgroundProperty().bind(theme.backPanePR());
 
-        GridPane gridPane = new GridPane();
-        TitleLabel titleLabel = new TitleLabel("Provide the required info to complete the game setup.", theme);
-        titleLabel.setWrapText(true);
-        gridPane.add(titleLabel, 0, 0, 2, 1);
-        Separator separator = new Separator(Orientation.HORIZONTAL);
-        separator.setOpacity(0);
-        gridPane.add(separator, 0, 1, 2, 1);
 
         for (int i = 0; i < 4; i++) {
             gridPane.add(labels[i], 0, gridPane.getRowCount());
@@ -89,7 +131,6 @@ public class PromptLoader {
 
 
         //Set result format
-        dialogPane.setContent(gridPane);
         gameInfoDialog.setResultConverter((ButtonType buttonType) -> {
             if (buttonType == ButtonType.FINISH) {
                 return new GameInfo(textFields[0].getText(), textFields[1].getText(), Integer.parseInt(textFields[2].getText()), Integer.parseInt(textFields[3].getText()));
