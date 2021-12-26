@@ -349,6 +349,7 @@ public class SettingsPage implements Updatable {
 
                 if (selectedFile != null) {
                     theme.mainViewBGMSourcePR().setValue(selectedFile.toPath());
+                    theme.reInitMainViewBGM();
                 } else {
                     Log0j.writeError("Audio file is null. Cannot load audio file.");
                 }
@@ -485,7 +486,7 @@ public class SettingsPage implements Updatable {
         fileChooser.setTitle(title);
 
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("MP3 File",
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Audio File",
                 "*.mp3", "*.wav", "*.aac"));
 
         return fileChooser;

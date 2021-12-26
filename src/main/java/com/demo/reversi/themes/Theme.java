@@ -502,6 +502,25 @@ public class Theme {
         return gameCnt;
     }
 
+    public void reInitMainViewBGM() {
+        Log0j.writeInfo("Reinitializing MainView BGM.");
+        if (bgmStack.size() == 0) {
+            bgmPlayer.stop();
+            bgmPlayer = new MediaPlayer(new Media(mainViewBGMSourcePR().getValue().toUri().toString()));
+            fadeInBGM(bgmPlayer, DEFAULT_BGM_TRANS_TIME);
+        } else {
+            Stack<MediaPlayer> stack = new Stack<>();
+            for (int i = 0; i < bgmStack.size(); i++) {
+                stack.push(bgmStack.pop());
+            }
+            stack.pop();
+            stack.push(new MediaPlayer(new Media(mainViewBGMSourcePR().getValue().toUri().toString())));
+            for (int i = 0; i < stack.size(); i++) {
+                bgmStack.push(stack.pop());
+            }
+        }
+    }
+
     public void registerGameBGM() {
         if (gameCnt == 0) {
             Platform.runLater(() -> {
@@ -626,7 +645,7 @@ public class Theme {
         return mainViewBGMSourcePR;
     }
 
-    public ObjectProperty<Path> playPageBGMSourcePR(){
+    public ObjectProperty<Path> playPageBGMSourcePR() {
         return playPageBGMSourcePR;
     }
 
