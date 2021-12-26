@@ -1,8 +1,8 @@
 package com.demo.reversi.controller.local;
 
-import com.demo.reversi.controller.GameControllerLayer;
-import com.demo.reversi.controller.GameSystemLayer;
-import com.demo.reversi.controller.PlayerLayer;
+import com.demo.reversi.controller.interfaces.GameControllerLayer;
+import com.demo.reversi.controller.interfaces.GameSystemLayer;
+import com.demo.reversi.controller.interfaces.PlayerLayer;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.save.SaveLoader;
 

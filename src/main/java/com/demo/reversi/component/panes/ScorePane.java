@@ -1,7 +1,7 @@
 package com.demo.reversi.component.panes;
 
-import com.demo.reversi.controller.GameControllerLayer;
-import com.demo.reversi.controller.PlayerLayer;
+import com.demo.reversi.controller.interfaces.GameControllerLayer;
+import com.demo.reversi.controller.interfaces.PlayerLayer;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
 import javafx.beans.property.ObjectProperty;

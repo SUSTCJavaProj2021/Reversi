@@ -1,6 +1,6 @@
 package com.demo.reversi.controller.local;
 
-import com.demo.reversi.controller.PlayerLayer;
+import com.demo.reversi.controller.interfaces.PlayerLayer;
 import javafx.beans.property.*;
 
 public class SimplePlayer implements PlayerLayer {

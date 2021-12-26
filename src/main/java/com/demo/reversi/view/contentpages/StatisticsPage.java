@@ -4,25 +4,16 @@ import com.demo.reversi.component.MetroButton;
 import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.panes.SmoothishScrollPane;
 import com.demo.reversi.component.statistics.PlayerItem;
-import com.demo.reversi.controller.PlayerLayer;
+import com.demo.reversi.controller.interfaces.PlayerLayer;
 import com.demo.reversi.controller.local.SimpleGameSystem;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.res.lang.LiteralConstants;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.robot.Robot;
-import javafx.stage.Popup;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.util.List;
 

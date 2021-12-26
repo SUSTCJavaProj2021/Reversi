@@ -1,8 +1,8 @@
 package com.demo.reversi.controller.local;
 
-import com.demo.reversi.controller.GameStatus;
-import com.demo.reversi.controller.GridStatus;
-import com.demo.reversi.controller.PlayerConstants;
+import com.demo.reversi.controller.interfaces.GameStatus;
+import com.demo.reversi.controller.interfaces.GridStatus;
+import com.demo.reversi.controller.interfaces.PlayerConstants;
 import com.demo.reversi.logger.Log0j;
 
 public class CLIGameController {

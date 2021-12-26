@@ -1,4 +1,4 @@
-package com.demo.reversi.controller;
+package com.demo.reversi.controller.interfaces;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;

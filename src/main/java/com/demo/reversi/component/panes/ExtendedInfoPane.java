@@ -1,6 +1,6 @@
 package com.demo.reversi.component.panes;
 
-import com.demo.reversi.controller.PlayerLayer;
+import com.demo.reversi.controller.interfaces.PlayerLayer;
 import com.demo.reversi.themes.Theme;
 import javafx.geometry.HPos;
 import javafx.scene.control.Control;

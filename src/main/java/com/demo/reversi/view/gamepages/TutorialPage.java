@@ -1,10 +1,8 @@
 package com.demo.reversi.view.gamepages;
 
 import com.demo.reversi.component.gamemodel.ChessBoard;
-import com.demo.reversi.controller.GameSystemLayer;
-import com.demo.reversi.controller.local.SimplePlayer;
+import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.themes.Theme;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
 public class TutorialPage {

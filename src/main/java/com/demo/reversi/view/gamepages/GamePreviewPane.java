@@ -4,8 +4,8 @@ import com.demo.reversi.MainApp;
 import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.gamemodel.ChessBoard;
 import com.demo.reversi.component.panes.InfoPane;
-import com.demo.reversi.controller.GameControllerLayer;
-import com.demo.reversi.controller.GameSystemLayer;
+import com.demo.reversi.controller.interfaces.GameControllerLayer;
+import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.prompts.PromptLoader;
@@ -355,6 +355,7 @@ public class GamePreviewPane extends StackPane {
         Platform.runLater(theme::registerGameBGM);
         Log0j.writeInfo("LocalPlay (Load Game) initialized.");
         gameStage.setOnCloseRequest(ActionEvent -> {
+            gameLocalPage.performOnCloseAction();
             Platform.runLater(theme::unregisterGameBGM);
         });
     }

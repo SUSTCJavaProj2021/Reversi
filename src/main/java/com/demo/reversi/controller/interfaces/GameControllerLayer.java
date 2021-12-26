@@ -1,8 +1,6 @@
-package com.demo.reversi.controller;
+package com.demo.reversi.controller.interfaces;
 
-import com.demo.reversi.view.Updatable;
 import com.demo.reversi.view.UpdatableGame;
-import javafx.beans.property.ObjectProperty;
 import javafx.concurrent.Task;
 
 import java.io.File;
@@ -202,6 +200,20 @@ public interface GameControllerLayer {
      * @return <code>true</code> If the undo process succeeds.
      */
     public boolean undoLastStep();
+
+
+    /**
+     *
+     * @return <code>true</code> If Player 1 is AI.
+     */
+    public boolean isPlayer1AI();
+
+
+    /**
+     *
+     * @return <code>true</code> If Player 2 is AI.
+     */
+    public boolean isPlayer2AI();
 
 
     /**

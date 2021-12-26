@@ -6,8 +6,8 @@ import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.gamemodel.ChessBoard;
 import com.demo.reversi.component.panes.InfoPane;
 import com.demo.reversi.component.switches.TitledToggleSwitch;
-import com.demo.reversi.controller.GameControllerLayer;
-import com.demo.reversi.controller.GameSystemLayer;
+import com.demo.reversi.controller.interfaces.GameControllerLayer;
+import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.UpdatableGame;
@@ -17,6 +17,9 @@ import javafx.concurrent.Task;
 import javafx.geometry.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
+
+import java.io.File;
 
 public class GamePageLocal implements UpdatableGame {
     public static final double MIN_WIDTH = InfoPane.PREF_WIDTH + ChessBoard.DEFAULT_BOARD_MIN_SIZE;
@@ -147,14 +150,32 @@ public class GamePageLocal implements UpdatableGame {
         //todo: the following buttons shall all be rewritten
         {
             MetroButton undoBtn = new MetroButton("Undo", theme);
-            undoBtn.setOnAction(event -> Log0j.writeInfo("GamePage tried to undo the last operation."));
+            undoBtn.setOnAction(event -> {
+                Log0j.writeInfo("GamePage tried to undo the last operation.");
+                controller.undoLastStep();
+            });
             controlsPane.add(undoBtn, 0, 2);
+        }
+
+        {
+            MetroButton saveToBtn = new MetroButton("Save To...", theme);
+            saveToBtn.setOnAction(ActionEvent -> {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Save to");
+                File file = fileChooser.showSaveDialog(root.getScene().getWindow());
+                if (file != null) {
+                    controller.saveTo(file);
+                    Log0j.writeInfo("Saved to " + file.getPath());
+                } else {
+                    Log0j.writeError("Player hasn't selected a valid saveTo destination. The saving process had been cancelled.");
+                }
+            });
         }
 
         {
             MetroButton pauseBtn = new MetroButton("Pause", theme);
             pauseBtn.setOnAction(event -> Log0j.writeInfo("Game paused on request."));
-            controlsPane.add(pauseBtn, 1, 2);
+            controlsPane.add(pauseBtn, 0, 3);
         }
 
         {
@@ -176,19 +197,28 @@ public class GamePageLocal implements UpdatableGame {
 
 
     public void initConfigs() {
-        //Test board judge.
-        MetroButton judgeBtn = new MetroButton("Perform board judge!", theme);
-        judgeBtn.setOnAction(actionEvent -> {
-            curtainCall();
-        });
-        configPane.getChildren().add(judgeBtn);
+        {
+            //Test board judge.
+            MetroButton judgeBtn = new MetroButton("Perform board judge!", theme);
+            judgeBtn.setOnAction(actionEvent -> {
+                curtainCall();
+            });
+            configPane.getChildren().add(judgeBtn);
+        }
 
-        MetroButton loadAIBtn = new MetroButton("Replace Player to AI", theme);
-        loadAIBtn.setOnAction(event -> {
-            //todo: finish AI usage
-            Log0j.writeInfo("Loading AI player.");
-        });
-        configPane.getChildren().add(loadAIBtn);
+        {
+            TitledToggleSwitch cheatToggle = new TitledToggleSwitch(theme);
+            cheatToggle.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
+                controller.setCheatMode(newValue);
+            }));
+
+            TitledToggleSwitch cheatPlayer = new TitledToggleSwitch(theme, "Player 1", "Player 2");
+            cheatPlayer.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
+                controller.setCheatAsPlayer(newValue);
+            }));
+            controlsPane.add(new HBox(10, new TextLabel("Cheat Mode", theme), cheatToggle), 0, 0);
+            controlsPane.add(new HBox(10, new TextLabel("As which player", theme), cheatPlayer), 0, 1);
+        }
 
     }
 
@@ -218,6 +248,7 @@ public class GamePageLocal implements UpdatableGame {
     }
 
     private void curtainCall() {
+        Log0j.writeCaution("Board judge is triggered. This game page will ignore all future inputs.");
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws InterruptedException {
@@ -278,8 +309,12 @@ public class GamePageLocal implements UpdatableGame {
 
     }
 
-
     public GamePageLocal outer() {
         return this;
     }
+
+    public void performOnCloseAction() {
+        controller.save();
+    }
+
 }

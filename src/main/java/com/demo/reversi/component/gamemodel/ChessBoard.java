@@ -1,7 +1,7 @@
 package com.demo.reversi.component.gamemodel;
 
-import com.demo.reversi.controller.GridStatus;
-import com.demo.reversi.controller.GameControllerLayer;
+import com.demo.reversi.controller.interfaces.GridStatus;
+import com.demo.reversi.controller.interfaces.GameControllerLayer;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;

@@ -4,7 +4,7 @@ import com.demo.reversi.component.MetroButton;
 import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.panes.SmoothishScrollPane;
 import com.demo.reversi.component.selector.SelectorPane;
-import com.demo.reversi.controller.GameControllerLayer;
+import com.demo.reversi.controller.interfaces.GameControllerLayer;
 import com.demo.reversi.controller.local.SimpleGameSystem;
 import com.demo.reversi.res.lang.LiteralConstants;
 import com.demo.reversi.themes.Theme;

@@ -1,4 +1,4 @@
-package com.demo.reversi.controller;
+package com.demo.reversi.controller.interfaces;
 
 import java.io.File;
 import java.util.ArrayList;
