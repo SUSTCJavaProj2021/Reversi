@@ -175,7 +175,7 @@ public interface GameControllerLayer {
      *                  However, you should still flip chess according to the rule.
      * @return <code>true</code> If the operation succeeds.
      */
-    public boolean cheatAsPlayer(boolean isPlayer1);
+    public boolean setCheatAsPlayer(boolean isPlayer1);
 
     /**
      * Undo the last step made.

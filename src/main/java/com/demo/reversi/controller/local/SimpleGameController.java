@@ -163,7 +163,7 @@ public class SimpleGameController implements GameControllerLayer {
     }
 
     @Override
-    public boolean cheatAsPlayer(boolean isPlayer1) {
+    public boolean setCheatAsPlayer(boolean isPlayer1) {
         return false;
     }
 

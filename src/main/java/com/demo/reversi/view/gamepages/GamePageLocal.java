@@ -15,10 +15,8 @@ import com.demo.reversi.view.prompts.PromptLoader;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.geometry.*;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 
 public class GamePageLocal implements UpdatableGame {
     public static final double MIN_WIDTH = InfoPane.PREF_WIDTH + ChessBoard.DEFAULT_BOARD_MIN_SIZE;
@@ -140,12 +138,7 @@ public class GamePageLocal implements UpdatableGame {
 
             TitledToggleSwitch cheatPlayer = new TitledToggleSwitch(theme, "Player 1", "Player 2");
             cheatPlayer.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
-                if(newValue){
-                    //Cheat as Player 1
-                }
-                else{
-                    //Cheat as Player 2
-                }
+                controller.setCheatAsPlayer(newValue);
             }));
             controlsPane.add(new HBox(10, new TextLabel("Cheat Mode", theme), cheatToggle), 0, 0);
             controlsPane.add(new HBox(10, new TextLabel("As which player", theme), cheatPlayer), 0, 1);
