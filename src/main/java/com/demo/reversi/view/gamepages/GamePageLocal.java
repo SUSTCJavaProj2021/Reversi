@@ -317,6 +317,7 @@ public class GamePageLocal implements UpdatableGame {
     }
 
     public void performOnCloseAction() {
+        controller.unbindGamePage();
         controller.save();
     }
 

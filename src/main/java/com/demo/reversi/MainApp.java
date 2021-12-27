@@ -65,10 +65,6 @@ public class MainApp extends Application {
 
 
         setCloseAction();
-        mainView.getMainSelectorPane().getSelector().getExitButton().setOnAction(ActionEvent->{
-            curtainCall();
-            primaryStage.close();
-        });
         Log0j.writeInfo("Stage ready.");
 
         primaryStage.show();

@@ -164,11 +164,16 @@ public class GameSystemPage implements Updatable {
             Log0j.writeInfo("Player Item added: " + player.nameProperty() + ", given index: " + contentWrapper.getRowCount());
 
             PlayerItem playerItem = new PlayerItem(cnt++, player, theme);
+
+            //Set options
             playerItem.setOnMouseClicked(ActionEvent -> {
                 Alert alert = PromptLoader.getDeletePlayerAlert(player, theme);
                 alert.showAndWait()
                         .filter(response -> response == ButtonType.YES)
-                        .ifPresent(response -> gameSystem.delPlayer(player.nameProperty().getValue()));
+                        .ifPresent(response -> {
+                            gameSystem.delPlayer(player.nameProperty().getValue());
+                            refreshStats();
+                        });
             });
 
             contentWrapper.add(playerItem, 0, contentWrapper.getRowCount());
