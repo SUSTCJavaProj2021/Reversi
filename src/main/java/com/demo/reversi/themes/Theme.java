@@ -688,6 +688,14 @@ public class Theme {
         return effectVolumePR.getValue();
     }
 
+    public DoubleProperty bgmVolumePR(){
+        return bgmVolumePR;
+    }
+
+    public DoubleProperty effectVolumePR(){
+        return effectVolumePR;
+    }
+
     public void bindBGMVolumeTo(DoubleProperty volumePR) {
         this.bgmVolumePR.bind(volumePR);
     }

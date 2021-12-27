@@ -11,8 +11,10 @@ import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.res.lang.LiteralConstants;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
@@ -359,6 +361,29 @@ public class SettingsPage implements Updatable {
 //            comboBox.backgroundProperty().bind(theme.backPanePR());
 //            addToContentWrapper(createItemContainer("Font Select", comboBox));
 //        }
+        //Volume Settings
+        addToContentWrapper(new TitleLabel("Volume", theme));
+        {
+            TextLabel textLabel = new TextLabel(theme);
+            Slider bgmVolumeSlider = new Slider(0, 1.0, theme.bgmVolumePR().getValue());
+            bgmVolumeSlider.setBlockIncrement(0.02);
+            bgmVolumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+                theme.bgmVolumePR().setValue(newValue);
+            });
+            textLabel.textProperty().bind(theme.bgmVolumePR().multiply(100).asString("%.0f"));
+            addToContentWrapper(createItemContainer("BGM Volume", bgmVolumeSlider, textLabel));
+        }
+
+        {
+            TextLabel textLabel = new TextLabel(theme);
+            Slider effectVolumeSlider = new Slider(0, 1.0, theme.effectVolumePR().getValue());
+            effectVolumeSlider.setBlockIncrement(0.02);
+            effectVolumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+                theme.effectVolumePR().setValue(newValue);
+            });
+            textLabel.textProperty().bind(theme.effectVolumePR().multiply(100).asString("%.0f"));
+            addToContentWrapper(createItemContainer("Effect Volume", effectVolumeSlider, textLabel));
+        }
 
         //Audio Settings
         addToContentWrapper(new TitleLabel("Audio", theme));
@@ -467,14 +492,15 @@ public class SettingsPage implements Updatable {
         }
 
 
-
-
     }
 
-    private HBox createItemContainer(String text, Node node) {
+    private HBox createItemContainer(String text, Node... nodes) {
         HBox container = createItemBaseContainer();
         TextLabel label = new TextLabel(text, theme);
-        container.getChildren().addAll(label, node);
+        container.getChildren().addAll(label);
+        for (Node node : nodes) {
+            container.getChildren().add(node);
+        }
         return container;
     }
 
