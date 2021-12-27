@@ -18,7 +18,7 @@ import java.util.List;
  * maintenance in the GUI part.
  *
  * Overall, the GameSystem which implements this interface shall perform all the required operations to finish its initialization in its
- * default constructor, which at the SimpleGameSystem is a default constructor that does nothing, because it should be merely manipulates
+ * default constructor, which at the SimpleGameSystem is a default constructor that does nothing, because it should merely manipulate
  * the static class. However, in your constructor, you may need to initialize and load the default GameSystem if needed.
  *
  * After the instantiation (constructor has been called) of the GameSystem, any of the methods in this interface can (and possibly will)
@@ -78,7 +78,7 @@ public interface GameSystemLayer {
      * @param playerName2 Player 2
      * @param rowSize Row size
      * @param colSize Column size
-     * @return
+     * @return The newly created GameController
      */
     public GameControllerLayer startNewGame(String playerName1, String playerName2, int rowSize, int colSize);
 

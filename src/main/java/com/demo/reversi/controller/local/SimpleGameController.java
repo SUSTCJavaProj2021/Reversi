@@ -176,7 +176,22 @@ public class SimpleGameController implements GameControllerLayer {
     }
 
     @Override
+    public boolean isUndoAvailable() {
+        return false;
+    }
+
+    @Override
     public boolean undoLastStep() {
+        return false;
+    }
+
+    @Override
+    public boolean isRedoAvailable() {
+        return false;
+    }
+
+    @Override
+    public boolean redoLastStep() {
         return false;
     }
 

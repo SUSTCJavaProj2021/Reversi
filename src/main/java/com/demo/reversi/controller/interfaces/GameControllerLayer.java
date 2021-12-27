@@ -202,10 +202,31 @@ public interface GameControllerLayer {
 
 
     /**
+     * Query the controller if the last step can be undone.
+     * @return <code>true</code> If the player can undo the last step made.
+     */
+    public boolean isUndoAvailable();
+
+
+    /**
      * Undo the last step made.
      * @return <code>true</code> If the undo process succeeds.
      */
     public boolean undoLastStep();
+
+
+    /**
+     * Query the controller if the next step can be redone.
+     * @return <code>true</code> If the player can redo.
+     */
+    public boolean isRedoAvailable();
+
+
+    /**
+     * If possible, redo the last step made.
+     * @return <code>true</code> If the redo process succeeds.
+     */
+    public boolean redoLastStep();
 
 
     /**
