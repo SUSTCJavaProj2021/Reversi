@@ -6,17 +6,25 @@ import com.demo.reversi.component.TextLabel;
 import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.panes.SmoothishScrollPane;
 import com.demo.reversi.component.switches.IndicatedToggleSwitch;
+import com.demo.reversi.controller.basic.GameSystem;
+import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.controller.local.SimpleGameSystem;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.res.lang.LiteralConstants;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
 import javafx.beans.value.ChangeListener;
+import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -51,11 +59,11 @@ public class SettingsPage implements Updatable {
     public final MetroButton saveButton;
     public final MetroButton resetButton;
 
-    public final SimpleGameSystem gameSystem;
+    public final GameSystemLayer gameSystem;
     public final Theme theme;
 
 
-    public SettingsPage(SimpleGameSystem gameSystem, Theme theme) {
+    public SettingsPage(GameSystemLayer gameSystem, Theme theme) {
         this.gameSystem = gameSystem;
         this.theme = theme;
         root = new GridPane();
@@ -384,6 +392,7 @@ public class SettingsPage implements Updatable {
             textLabel.textProperty().bind(theme.effectVolumePR().multiply(100).asString("%.0f"));
             addToContentWrapper(createItemContainer("Effect Volume", effectVolumeSlider, textLabel));
         }
+
 
         //Audio Settings
         addToContentWrapper(new TitleLabel("Audio", theme));

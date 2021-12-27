@@ -1,5 +1,8 @@
 package com.demo.reversi;
 
+import com.demo.reversi.controller.basic.GameSystem;
+import com.demo.reversi.controller.basic.game.Game;
+import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.controller.local.SimpleGameSystem;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.view.MainView;
@@ -21,7 +24,7 @@ public class MainApp extends Application {
 
     public Stage primaryStage;
     public MainView mainView;
-    public SimpleGameSystem gameSystem;
+    public GameSystemLayer gameSystem;
     public Theme theme;
 
     @Override

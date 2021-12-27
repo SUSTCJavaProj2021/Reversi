@@ -5,6 +5,8 @@ import com.demo.reversi.component.TextLabel;
 import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.panes.SmoothishScrollPane;
 import com.demo.reversi.component.statistics.PlayerItem;
+import com.demo.reversi.controller.basic.GameSystem;
+import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.controller.interfaces.PlayerLayer;
 import com.demo.reversi.controller.local.SimpleGameSystem;
 import com.demo.reversi.logger.Log0j;
@@ -38,10 +40,10 @@ public class GameSystemPage implements Updatable {
     public final MetroButton saveToButton;
     public final MetroButton resetButton;
 
-    public final SimpleGameSystem gameSystem;
+    public final GameSystemLayer gameSystem;
     public final Theme theme;
 
-    public GameSystemPage(SimpleGameSystem gameSystem, Theme theme) {
+    public GameSystemPage(GameSystemLayer gameSystem, Theme theme) {
         this.gameSystem = gameSystem;
         this.theme = theme;
         root = new GridPane();

@@ -2,6 +2,8 @@ package com.demo.reversi.view;
 
 import com.demo.reversi.component.selector.MainSelectorPane;
 import com.demo.reversi.component.selector.SelectorPane;
+import com.demo.reversi.controller.basic.GameSystem;
+import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.controller.local.SimpleGameSystem;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.res.icons.Icon;
@@ -36,11 +38,11 @@ public class MainView extends GridPane {
     public SettingsPage settingsPage;
     public AboutPage aboutPage;
 
-    public SimpleGameSystem gameSystem;
+    public GameSystemLayer gameSystem;
     public Theme theme;
 
 
-    public MainView(SimpleGameSystem gameSystem, Theme theme) throws URISyntaxException {
+    public MainView(GameSystemLayer gameSystem, Theme theme) throws URISyntaxException {
         super();
         this.gameSystem = gameSystem;
         this.theme = theme;

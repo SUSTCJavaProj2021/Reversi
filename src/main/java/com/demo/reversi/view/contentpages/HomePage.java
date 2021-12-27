@@ -5,6 +5,8 @@ import com.demo.reversi.component.TextLabel;
 import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.gamemodel.ChessBoard;
 import com.demo.reversi.component.panes.SmoothishScrollPane;
+import com.demo.reversi.controller.basic.GameSystem;
+import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.controller.local.SimpleGameController;
 import com.demo.reversi.controller.local.SimpleGameSystem;
 import com.demo.reversi.controller.local.SimplePlayer;
@@ -41,7 +43,7 @@ public class HomePage implements Updatable {
 
     public Theme theme;
 
-    public HomePage(SimpleGameSystem gameSystem, Theme theme) {
+    public HomePage(GameSystemLayer gameSystem, Theme theme) {
         this.theme = theme;
 
 

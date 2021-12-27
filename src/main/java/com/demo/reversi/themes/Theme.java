@@ -684,16 +684,17 @@ public class Theme {
         return gridSoundSourcePR;
     }
 
-    public double getEffectVolume() {
-        return effectVolumePR.getValue();
-    }
 
-    public DoubleProperty bgmVolumePR(){
+    public DoubleProperty bgmVolumePR() {
         return bgmVolumePR;
     }
 
-    public DoubleProperty effectVolumePR(){
+    public DoubleProperty effectVolumePR() {
         return effectVolumePR;
+    }
+
+    public double getEffectVolume() {
+        return effectVolumePR.getValue();
     }
 
     public void bindBGMVolumeTo(DoubleProperty volumePR) {
@@ -844,11 +845,11 @@ public class Theme {
         borderProperty.bind(Bindings.createObjectBinding(() -> new Border(new BorderStroke(chessBoardGridColorPR.getValue(), BorderStrokeStyle.SOLID, null, BorderWidths.DEFAULT)), chessBoardGridColorPR));
     }
 
-    public void bindToChessBoardInvestColor(ObjectProperty<Background> background){
+    public void bindToChessBoardInvestColor(ObjectProperty<Background> background) {
         background.bind(Bindings.createObjectBinding(() -> new Background(new BackgroundFill(chessBoardInvestColorPR.getValue(), null, null)), chessBoardInvestColorPR));
     }
 
-    public void bindToChessBoardBannedColor(ObjectProperty<Background> background){
+    public void bindToChessBoardBannedColor(ObjectProperty<Background> background) {
         background.bind(Bindings.createObjectBinding(() -> new Background(new BackgroundFill(chessBoardBannedColorPR.getValue(), null, null)), chessBoardBannedColorPR));
     }
 

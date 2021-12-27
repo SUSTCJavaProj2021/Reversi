@@ -4,7 +4,9 @@ import com.demo.reversi.component.MetroButton;
 import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.panes.SmoothishScrollPane;
 import com.demo.reversi.component.selector.SelectorPane;
+import com.demo.reversi.controller.basic.GameSystem;
 import com.demo.reversi.controller.interfaces.GameControllerLayer;
+import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.controller.local.SimpleGameSystem;
 import com.demo.reversi.res.lang.LiteralConstants;
 import com.demo.reversi.themes.Theme;
@@ -33,11 +35,11 @@ public class PlayPage implements Updatable {
     public final GamePreviewPane newGamePreview;    //For creating a new game.
     public final GamePreviewPane loadGamePreview;   //For loading game from file.
 
-    public final SimpleGameSystem gameSystem;
+    public final GameSystemLayer gameSystem;
     public final Theme theme;
 
 
-    public PlayPage(SimpleGameSystem gameSystem, Theme theme) {
+    public PlayPage(GameSystemLayer gameSystem, Theme theme) {
         this.gameSystem = gameSystem;
         this.theme = theme;
         /*
