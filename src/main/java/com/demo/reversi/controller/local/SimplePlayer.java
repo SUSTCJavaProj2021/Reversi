@@ -1,5 +1,6 @@
 package com.demo.reversi.controller.local;
 
+import com.demo.reversi.controller.basic.player.Player;
 import com.demo.reversi.controller.interfaces.PlayerLayer;
 import javafx.beans.property.*;
 
@@ -8,6 +9,11 @@ public class SimplePlayer implements PlayerLayer {
 
     public SimplePlayer(String name){
         nameProperty = new SimpleStringProperty(name);
+    }
+
+    @Override
+    public Player get() {
+        return null;
     }
 
     @Override

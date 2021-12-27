@@ -18,7 +18,7 @@ import java.util.List;
  * maintenance in the GUI part.
  *
  * Overall, the GameSystem which implements this interface shall perform all the required operations to finish its initialization in its
- * default constructor, which at the SimpleGameSystem is a default constructor that does nothing, because it should merely manipulate
+ * default constructor, which at the SimpleGameSystem is a default constructor that does nothing, because it should be merely manipulates
  * the static class. However, in your constructor, you may need to initialize and load the default GameSystem if needed.
  *
  * After the instantiation (constructor has been called) of the GameSystem, any of the methods in this interface can (and possibly will)
@@ -31,7 +31,7 @@ public interface GameSystemLayer {
      * Return all the games that are related to the specific player.
      * @param player the specific player
      */
-    public ArrayList<GameControllerLayer> queryPlayerGames(PlayerLayer player);
+    public List<GameControllerLayer> queryPlayerGames(PlayerLayer player);
 
     /**
      * Require the GameSystem to add a new Player
@@ -78,7 +78,7 @@ public interface GameSystemLayer {
      * @param playerName2 Player 2
      * @param rowSize Row size
      * @param colSize Column size
-     * @return The newly created GameController
+     * @return
      */
     public GameControllerLayer startNewGame(String playerName1, String playerName2, int rowSize, int colSize);
 
@@ -87,12 +87,6 @@ public interface GameSystemLayer {
      * @param file  File source.
      */
     public GameControllerLayer loadGame(File file);
-
-    /**
-     * Update all the rankings.
-     * @return <code>true</code> if the operation succeeds
-     */
-    public boolean updateRanking();
 
     /**
      * Get all the players in sorted order according to MMR (from higher to lower)
@@ -141,5 +135,5 @@ public interface GameSystemLayer {
      * Reset the GameSystem. Including all settings and user data.
      * @return <code>true</code> if the operation succeeds
      */
-    public boolean reset();
+    public void reset();
 }

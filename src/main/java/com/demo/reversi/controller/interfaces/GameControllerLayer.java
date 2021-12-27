@@ -40,16 +40,14 @@ public interface GameControllerLayer {
      *
      *
      * @param gamePage Updatable GamePage
-     * @return <code>true</code> if the operation succeeds
      */
-    public boolean bindToGamePage(UpdatableGame gamePage);
+    public void bindToGamePage(UpdatableGame gamePage);
 
 
     /**
      * This will be called when the GamePage is closed or thrown away.
-     * @return <code>true</code> if the operation succeeds
      */
-    public boolean unbindGamePage();
+    public void unbindGamePage();
 
 
 //    public boolean bindToChessBoard();
@@ -82,7 +80,7 @@ public interface GameControllerLayer {
      * This is method is called when the current player abandons his chance
      * to place a chess.
      */
-    public void pause();
+    public void forcePause();
 
 
     /**
@@ -188,7 +186,7 @@ public interface GameControllerLayer {
      * @param isEnabled <code>true</code> if the attempt tries to enable the cheat mode
      * @return <code>true</code> if the operation succeeds.
      */
-    public boolean setCheatMode(boolean isEnabled);
+    public void setCheatMode(boolean isEnabled);
 
 
     /**
@@ -198,7 +196,7 @@ public interface GameControllerLayer {
      *                  However, you should still flip chess according to the rule.
      * @return <code>true</code> If the operation succeeds.
      */
-    public boolean setCheatAsPlayer(boolean isPlayer1);
+    public void setCheatAsPlayer(boolean isPlayer1);
 
 
     /**
@@ -213,20 +211,6 @@ public interface GameControllerLayer {
      * @return <code>true</code> If the undo process succeeds.
      */
     public boolean undoLastStep();
-
-
-    /**
-     * Query the controller if the next step can be redone.
-     * @return <code>true</code> If the player can redo.
-     */
-    public boolean isRedoAvailable();
-
-
-    /**
-     * If possible, redo the last step made.
-     * @return <code>true</code> If the redo process succeeds.
-     */
-    public boolean redoLastStep();
 
 
     /**
@@ -268,4 +252,6 @@ public interface GameControllerLayer {
      * @return <code>true</code> if the operation succeeds.
      */
     public boolean saveTo(File file);
+
+    public void setReadOnly(boolean isReadOnly);
 }

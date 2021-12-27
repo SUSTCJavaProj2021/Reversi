@@ -177,7 +177,7 @@ public class GamePageLocal implements UpdatableGame {
             MetroButton pauseBtn = new MetroButton("Pause", theme);
             pauseBtn.setOnAction(event -> {
                 Log0j.writeInfo("Game paused on request.");
-                controller.pause();
+                controller.forcePause();
             });
             controlsPane.add(pauseBtn, 0, 3);
         }

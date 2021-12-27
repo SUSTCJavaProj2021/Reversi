@@ -1,5 +1,6 @@
 package com.demo.reversi.controller.interfaces;
 
+import com.demo.reversi.controller.basic.player.Player;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
@@ -13,6 +14,8 @@ import javafx.beans.property.StringProperty;
  * this is not suggested unless you really don't have time.
  */
 public interface PlayerLayer {
+
+    public Player get();
 
     public LongProperty pidProperty();
 

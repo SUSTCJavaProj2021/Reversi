@@ -17,7 +17,7 @@ public class SimpleGameSystem implements GameSystemLayer {
     }
 
     @Override
-    public ArrayList<GameControllerLayer> queryPlayerGames(PlayerLayer player) {
+    public List<GameControllerLayer> queryPlayerGames(PlayerLayer player) {
         return null;
     }
 
@@ -80,11 +80,6 @@ public class SimpleGameSystem implements GameSystemLayer {
     }
 
     @Override
-    public boolean updateRanking() {
-        return true;
-    }
-
-    @Override
     public List<PlayerLayer> queryPlayerInfoAllSorted() {
         ArrayList<PlayerLayer> playerList = new ArrayList<PlayerLayer>();
         //todo: Change test method
@@ -129,8 +124,7 @@ public class SimpleGameSystem implements GameSystemLayer {
     }
 
     @Override
-    public boolean reset() {
-        return false;
+    public void reset() {
     }
 
 }

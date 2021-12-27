@@ -76,9 +76,7 @@ public class SimpleGameController implements GameControllerLayer {
                 GameStatus gameStatus = controller.judge();
                 if (gameStatus != GameStatus.UNFINISHED) {
                     if (gamePage != null) {
-                        new Thread(() -> {
-                            curtainCallUpdate();
-                        }).start();
+                        new Thread(() -> curtainCallUpdate()).start();
                     }
                 }
                 return null;
@@ -88,7 +86,7 @@ public class SimpleGameController implements GameControllerLayer {
     }
 
     @Override
-    public void pause() {
+    public void forcePause() {
 
     }
 
@@ -164,15 +162,13 @@ public class SimpleGameController implements GameControllerLayer {
 
 
     @Override
-    public boolean setCheatMode(boolean isEnabled) {
+    public void setCheatMode(boolean isEnabled) {
         isCheatMode = isEnabled;
         Log0j.writeInfo("Cheat mode switched: " + (isCheatMode ? "ON" : "OFF"));
-        return true;
     }
 
     @Override
-    public boolean setCheatAsPlayer(boolean isPlayer1) {
-        return false;
+    public void setCheatAsPlayer(boolean isPlayer1) {
     }
 
     @Override
@@ -182,16 +178,6 @@ public class SimpleGameController implements GameControllerLayer {
 
     @Override
     public boolean undoLastStep() {
-        return false;
-    }
-
-    @Override
-    public boolean isRedoAvailable() {
-        return false;
-    }
-
-    @Override
-    public boolean redoLastStep() {
         return false;
     }
 
@@ -221,18 +207,20 @@ public class SimpleGameController implements GameControllerLayer {
         return true;
     }
 
+    @Override
+    public void setReadOnly(boolean isReadOnly) {
+    }
+
     ;
 
     @Override
-    public boolean bindToGamePage(UpdatableGame gamePage) {
+    public void bindToGamePage(UpdatableGame gamePage) {
         this.gamePage = gamePage;
-        return true;
     }
 
     @Override
-    public boolean unbindGamePage() {
+    public void unbindGamePage() {
         this.gamePage = null;
-        return true;
     }
 
     @Override
