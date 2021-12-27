@@ -207,6 +207,8 @@ public class Theme {
     public static final Color defaultChessBoardColor1 = Color.rgb(29, 31, 44);
     public static final Color defaultChessBoardColor2 = Color.rgb(55, 58, 84);
     public static final Color defaultChessBoardGridColor = Color.rgb(255, 255, 255, 0.50);
+    public static final Color defaultChessBoardInvestColor = Color.rgb(239, 36, 36, 0.5);
+    public static final Color defaultChessBoardBannedColor = Color.rgb(120, 120, 120, 0.5);
     public static final Background defaultChessBoardBackground = null;
 
     /**
@@ -295,6 +297,8 @@ public class Theme {
     public final ObjectProperty<Color> chessBoardColor1PR;
     public final ObjectProperty<Color> chessBoardColor2PR;
     public final ObjectProperty<Color> chessBoardGridColorPR;
+    public final ObjectProperty<Color> chessBoardInvestColorPR;
+    public final ObjectProperty<Color> chessBoardBannedColorPR;
     public final ObjectProperty<Background> chessBoardBackgroundPR;
 
     public final ObjectProperty<Image> playerIconPR;
@@ -343,6 +347,8 @@ public class Theme {
         chessBoardColor1PR = new SimpleObjectProperty<>();
         chessBoardColor2PR = new SimpleObjectProperty<>();
         chessBoardGridColorPR = new SimpleObjectProperty<>();
+        chessBoardInvestColorPR = new SimpleObjectProperty<>();
+        chessBoardBannedColorPR = new SimpleObjectProperty<>();
         chessBoardBackgroundPR = new SimpleObjectProperty<>();
 
         playerIconPR = new SimpleObjectProperty<>();
@@ -418,6 +424,8 @@ public class Theme {
         chessBoardColor1PR.setValue(defaultChessBoardColor1);
         chessBoardColor2PR.setValue(defaultChessBoardColor2);
         chessBoardGridColorPR.setValue(defaultChessBoardGridColor);
+        chessBoardInvestColorPR.setValue(defaultChessBoardInvestColor);
+        chessBoardBannedColorPR.setValue(defaultChessBoardBannedColor);
         chessBoardBackgroundPR.setValue(defaultChessBoardBackground);
 
         playerIconPR.setValue(defaultPlayerIcon);
@@ -802,22 +810,32 @@ public class Theme {
         return chessBoardGridColorPR;
     }
 
+    public ObjectProperty<Color> chessBoardInvestColorPR() {
+        return chessBoardInvestColorPR;
+    }
+
+    public ObjectProperty<Color> chessBoardBannedColorPR() {
+        return chessBoardBannedColorPR;
+    }
+
     public void bindToChessBoardColor1(ObjectProperty<Background> background) {
-        background.bind(Bindings.createObjectBinding(() -> {
-            return new Background(new BackgroundFill(chessBoardColor1PR.getValue(), null, null));
-        }, chessBoardColor1PR));
+        background.bind(Bindings.createObjectBinding(() -> new Background(new BackgroundFill(chessBoardColor1PR.getValue(), null, null)), chessBoardColor1PR));
     }
 
     public void bindToChessBoardColor2(ObjectProperty<Background> background) {
-        background.bind(Bindings.createObjectBinding(() -> {
-            return new Background(new BackgroundFill(chessBoardColor2PR.getValue(), null, null));
-        }, chessBoardColor2PR));
+        background.bind(Bindings.createObjectBinding(() -> new Background(new BackgroundFill(chessBoardColor2PR.getValue(), null, null)), chessBoardColor2PR));
     }
 
-    public void bindToBorderColor(ObjectProperty<Border> borderProperty) {
-        borderProperty.bind(Bindings.createObjectBinding(() -> {
-            return new Border(new BorderStroke(chessBoardGridColorPR.getValue(), BorderStrokeStyle.SOLID, null, BorderWidths.DEFAULT));
-        }, chessBoardGridColorPR));
+    public void bindToGridColor(ObjectProperty<Border> borderProperty) {
+        borderProperty.bind(Bindings.createObjectBinding(() -> new Border(new BorderStroke(chessBoardGridColorPR.getValue(), BorderStrokeStyle.SOLID, null, BorderWidths.DEFAULT)), chessBoardGridColorPR));
+    }
+
+    public void bindToChessBoardInvestColor(ObjectProperty<Background> background){
+        background.bind(Bindings.createObjectBinding(() -> new Background(new BackgroundFill(chessBoardInvestColorPR.getValue(), null, null)), chessBoardInvestColorPR));
+    }
+
+    public void bindToChessBoardBannedColor(ObjectProperty<Background> background){
+        background.bind(Bindings.createObjectBinding(() -> new Background(new BackgroundFill(chessBoardBannedColorPR.getValue(), null, null)), chessBoardBannedColorPR));
     }
 
     public ObjectProperty<Background> chessBoardBackgroundPR() {

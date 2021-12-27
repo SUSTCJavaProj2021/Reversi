@@ -44,7 +44,7 @@ public class CLIGameController {
         } else {
 
             if (checkMove(rowIndex, colIndex) == MOVE_VALID) {
-                return GridStatus.PREFERRED;
+                return GridStatus.AVAILABLE;
             }
 
             return GridStatus.UNOCCUPIED;

@@ -130,7 +130,7 @@ public class ChessBoard extends HBox implements Updatable {
                 gridBases[row][col] = new BoardGridComponent(theme);
                 gridBases[row][col].setMinHeight(cellMinSize);
                 gridBases[row][col].setMinWidth(cellMinSize);
-                theme.bindToBorderColor(gridBases[row][col].borderProperty());
+                theme.bindToGridColor(gridBases[row][col].borderProperty());
                 if ((row + col) % 2 == 0) {
                     theme.bindToChessBoardColor1(gridBases[row][col].backgroundProperty());
                 } else {
@@ -384,7 +384,8 @@ public class ChessBoard extends HBox implements Updatable {
     private void updateGrid(GridStatus gridStatus, int row, int col) {
         if(showAvailablePos){
             switch (gridStatus) {
-                case PREFERRED -> gridBases[row][col].setPreferred();
+                case AVAILABLE -> gridBases[row][col].setAvailable();
+                case INVESTIGATING -> gridBases[row][col].setInvestigating();
                 case BANNED -> gridBases[row][col].setBanned();
                 default -> gridBases[row][col].setDefault();
             }

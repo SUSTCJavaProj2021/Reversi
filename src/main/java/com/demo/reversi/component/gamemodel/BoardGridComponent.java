@@ -25,8 +25,10 @@ public class BoardGridComponent extends StackPane {
 
     private final Theme theme;
 
+
+
     private enum BoardStatus {
-        DEFAULT, PREFERRED, BANNED;
+        DEFAULT, AVAILABLE, INVESTIGATING, BANNED;
     }
 
     private BoardStatus status;
@@ -96,29 +98,41 @@ public class BoardGridComponent extends StackPane {
         if (status != BoardStatus.DEFAULT) {
             Platform.runLater(() -> {
                 viewCover.getChildren().clear();
+                viewCover.backgroundProperty().unbind();
                 viewCover.setBackground(null);
             });
             status = BoardStatus.DEFAULT;
         }
     }
 
-    public void setPreferred() {
-        if (status != BoardStatus.PREFERRED) {
+    public void setAvailable() {
+        if (status != BoardStatus.AVAILABLE) {
+            setDefault();
             Circle circle = new Circle();
             circle.radiusProperty().bind(widthProperty().multiply(0.2));
             circle.fillProperty().bind(theme.chessBoardGridColorPR());
             Platform.runLater(() -> {
                 viewCover.getChildren().add(circle);
             });
-            status = BoardStatus.PREFERRED;
+            status = BoardStatus.AVAILABLE;
         }
 //        viewCover.setBackground(new Background(new BackgroundFill(Color.rgb(5, 245, 240, 0.35), null, null)));
+    }
+
+    public void setInvestigating() {
+        if(status != BoardStatus.INVESTIGATING){
+            Platform.runLater(() -> {
+                setDefault();
+                theme.bindToChessBoardInvestColor(viewCover.backgroundProperty());
+            });
+        }
     }
 
     public void setBanned() {
         if (status != BoardStatus.BANNED) {
             Platform.runLater(() -> {
-                viewCover.setBackground(new Background(new BackgroundFill(Color.rgb(120, 120, 120, 0.5), null, null)));
+                setDefault();
+                theme.bindToChessBoardBannedColor(viewCover.backgroundProperty());
             });
             status = BoardStatus.BANNED;
         }

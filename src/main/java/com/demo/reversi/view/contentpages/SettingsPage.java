@@ -256,6 +256,28 @@ public class SettingsPage implements Updatable {
             addToContentWrapper(createItemContainer("Chess Grid Color", cp));
         }
 
+        {
+            //Init Chess Board AI Highlighting Color
+
+            ColorPicker cp = new ColorPicker(theme.chessBoardInvestColorPR.getValue());
+            cp.valueProperty().addListener(((observable, oldValue, newValue) -> {
+                theme.chessBoardInvestColorPR.setValue(newValue);
+            }));
+
+            addToContentWrapper(createItemContainer("ChessBoard AI Highlighting Color", cp));
+        }
+
+        {
+            //Init Chess Board Banned Grid Color
+
+            ColorPicker cp = new ColorPicker(theme.chessBoardBannedColorPR.getValue());
+            cp.valueProperty().addListener(((observable, oldValue, newValue) -> {
+                theme.chessBoardBannedColorPR.setValue(newValue);
+            }));
+
+            addToContentWrapper(createItemContainer("ChessBoard Banned Grid Color", cp));
+        }
+
         //Backgrounds
         addToContentWrapper(new TitleLabel("Backgrounds", theme));
 
