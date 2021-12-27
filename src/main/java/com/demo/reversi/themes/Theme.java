@@ -515,15 +515,21 @@ public class Theme {
         if (bgmStack.size() == 0) {
             bgmPlayer.stop();
             bgmPlayer = new MediaPlayer(new Media(mainViewBGMSourcePR().getValue().toUri().toString()));
+            bgmPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+            bgmPlayer.setVolume(bgmVolumePR.getValue());
             fadeInBGM(bgmPlayer, DEFAULT_BGM_TRANS_TIME);
         } else {
             Stack<MediaPlayer> stack = new Stack<>();
-            for (int i = 0; i < bgmStack.size(); i++) {
+            int k = bgmStack.size();
+            for (int i = 0; i < k; i++) {
                 stack.push(bgmStack.pop());
             }
             stack.pop();
-            stack.push(new MediaPlayer(new Media(mainViewBGMSourcePR().getValue().toUri().toString())));
-            for (int i = 0; i < stack.size(); i++) {
+            MediaPlayer mediaPlayer = new MediaPlayer(new Media(mainViewBGMSourcePR().getValue().toUri().toString()));
+            mediaPlayer.setVolume(bgmVolumePR.getValue());
+            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+            bgmStack.push(mediaPlayer);
+            for (int i = 0; i < k; i++) {
                 bgmStack.push(stack.pop());
             }
         }
@@ -870,16 +876,12 @@ public class Theme {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Select theme file");
 
-            try {
-                fileChooser.setInitialDirectory(new File(MainApp.class.getResource("themes/").toURI().toString()));
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
+            fileChooser.setInitialDirectory(new File(MainApp.class.getResource("themes/").getPath().substring(1)));
 
             fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Theme Config", "*.json"));
             File selectedFile = fileChooser.showOpenDialog(primaryStage);
             loadTheme(selectedFile);
-            Log0j.writeInfo("Trying to load them from external environment.");
+            Log0j.writeInfo("Trying to load theme from external environment.");
         } catch (NullPointerException e) {
             e.printStackTrace();
             Log0j.writeError("Error occurred because cannot found theme.json. No theme is changed.");
@@ -901,7 +903,6 @@ public class Theme {
 
 
     public void saveTheme() {
-
         Log0j.writeInfo("Theme saved.");
     }
 }

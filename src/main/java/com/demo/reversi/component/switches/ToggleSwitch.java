@@ -52,17 +52,14 @@ public class ToggleSwitch extends HBox implements Updatable {
 
     private void init() {
         switchedOn.addListener((observable, oldValue, newValue) -> {
+            TranslateTransition transition = new TranslateTransition(Duration.millis(TRANS_TIME_MILLIS), indicator);
             if (newValue) {
-                TranslateTransition transition = new TranslateTransition(Duration.millis(TRANS_TIME_MILLIS), indicator);
                 transition.setByX(DEFAULT_WIDTH - 2 * CORNER_RADII);
-                transition.setInterpolator(Interpolator.EASE_BOTH);
-                Platform.runLater(transition::play);
             } else {
-                TranslateTransition transition = new TranslateTransition(Duration.millis(TRANS_TIME_MILLIS), indicator);
                 transition.setByX(-DEFAULT_WIDTH + 2 * CORNER_RADII);
-                transition.setInterpolator(Interpolator.EASE_BOTH);
-                Platform.runLater(transition::play);
             }
+            transition.setInterpolator(Interpolator.EASE_BOTH);
+            Platform.runLater(transition::play);
         });
 
         indicator.fillProperty().bind(Bindings.createObjectBinding(() -> {
@@ -81,7 +78,7 @@ public class ToggleSwitch extends HBox implements Updatable {
             } else {
                 return null;
             }
-        }, switchedOn));
+        }, switchedOn, theme.themeColorPR()));
 
         borderProperty().bind(Bindings.createObjectBinding(() -> {
             if (switchedOn.getValue()) {

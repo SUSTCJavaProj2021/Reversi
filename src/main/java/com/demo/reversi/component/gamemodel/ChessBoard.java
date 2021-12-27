@@ -172,7 +172,7 @@ public class ChessBoard extends HBox implements Updatable {
         this.prefHeightProperty().bind(height);
     }
 
-    public void setShowAvailablePos(boolean value){
+    public void setShowIndicators(boolean value){
         showAvailablePos = value;
     }
 

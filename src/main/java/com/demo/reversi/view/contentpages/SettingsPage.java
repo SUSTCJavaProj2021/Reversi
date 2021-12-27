@@ -1,5 +1,6 @@
 package com.demo.reversi.view.contentpages;
 
+import com.demo.reversi.MainApp;
 import com.demo.reversi.component.MetroButton;
 import com.demo.reversi.component.TextLabel;
 import com.demo.reversi.component.TitleLabel;
@@ -17,6 +18,7 @@ import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 /**
  * Page that contains overall settings
@@ -496,7 +498,7 @@ public class SettingsPage implements Updatable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);
 
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.setInitialDirectory(new File(MainApp.class.getResource("themes/").getPath().substring(1)));
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image File",
                 "*.bmp", "*.jpg", "*.jpeg", "*.png", "*.gif"));
 
@@ -507,7 +509,7 @@ public class SettingsPage implements Updatable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);
 
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.setInitialDirectory(new File(MainApp.class.getResource("themes/").getPath().substring(1)));
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Audio File",
                 "*.mp3", "*.wav", "*.aac"));
 

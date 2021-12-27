@@ -125,6 +125,7 @@ public class BoardGridComponent extends StackPane {
                 setDefault();
                 theme.bindToChessBoardInvestColor(viewCover.backgroundProperty());
             });
+            status = BoardStatus.INVESTIGATING;
         }
     }
 

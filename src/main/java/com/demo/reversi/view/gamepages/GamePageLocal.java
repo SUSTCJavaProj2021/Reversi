@@ -60,7 +60,7 @@ public class GamePageLocal implements UpdatableGame {
 
         //Adding chessboard
         chessBoard = new ChessBoard(theme);
-        chessBoard.setShowAvailablePos(true);
+        chessBoard.setShowIndicators(true);
         root.add(chessBoard, 0, 0, 1, 4);
         GridPane.setMargin(chessBoard, new Insets(20));
         GridPane.setHalignment(chessBoard, HPos.CENTER);
@@ -170,6 +170,7 @@ public class GamePageLocal implements UpdatableGame {
                     Log0j.writeError("Player hasn't selected a valid saveTo destination. The saving process had been cancelled.");
                 }
             });
+            controlsPane.add(saveToBtn, 1, 2);
         }
 
         {
@@ -200,6 +201,15 @@ public class GamePageLocal implements UpdatableGame {
 
 
     public void initConfigs() {
+        {
+            IndicatedToggleSwitch indicatorToggle = new IndicatedToggleSwitch(theme);
+            indicatorToggle.switchedOnProperty().setValue(true);
+            indicatorToggle.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
+                chessBoard.setShowIndicators(newValue);
+                update();
+            }));
+            configPane.getChildren().add(new HBox(10, new TextLabel("Show Indicators", theme), indicatorToggle));
+        }
         {
             //Test board judge.
             MetroButton judgeBtn = new MetroButton("Perform board judge!", theme);

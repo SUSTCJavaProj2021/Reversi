@@ -84,7 +84,7 @@ public class MainApp extends Application {
     }
 
     public void setCloseAction() {
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+        primaryStage.setOnHidden(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
                 curtainCall();

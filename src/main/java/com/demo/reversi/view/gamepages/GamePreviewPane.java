@@ -7,6 +7,7 @@ import com.demo.reversi.component.panes.InfoPane;
 import com.demo.reversi.controller.interfaces.GameControllerLayer;
 import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.logger.Log0j;
+import com.demo.reversi.save.SaveLoader;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.prompts.PromptLoader;
 import javafx.animation.FadeTransition;
@@ -18,6 +19,8 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.effect.BoxBlur;
@@ -28,6 +31,7 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -294,20 +298,16 @@ public class GamePreviewPane extends StackPane {
         setOnMouseClicked(MouseEvent -> {
             //todo: finish this.
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Select theme file");
-            try {
-                fileChooser.setInitialDirectory(new File(MainApp.class.getResource("save/").toURI().toString()));
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
+            fileChooser.setTitle("Select Save");
+            fileChooser.setInitialDirectory(new File(MainApp.class.getResource("save/").getPath().substring(1)));
             fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Theme Config", "*.json"));
+                    new FileChooser.ExtensionFilter("Save File", "*.sav"));
             File selectedFile = fileChooser.showOpenDialog(getScene().getWindow());
             if (selectedFile != null) {
                 GameControllerLayer controller = gameSystem.loadGame(selectedFile);
                 if (controller != null) {
                     GamePageLocal gamePageLocal = new GamePageLocal(gameSystem, controller, theme);
-                    initGameToStage(gamePageLocal);
+                    initGameToStage(gamePageLocal, PreviewType.LOAD_GAME_FROM_FILE);
                 }
             } else {
                 Log0j.writeError("No file is selected. Loading failed.");
@@ -319,7 +319,7 @@ public class GamePreviewPane extends StackPane {
     private void initLoadGameAction() {
         setOnMouseClicked(MouseEvent -> {
             GamePageLocal gameLocalPage = new GamePageLocal(gameSystem, gameSystem.registerGamePlayable(controller), theme);
-            initGameToStage(gameLocalPage);
+            initGameToStage(gameLocalPage, PreviewType.LOAD_GAME);
         });
     }
 
@@ -340,7 +340,7 @@ public class GamePreviewPane extends StackPane {
 
             if (controller != null) {
                 GamePageLocal gameLocalPage = new GamePageLocal(gameSystem, controller, theme);
-                initGameToStage(gameLocalPage);
+                initGameToStage(gameLocalPage, PreviewType.NEW_GAME);
             } else {
                 Log0j.writeInfo("Game loading failed for unknown reason. The scenario was considered not going to happen.");
             }
@@ -363,7 +363,7 @@ public class GamePreviewPane extends StackPane {
             gameStage.show();
             Platform.runLater(theme::registerGameBGM);
             Log0j.writeInfo("Tutorial Game initialized.");
-            gameStage.setOnCloseRequest(ActionEvent -> {
+            gameStage.setOnHidden(ActionEvent -> {
                 tutorialPage.performOnCloseAction();
                 Platform.runLater(theme::unregisterGameBGM);
             });
@@ -371,7 +371,7 @@ public class GamePreviewPane extends StackPane {
 
     }
 
-    private void initGameToStage(GamePageLocal gameLocalPage) {
+    private void initGameToStage(GamePageLocal gameLocalPage, PreviewType type) {
         Stage gameStage = new Stage();
         gameStage.setScene(new Scene(gameLocalPage.root));
         gameStage.setTitle("Local Game");
@@ -379,11 +379,20 @@ public class GamePreviewPane extends StackPane {
 
         gameStage.setMinWidth(GamePageLocal.MIN_WIDTH);
         gameStage.setMinHeight(GamePageLocal.MIN_HEIGHT);
-
         gameStage.show();
         Platform.runLater(theme::registerGameBGM);
+
+        if (type == PreviewType.LOAD_GAME || type == PreviewType.LOAD_GAME_FROM_FILE) {
+            Alert alert = PromptLoader.getReplayGameAlert(theme);
+            alert.showAndWait()
+                    .filter(response -> response == ButtonType.YES)
+                    .ifPresent(response -> {
+                        controller.replayGame();
+                    });
+        }
+
         Log0j.writeInfo("LocalPlay (Load Game) initialized.");
-        gameStage.setOnCloseRequest(ActionEvent -> {
+        gameStage.setOnHidden(ActionEvent -> {
             gameLocalPage.performOnCloseAction();
             Platform.runLater(theme::unregisterGameBGM);
         });
