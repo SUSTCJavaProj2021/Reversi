@@ -218,7 +218,7 @@ public class Chess extends StackPane implements Updatable {
         Platform.runLater(transition::play);
     }
 
-    //todo: test
+
     private RotateTransition createRotator(Node node, int para, Point3D axis) {
         RotateTransition rotator = new RotateTransition(Duration.millis(TRANS_TIME_MILLIS), node);
         rotator.setAxis(axis);

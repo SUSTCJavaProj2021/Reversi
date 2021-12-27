@@ -142,7 +142,7 @@ public class ChessBoard extends HBox implements Updatable {
                 //Dynamic Chess Size
                 Chess chess = new Chess(15, theme, Chess.ChessOwner.PLACEHOLDER);
 
-                //todo: OK!
+
                 chess.playerPaint1PR().bind(theme.player1ChessColorPR());
                 chess.playerPaint2PR().bind(theme.player2ChessColorPR());
 
@@ -262,7 +262,7 @@ public class ChessBoard extends HBox implements Updatable {
             GridStatus gridStatus = controller.getGridStatus(row, col);
             Chess chess = ((Chess) gridBases[row][col].getChildren().get(1));
 
-            //todo: change it to be modifiable
+
             chess.setChessOwnerDirected(readBlockStatus(gridStatus), stepCol, stepRow);
 
             try {

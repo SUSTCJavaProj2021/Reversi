@@ -61,7 +61,7 @@ public class StatisticsPage implements Updatable {
         root.add(configWrapper, 0, 2);
 
 
-        //todo: Change test
+
         refreshButton = new MetroButton("Refresh", theme);
         configWrapper.add(refreshButton, 0, 0);
 

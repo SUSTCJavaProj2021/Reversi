@@ -370,7 +370,7 @@ public class Theme {
         }
         try {
             Media media;
-            //todo: modify this
+
             media = new Media(mainViewBGMSourcePR.getValue().toUri().toString());
 
             bgmPlayer = new MediaPlayer(media);

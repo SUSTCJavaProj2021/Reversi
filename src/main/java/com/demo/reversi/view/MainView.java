@@ -54,7 +54,7 @@ public class MainView extends GridPane {
         Log0j.writeInfo("Content pages loaded.");
 
 
-        //todo: switch to SelectorPane
+
         //Initialize Main Icon
         Image img = new Image(Theme.appIcon.getUrl());
         ImageView imageView = new ImageView(img);
@@ -88,7 +88,7 @@ public class MainView extends GridPane {
         add(mainSelectorPane, 0, 0);
 
         Log0j.writeInfo("Main View initialized.");
-        //todo: ?
+
         if (theme.getBGMPlayer() != null) {
             add(new MediaView(theme.getBGMPlayer()), 0, 0);
             Log0j.writeInfo("BGMPlayer component loaded to Main View. Attention: Controls are still embedded in class Theme.");

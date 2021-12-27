@@ -110,7 +110,6 @@ public class PlayPage implements Updatable {
 
         loadLocalGamePreview();
 
-        //todo: delete test
     }
 
     private void initLayout() {
@@ -157,6 +156,6 @@ public class PlayPage implements Updatable {
 
     @Override
     public void update() {
-
+        refreshLocalGamePreview();
     }
 }

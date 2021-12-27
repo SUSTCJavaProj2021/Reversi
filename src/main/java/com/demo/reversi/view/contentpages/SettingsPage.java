@@ -108,7 +108,7 @@ public class SettingsPage implements Updatable {
             refreshContent();
         });
         loadButton.setOnAction(ActionEvent ->
-        {   //todo: add file picker
+        {
             theme.loadThemeFromFileExplorer();
             refreshContent();
         });

@@ -170,14 +170,30 @@ public class GamePreviewPane extends StackPane {
         if (controller != null) {
             //todo: change this
             String s = "Undefined";
-            switch (controller.getGameStatus()) {
-                case UNFINISHED -> s = "Unfinished";
-                case TIED -> s = "Tied";
-                case WIN_PLAYER1 -> s = "Winner\n" + controller.getPlayer1().nameProperty().getValue();
-                case WIN_PLAYER2 -> s = "Winner\n" + controller.getPlayer2().nameProperty().getValue();
-            }
+
             player1Info.setPlayer(controller.getPlayer1());
             player2Info.setPlayer(controller.getPlayer2());
+            switch (controller.getGameStatus()) {
+                case WIN_PLAYER1 -> {
+                    player1Info.setFinished(InfoPane.Status.WINNER);
+                    player2Info.setFinished(InfoPane.Status.LOSER);
+                    s = "Winner\n" + controller.getPlayer1().nameProperty().getValue();
+                }
+                case WIN_PLAYER2 -> {
+                    player2Info.setFinished(InfoPane.Status.WINNER);
+                    player1Info.setFinished(InfoPane.Status.LOSER);
+                    s = "Winner\n" + controller.getPlayer2().nameProperty().getValue();
+                }
+                case TIED -> {
+                    player1Info.setFinished(InfoPane.Status.TIED);
+                    player2Info.setFinished(InfoPane.Status.TIED);
+                    s = "Tied";
+                }
+                case UNFINISHED -> {
+                    s = "Unfinished";
+                }
+            }
+
             gameStatusLabel.setText(s);
             lastModifiedTimeLabel.setText("Last modified on:\t" +
                     controller.getGameLastModifiedTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd, HH:mm")));
