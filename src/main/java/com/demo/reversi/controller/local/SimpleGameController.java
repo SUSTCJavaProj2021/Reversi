@@ -1,5 +1,6 @@
 package com.demo.reversi.controller.local;
 
+import com.demo.reversi.controller.basic.player.Mode;
 import com.demo.reversi.controller.interfaces.GameControllerLayer;
 import com.demo.reversi.controller.interfaces.GameStatus;
 import com.demo.reversi.controller.interfaces.GridStatus;
@@ -174,6 +175,36 @@ public class SimpleGameController implements GameControllerLayer {
 
     @Override
     public void forceSideSwapping() {
+    }
+
+    @Override
+    public void setPlayer1AsAIPlayer(Mode mode) {
+
+    }
+
+    @Override
+    public void setPlayer2AsAIPlayer(Mode mode) {
+
+    }
+
+    @Override
+    public void setRecoverPlayer1AsHuman() {
+
+    }
+
+    @Override
+    public void setRecoverPlayer2AsHuman() {
+
+    }
+
+    @Override
+    public boolean isRecoverPlayer1Available() {
+        return false;
+    }
+
+    @Override
+    public boolean isRecoverPlayer2Available() {
+        return false;
     }
 
     @Override

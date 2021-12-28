@@ -6,6 +6,7 @@ import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.gamemodel.ChessBoard;
 import com.demo.reversi.component.panes.InfoPane;
 import com.demo.reversi.component.switches.IndicatedToggleSwitch;
+import com.demo.reversi.controller.basic.player.Mode;
 import com.demo.reversi.controller.interfaces.GameControllerLayer;
 import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.logger.Log0j;
@@ -13,7 +14,9 @@ import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.UpdatableGame;
 import com.demo.reversi.view.prompts.PromptLoader;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.geometry.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -35,10 +38,20 @@ public class GamePageLocal implements UpdatableGame {
     public final VBox configPane;
     public final InfoPane player1Info;
     public final InfoPane player2Info;
+
     public final IndicatedToggleSwitch cheatToggle;
     public final IndicatedToggleSwitch cheatPlayerToggle;
     public final MetroButton undoButton;
     public final MetroButton saveToButton;
+    public final MetroButton recoverPlayer1;
+    public final MetroButton recoverPlayer2;
+    public final MetroButton setPlayer1AsAI;
+    public final MetroButton setPlayer2AsAI;
+    public final ComboBox<Mode> player1AIMode;
+    public final ComboBox<Mode> player2AIMode;
+
+    private boolean cheatListen;
+    private boolean cheatPlayerListen;
 
     public final ChessBoard chessBoard;
     public final GameSystemLayer gameSystem;
@@ -102,10 +115,20 @@ public class GamePageLocal implements UpdatableGame {
         sidePanel.getChildren().add(new TitleLabel("Settings", theme));
 
         cheatToggle = new IndicatedToggleSwitch(theme);
-        cheatPlayerToggle = new IndicatedToggleSwitch(theme, "Player 1", "Player 2");
+        cheatPlayerToggle = new IndicatedToggleSwitch(theme, "Player 2", "Player 1");
 
         undoButton = new MetroButton("Undo", theme);
         saveToButton = new MetroButton("Save To...", theme);
+
+        recoverPlayer1 = new MetroButton("Recover Player 1", theme);
+        recoverPlayer2 = new MetroButton("Recover Player 2", theme);
+
+        setPlayer1AsAI = new MetroButton("Set Player 1 AI", theme);
+        setPlayer2AsAI = new MetroButton("Set Player 2 AI", theme);
+
+        player1AIMode = new ComboBox<>();
+        player2AIMode = new ComboBox<>();
+
 
         //Adding controls pane
         controlsPane = new GridPane();
@@ -123,6 +146,7 @@ public class GamePageLocal implements UpdatableGame {
         this.gameSystem = gameSystem;
         this.controller = controller;
         loadController();
+        update();
     }
 
     /**
@@ -143,13 +167,20 @@ public class GamePageLocal implements UpdatableGame {
     }
 
     public void initControls() {
+        cheatListen = true;
+        cheatPlayerListen = true;
         cheatToggle.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
-            controller.setCheatMode(newValue);
+            if (cheatListen) {
+                controller.setCheatMode(newValue);
+            }
         }));
 
         cheatPlayerToggle.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
-            controller.forceSideSwapping();
+            if (cheatPlayerListen) {
+                controller.forceSideSwapping();
+            }
         }));
+
         controlsPane.add(new HBox(10, new TextLabel("Cheat Mode", theme), cheatToggle), 0, 0);
         controlsPane.add(new HBox(10, new TextLabel("As which player", theme), cheatPlayerToggle), 0, 1);
 
@@ -159,7 +190,7 @@ public class GamePageLocal implements UpdatableGame {
             controller.undoLastStep();
             update();
         });
-        controlsPane.add(undoButton, 0, 2);
+        controlsPane.add(undoButton, 0, controlsPane.getRowCount());
 
 
         MetroButton saveToButton = new MetroButton("Save To...", theme);
@@ -174,7 +205,7 @@ public class GamePageLocal implements UpdatableGame {
                 Log0j.writeError("Player hasn't selected a valid saveTo destination. The saving process had been cancelled.");
             }
         });
-        controlsPane.add(saveToButton, 1, 2);
+        controlsPane.add(saveToButton, 1, controlsPane.getRowCount() - 1);
 
         {
             //todo: This may need change.
@@ -188,8 +219,9 @@ public class GamePageLocal implements UpdatableGame {
                     player2Info.reInit();
                 }
             });
-            controlsPane.add(restartBtn, 1, 3);
+            controlsPane.add(restartBtn, 1, controlsPane.getRowCount());
         }
+
 
     }
 
@@ -203,6 +235,41 @@ public class GamePageLocal implements UpdatableGame {
                 update();
             }));
             configPane.getChildren().add(new HBox(10, new TextLabel("Show Indicators", theme), indicatorToggle));
+        }
+
+        {
+            //Test board judge.
+            MetroButton judgeBtn = new MetroButton("Perform board judge!", theme);
+            judgeBtn.setOnAction(actionEvent -> {
+                curtainCall();
+            });
+            configPane.getChildren().add(judgeBtn);
+        }
+
+        //AI Controls
+        for (Mode d : Mode.values()) {
+            player1AIMode.getItems().add(d);
+            player2AIMode.getItems().add(d);
+        }
+        player1AIMode.getSelectionModel().select(0);
+        player2AIMode.getSelectionModel().select(0);
+        configPane.getChildren().add(new HBox(10, recoverPlayer1, setPlayer1AsAI, player1AIMode));
+        configPane.getChildren().add(new HBox(10, recoverPlayer2, setPlayer2AsAI, player2AIMode));
+
+        setPlayer1AsAI.setOnAction(ActionEvent -> {
+            controller.setPlayer1AsAIPlayer(player1AIMode.getValue());
+        });
+        setPlayer2AsAI.setOnAction(ActionEvent -> {
+            controller.setPlayer2AsAIPlayer(player2AIMode.getValue());
+        });
+
+        {
+            //Test board judge.
+            MetroButton judgeBtn = new MetroButton("Perform board judge!", theme);
+            judgeBtn.setOnAction(actionEvent -> {
+                curtainCall();
+            });
+            configPane.getChildren().add(judgeBtn);
         }
 
         {
@@ -311,21 +378,31 @@ public class GamePageLocal implements UpdatableGame {
             player2Info.isActivatedProperty().setValue(true);
             cheatPlayerToggle.switchedOnProperty().setValue(true);
         }
-        if(controller.isPlayer1AI()){
+
+        if (controller.isPlayer1AI()) {
             player1Info.setPlayerAsAI();
-        }
-        else{
+        } else {
             player1Info.reInit();
         }
-        if(controller.isPlayer2AI()){
+        if (controller.isPlayer2AI()) {
             player2Info.setPlayerAsAI();
-        }
-        else{
+        } else {
             player2Info.reInit();
         }
 
+        recoverPlayer1.setDisable(!controller.isRecoverPlayer1Available());
+        recoverPlayer2.setDisable(!controller.isRecoverPlayer2Available());
+        undoButton.setDisable(!controller.isUndoAvailable());
+
         //todo: add updates
-        cheatToggle.switchedOnProperty().setValue(controller.isCheatMode());
+        Platform.runLater(() -> {
+            cheatListen = false;
+            cheatPlayerListen = false;
+            cheatToggle.switchedOnProperty().setValue(controller.isCheatMode());
+            cheatPlayerToggle.switchedOnProperty().setValue(controller.getCurrentPlayer() != controller.getPlayer1());
+            cheatListen = true;
+            cheatPlayerListen = true;
+        });
 
     }
 

@@ -411,6 +411,7 @@ public class GamePreviewPane extends StackPane {
                         }).start();
                     });
         }
+        gameLocalPage.updateElements();
 
         Log0j.writeInfo("LocalPlay (Load Game) initialized.");
         gameStage.setOnHidden(ActionEvent -> {
