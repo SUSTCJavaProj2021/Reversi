@@ -271,17 +271,16 @@ public class PromptLoader {
 
         //Set button content
         dialogPane.lookupButton(ButtonType.FINISH).disableProperty().bind(Bindings.createBooleanBinding(() ->
-                textFields[0].getText().isEmpty() && !toggleSwitch[0].switchedOnProperty().getValue()
-                        || textFields[1].getText().isEmpty() && !toggleSwitch[1].switchedOnProperty().getValue()
-                        || textFields[2].getText().isEmpty()
-                        || textFields[3].getText().isEmpty()
-                        || !isInteger(textFields[2].getText())
-                        || !isInteger(textFields[3].getText()),
+                        textFields[0].getText().isEmpty() && !toggleSwitch[0].switchedOnProperty().getValue()
+                                || textFields[1].getText().isEmpty() && !toggleSwitch[1].switchedOnProperty().getValue()
+                                || textFields[2].getText().isEmpty()
+                                || textFields[3].getText().isEmpty()
+                                || !isInteger(textFields[2].getText())
+                                || !isInteger(textFields[3].getText()),
                 textFields[0].textProperty(), textFields[1].textProperty(), textFields[2].textProperty(), textFields[3].textProperty(),
                 toggleSwitch[0].switchedOnProperty(), toggleSwitch[1].switchedOnProperty()));
 
         Platform.runLater(textFields[0]::requestFocus);
-
 
 
         //Set result format
@@ -299,7 +298,7 @@ public class PromptLoader {
         return gameInfoDialog;
     }
 
-    public static Alert getGameInvalidInterruptAlert(Theme theme) {
+    public static Alert getGameInvalidInterruptAlert(String message, Theme theme) {
         Alert alert = new Alert(Alert.AlertType.NONE);
         alert.setTitle("Game Interruption");
 
@@ -310,13 +309,17 @@ public class PromptLoader {
 
         GridPane gridPane = new GridPane();
         dialogPane.setContent(gridPane);
-        TitleLabel warningLabel = new TitleLabel("The game is invalid.", theme);
+        TitleLabel warningLabel = new TitleLabel("Invalid operation encountered.", theme);
         warningLabel.setWrapText(true);
         gridPane.add(warningLabel, 0, 0);
 
         Separator separator1 = new Separator(Orientation.HORIZONTAL);
         separator1.setOpacity(0);
         gridPane.add(separator1, 0, 1);
+
+        TextLabel textLabel = new TextLabel(message, theme);
+        gridPane.add(textLabel, 0, 2);
+
 
         //todo: optimize this interface
         return alert;

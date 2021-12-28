@@ -24,5 +24,5 @@ public interface UpdatableGame extends Updatable {
         INVALID_GAME, UNIVERSAL;
     }
 
-    public void callInterrupt(Interrupt interrupt, String... reason);
+    public void callInterrupt(Interrupt interrupt, String reason);
 }

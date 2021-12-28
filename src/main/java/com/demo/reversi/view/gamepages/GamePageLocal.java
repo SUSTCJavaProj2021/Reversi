@@ -178,6 +178,7 @@ public class GamePageLocal implements UpdatableGame {
         cheatPlayerToggle.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
             if (cheatPlayerListen) {
                 controller.forceSideSwapping();
+                updateWithoutIndicator();
             }
         }));
 
@@ -262,6 +263,12 @@ public class GamePageLocal implements UpdatableGame {
         setPlayer2AsAI.setOnAction(ActionEvent -> {
             controller.setPlayer2AsAIPlayer(player2AIMode.getValue());
         });
+        recoverPlayer1.setOnAction(ActionEvent -> {
+            controller.setRecoverPlayer1AsHuman();
+        });
+        recoverPlayer2.setOnAction(ActionEvent -> {
+            controller.setRecoverPlayer2AsHuman();
+        });
 
         {
             //Test board judge.
@@ -291,6 +298,16 @@ public class GamePageLocal implements UpdatableGame {
         chessBoard.update();
         updateAIPlayer();
         updateElements();
+        updateIndicator();
+    }
+
+    public void updateWithoutIndicator() {
+        if (controller == null) {
+            return;
+        }
+        chessBoard.update();
+        updateAIPlayer();
+        updateElements();
     }
 
     @Override
@@ -298,6 +315,7 @@ public class GamePageLocal implements UpdatableGame {
         chessBoard.sourcedUpdate(row, col);
         updateAIPlayer();
         updateElements();
+        updateIndicator();
     }
 
     @Override
@@ -305,6 +323,7 @@ public class GamePageLocal implements UpdatableGame {
         chessBoard.sourcedUpdate(row, col, task);
         updateAIPlayer();
         updateElements();
+        updateIndicator();
     }
 
     public void curtainCallUpdate() {
@@ -312,9 +331,9 @@ public class GamePageLocal implements UpdatableGame {
     }
 
     @Override
-    public void callInterrupt(Interrupt interrupt, String... reason) {
+    public void callInterrupt(Interrupt interrupt, String reason) {
         //todo: Add body
-        Alert alert = PromptLoader.getGameInvalidInterruptAlert(theme);
+        Alert alert = PromptLoader.getGameInvalidInterruptAlert(reason, theme);
         alert.showAndWait();
     }
 
@@ -369,16 +388,14 @@ public class GamePageLocal implements UpdatableGame {
      * Update all other elements except the chessboard.
      */
     public void updateElements() {
+        if (controller.getCurrentPlayer() == controller.getPlayer1()) {
+            player1Info.isActivatedProperty().setValue(true);
+            player2Info.isActivatedProperty().setValue(false);
+        } else if (controller.getCurrentPlayer() == controller.getPlayer2()) {
+            player1Info.isActivatedProperty().setValue(false);
+            player2Info.isActivatedProperty().setValue(true);
 
-        Platform.runLater(
-                () -> {
-                    cheatListen = false;
-                    cheatPlayerListen = false;
-                    cheatToggle.switchedOnProperty().setValue(controller.isCheatMode());
-                    cheatPlayerToggle.switchedOnProperty().setValue(controller.getCurrentPlayer() != controller.getCurrentPlayer());
-                    cheatListen = true;
-                    cheatPlayerListen = true;
-                });
+        }
         recoverPlayer1.setDisable(!controller.isRecoverPlayer1Available());
         recoverPlayer2.setDisable(!controller.isRecoverPlayer2Available());
         undoButton.setDisable(!controller.isUndoAvailable());
@@ -391,6 +408,17 @@ public class GamePageLocal implements UpdatableGame {
         if (controller != null) {
             controller.performAINextStep();
         }
+    }
+
+    public void updateIndicator() {
+        Platform.runLater(() -> {
+            cheatListen = false;
+            cheatPlayerListen = false;
+            cheatToggle.switchedOnProperty().setValue(controller.isCheatMode());
+            cheatPlayerToggle.switchedOnProperty().setValue(controller.getCurrentPlayer() != controller.getCurrentPlayer());
+            cheatListen = true;
+            cheatPlayerListen = true;
+        });
     }
 
     public GamePageLocal outer() {
