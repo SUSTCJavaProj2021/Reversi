@@ -222,6 +222,7 @@ public class SettingsPage implements Updatable {
 
             resizeButton.setOnAction(ActionEvent -> {
                 gameEditor.resizeBoard(Integer.parseInt(rowText.getText()), Integer.parseInt(colText.getText()));
+                chessBoard.initBoardPlayable(gameEditor);
             });
             brushEmptyButton.setOnAction(ActionEvent -> {
                 gameEditor.setBrushAsEmptying();

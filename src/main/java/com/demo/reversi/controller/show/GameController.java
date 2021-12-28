@@ -486,4 +486,9 @@ public class GameController extends Game implements GameControllerLayer {
     public void setReadOnly(boolean isReadOnly) {
         this.isReadOnly = isReadOnly;
     }
+
+    @Override
+    public void resizeBoard(int rowSize, int colSize) {
+
+    }
 }

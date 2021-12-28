@@ -257,6 +257,11 @@ public class SimpleGameController implements GameControllerLayer {
     public void setReadOnly(boolean isReadOnly) {
     }
 
+    @Override
+    public void resizeBoard(int rowSize, int colSize) {
+
+    }
+
     ;
 
     @Override
