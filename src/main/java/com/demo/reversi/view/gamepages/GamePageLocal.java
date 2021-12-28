@@ -181,8 +181,8 @@ public class GamePageLocal implements UpdatableGame {
             }
         }));
 
-        controlsPane.add(new HBox(10, new TextLabel("Cheat Mode", theme), cheatToggle), 0, 0);
-        controlsPane.add(new HBox(10, new TextLabel("As which player", theme), cheatPlayerToggle), 0, 1);
+        controlsPane.add(new HBox(10, new TextLabel("Cheat Mode", theme), cheatToggle), 0, 0, 2, 1);
+        controlsPane.add(new HBox(10, new TextLabel("As which player", theme), cheatPlayerToggle), 0, 1, 2, 1);
 
 
         undoButton.setOnAction(event -> {
@@ -312,7 +312,7 @@ public class GamePageLocal implements UpdatableGame {
     }
 
     @Override
-    public void callInterrupt() {
+    public void callInterrupt(Interrupt interrupt, String... reason) {
         //todo: Add body
         Alert alert = PromptLoader.getGameInvalidInterruptAlert(theme);
         alert.showAndWait();
@@ -369,40 +369,21 @@ public class GamePageLocal implements UpdatableGame {
      * Update all other elements except the chessboard.
      */
     public void updateElements() {
-        if (controller.getCurrentPlayer() == controller.getPlayer1()) {
-            player1Info.isActivatedProperty().setValue(true);
-            player2Info.isActivatedProperty().setValue(false);
-            cheatPlayerToggle.switchedOnProperty().setValue(false);
-        } else {
-            player1Info.isActivatedProperty().setValue(false);
-            player2Info.isActivatedProperty().setValue(true);
-            cheatPlayerToggle.switchedOnProperty().setValue(true);
-        }
 
-        if (controller.isPlayer1AI()) {
-            player1Info.setPlayerAsAI();
-        } else {
-            player1Info.reInit();
-        }
-        if (controller.isPlayer2AI()) {
-            player2Info.setPlayerAsAI();
-        } else {
-            player2Info.reInit();
-        }
-
+        Platform.runLater(
+                () -> {
+                    cheatListen = false;
+                    cheatPlayerListen = false;
+                    cheatToggle.switchedOnProperty().setValue(controller.isCheatMode());
+                    cheatPlayerToggle.switchedOnProperty().setValue(controller.getCurrentPlayer() != controller.getCurrentPlayer());
+                    cheatListen = true;
+                    cheatPlayerListen = true;
+                });
         recoverPlayer1.setDisable(!controller.isRecoverPlayer1Available());
         recoverPlayer2.setDisable(!controller.isRecoverPlayer2Available());
         undoButton.setDisable(!controller.isUndoAvailable());
 
         //todo: add updates
-        Platform.runLater(() -> {
-            cheatListen = false;
-            cheatPlayerListen = false;
-            cheatToggle.switchedOnProperty().setValue(controller.isCheatMode());
-            cheatPlayerToggle.switchedOnProperty().setValue(controller.getCurrentPlayer() != controller.getPlayer1());
-            cheatListen = true;
-            cheatPlayerListen = true;
-        });
 
     }
 

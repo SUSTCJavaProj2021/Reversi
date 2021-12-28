@@ -2,10 +2,11 @@ package com.demo.reversi.view;
 
 import javafx.concurrent.Task;
 
-public interface UpdatableGame extends Updatable{
+public interface UpdatableGame extends Updatable {
 
     /**
      * This method is called to play a specific animation.
+     *
      * @param row row position of the source
      * @param col column position of the source
      */
@@ -19,8 +20,9 @@ public interface UpdatableGame extends Updatable{
      */
     public void curtainCallUpdate();
 
-    public enum Interrupt{
+    public enum Interrupt {
         INVALID_GAME, UNIVERSAL;
     }
-    public void callInterrupt();
+
+    public void callInterrupt(Interrupt interrupt, String... reason);
 }
