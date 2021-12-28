@@ -195,14 +195,14 @@ public class GameSystemController extends GameSystem implements GameSystemLayer 
 
     @Override
     public GameControllerLayer registerGamePlayable(GameControllerLayer controller) {
-        controller.setReadOnly(true);
+        controller.setReadOnly(false);
 
         return controller;
     }
 
     @Override
     public GameControllerLayer unregisterGamePlayable(GameControllerLayer controller) {
-        controller.setReadOnly(false);
+        controller.setReadOnly(true);
 
         return controller;
     }

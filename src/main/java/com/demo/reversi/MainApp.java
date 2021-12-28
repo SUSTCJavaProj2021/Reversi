@@ -4,6 +4,7 @@ import com.demo.reversi.controller.basic.GameSystem;
 import com.demo.reversi.controller.basic.game.Game;
 import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.controller.local.SimpleGameSystem;
+import com.demo.reversi.controller.show.GameSystemController;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.view.MainView;
 import com.demo.reversi.themes.Theme;
@@ -34,7 +35,7 @@ public class MainApp extends Application {
 
         //Loading...
 
-        gameSystem = new SimpleGameSystem();
+        gameSystem = new GameSystemController();
 
 
         //Initialize MainView

@@ -112,7 +112,10 @@ public class GameSystemPage implements Updatable {
             Log0j.writeInfo("Trying to create a new player.");
             Dialog<String> newPlayerDialog = PromptLoader.getNewPlayerDialog(theme);
             Optional<String> result = newPlayerDialog.showAndWait();
-            result.ifPresent(gameSystem::createNewPlayer);
+            result.ifPresent(response -> {
+                gameSystem.createNewPlayer(response);
+                refreshStats();
+            });
         });
 
         refreshButton.setOnAction(ActionEvent -> {

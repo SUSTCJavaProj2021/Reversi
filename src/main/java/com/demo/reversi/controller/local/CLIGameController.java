@@ -21,12 +21,12 @@ public class CLIGameController {
         board[rowSize / 2 - 1][colSize / 2] = board[rowSize / 2][colSize / 2 - 1] = 1;
 
         //TEST
-        board[1][1] = -1;
-        board[2][2] = -1;
-        board[4][4] = -1;
-        board[5][5] = -1;
-        board[6][6] = -1;
-        board[7][7] = 1;
+//        board[1][1] = -1;
+//        board[2][2] = -1;
+//        board[4][4] = -1;
+//        board[5][5] = -1;
+//        board[6][6] = -1;
+//        board[7][7] = 1;
         //END TEST
 
 
