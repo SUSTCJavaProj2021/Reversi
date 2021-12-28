@@ -116,14 +116,6 @@ public class GameSystem {
     }
 
     public void backToDefaultBoard() {
-        initialBoard = new Board(
-            8,
-            8,
-            new ArrayList<>(List.of(
-                new Chess(ChessColor.BLACK, 3, 3),
-                new Chess(ChessColor.WHITE, 3, 4),
-                new Chess(ChessColor.WHITE, 4, 3),
-                new Chess(ChessColor.BLACK, 4, 4))),
-            new ArrayList<>());
+        initialBoard = new Board();
     }
 }

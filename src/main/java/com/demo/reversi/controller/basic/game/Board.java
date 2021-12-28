@@ -15,25 +15,32 @@ public class Board {
     private int columnSize;
     private final Chess[][] chess;
     private final boolean[][] banned;
-    private final List<int[]> bannedPositions;
+
+    public Board() {
+        this(8,
+            8,
+            new ArrayList<>(List.of(
+                new Chess(ChessColor.BLACK, 3, 3),
+                new Chess(ChessColor.WHITE, 3, 4),
+                new Chess(ChessColor.WHITE, 4, 3),
+                new Chess(ChessColor.BLACK, 4, 4))),
+            new ArrayList<>());
+    }
 
     public Board(Board board) {
         this.rowSize = board.rowSize;
         this.columnSize = board.columnSize;
         this.chess = new Chess[MAX_SIZE][MAX_SIZE];
         this.banned = new boolean[MAX_SIZE][MAX_SIZE];
-        this.bannedPositions = new ArrayList<>(board.bannedPositions);
 
         for (int i = 0; i < rowSize; i++) {
             for (int j = 0; j < columnSize; j++) {
                 if (board.chess[i][j] != null) {
                     this.chess[i][j] = new Chess(board.chess[i][j]);
+                } else {
+                    this.banned[i][j] = true;
                 }
             }
-        }
-
-        for (int[] position: bannedPositions) {
-            banned[position[0]][position[1]] = true;
         }
     }
 
@@ -42,7 +49,6 @@ public class Board {
         this.columnSize = columnSize;
         chess = new Chess[MAX_SIZE][MAX_SIZE];
         banned = new boolean[MAX_SIZE][MAX_SIZE];
-        this.bannedPositions = bannedPositions;
 
         for (int[] position : bannedPositions) {
             int i = position[0], j = position[1];
@@ -65,12 +71,19 @@ public class Board {
     public Board(Scanner scanner) {
         chess = new Chess[MAX_SIZE][MAX_SIZE];
         banned = new boolean[MAX_SIZE][MAX_SIZE];
-        bannedPositions = new ArrayList<>();
         load(scanner);
     }
 
     public Chess[][] getChess() {
         return chess;
+    }
+
+    public void setBanned(int rowIndex, int columnIndex, boolean isBanned) {
+        banned[rowIndex][columnIndex] = isBanned;
+    }
+
+    public boolean isBanned(int rowIndex, int columnIndex) {
+        return banned[rowIndex][columnIndex];
     }
 
     public int getRowSize() {
@@ -103,16 +116,31 @@ public class Board {
         }
     }
 
+    public void forceSetSize(int rowSize, int columnSize) {
+        for (int i = 0; i < rowSize; i++) {
+            for (int j = 0; j < columnSize; j++) {
+                if (i >= this.rowSize || j >= this.columnSize) {
+                    chess[i][j] = new Chess(i, j);
+                }
+            }
+        }
+
+        for (int i = 0; i < this.rowSize; i++) {
+            for (int j = 0; j < this.columnSize; j++) {
+                if (i >= rowSize || j >= columnSize) {
+                    chess[i][j] = null;
+                    banned[i][j] = false;
+                }
+            }
+        }
+    }
+
     public boolean isValid(int i, int j) {
         return i >= 0 && i < rowSize && j >= 0 && j < columnSize && !banned[i][j];
     }
 
     public boolean isCaptured(int i, int j) {
         return chess[i][j].getColor() != ChessColor.NULL;
-    }
-
-    public List<int[]> getBannedPositions() {
-        return bannedPositions;
     }
 
     private boolean isDifferentColor(Chess chess1, Chess chess2) {
@@ -313,7 +341,6 @@ public class Board {
 
                 if (type.equals("BANNED")) {
                     banned[i][j] = true;
-                    bannedPositions.add(new int[] {i, j});
                 } else {
                     chess[i][j] = new Chess(ChessColor.valueOf(type), i, j);
                 }

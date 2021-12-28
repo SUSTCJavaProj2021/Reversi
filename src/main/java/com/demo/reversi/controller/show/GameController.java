@@ -98,7 +98,11 @@ public class GameController extends Game implements GameControllerLayer {
     }
 
     private void updateRecommended() {
-        AIRecommended = Mode.HARD.getPlayer().nextStep(this);
+        AIRecommended = null;
+    }
+
+    private void updateRecommended(Mode mode) {
+        AIRecommended = mode.getPlayer().nextStep(this);
     }
 
     private void judgeGameStatus() {
@@ -472,7 +476,8 @@ public class GameController extends Game implements GameControllerLayer {
 
     @Override
     public void callAIPredictor() {
-
+        updateRecommended(Mode.HARD);
+        forceGUIUpdate();
     }
 
     @Override
@@ -502,6 +507,6 @@ public class GameController extends Game implements GameControllerLayer {
 
     @Override
     public void resizeBoard(int rowSize, int colSize) {
-
+        board.setSize(rowSize, colSize);
     }
 }

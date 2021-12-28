@@ -218,7 +218,7 @@ public class GameSystemController extends GameSystem implements GameSystemLayer 
 
     @Override
     public GameEditor getGameEditor() {
-        return null;
+        return new GameEditorController();
     }
 
     @Override
