@@ -153,13 +153,14 @@ public class GamePageLocal implements UpdatableGame {
         controlsPane.add(new HBox(10, new TextLabel("Cheat Mode", theme), cheatToggle), 0, 0);
         controlsPane.add(new HBox(10, new TextLabel("As which player", theme), cheatPlayerToggle), 0, 1);
 
-        //todo: the following buttons shall all be rewritten
+
         undoButton.setOnAction(event -> {
             Log0j.writeInfo("GamePage tried to undo the last operation.");
             controller.undoLastStep();
             update();
         });
         controlsPane.add(undoButton, 0, 2);
+
 
         MetroButton saveToButton = new MetroButton("Save To...", theme);
         saveToButton.setOnAction(ActionEvent -> {
@@ -213,20 +214,6 @@ public class GamePageLocal implements UpdatableGame {
             configPane.getChildren().add(judgeBtn);
         }
 
-        {
-            IndicatedToggleSwitch cheatToggle = new IndicatedToggleSwitch(theme);
-            cheatToggle.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
-                controller.setCheatMode(newValue);
-            }));
-
-            IndicatedToggleSwitch cheatPlayerToggle = new IndicatedToggleSwitch(theme, "Player 1", "Player 2");
-            cheatPlayerToggle.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
-                controller.forceSideSwapping();
-            }));
-            controlsPane.add(new HBox(10, new TextLabel("Cheat Mode", theme), cheatToggle), 0, 0);
-            controlsPane.add(new HBox(10, new TextLabel("As which player", theme), cheatPlayerToggle), 0, 1);
-        }
-
     }
 
     @Override
@@ -260,6 +247,8 @@ public class GamePageLocal implements UpdatableGame {
     @Override
     public void callInterrupt() {
         //todo: Add body
+        Alert alert = PromptLoader.getGameInvalidInterruptAlert(theme);
+        alert.showAndWait();
     }
 
     private void curtainCall() {
@@ -321,6 +310,18 @@ public class GamePageLocal implements UpdatableGame {
             player1Info.isActivatedProperty().setValue(false);
             player2Info.isActivatedProperty().setValue(true);
             cheatPlayerToggle.switchedOnProperty().setValue(true);
+        }
+        if(controller.isPlayer1AI()){
+            player1Info.setPlayerAsAI();
+        }
+        else{
+            player1Info.reInit();
+        }
+        if(controller.isPlayer2AI()){
+            player2Info.setPlayerAsAI();
+        }
+        else{
+            player2Info.reInit();
         }
 
         //todo: add updates

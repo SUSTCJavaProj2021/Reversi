@@ -221,6 +221,12 @@ public class InfoPane extends StackPane implements Updatable {
         }
     }
 
+    public void setPlayerAsAI() {
+        Platform.runLater(() ->
+                statusCover.setBackground(new Background(
+                        new BackgroundFill(Color.rgb(233, 11, 11, 0.39), new CornerRadii(CORNER_RADII), null))));
+    }
+
     public void reInit() {
         statusCover.setBackground(null);
     }

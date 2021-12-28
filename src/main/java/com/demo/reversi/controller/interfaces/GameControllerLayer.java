@@ -196,13 +196,31 @@ public interface GameControllerLayer {
 
 
     /**
-     * Change the player that the cheater want to play as.
-     * @param isPlayer1 If <code>true</code>, then the next step should be placed as Player1's step.
-     *                  Validity check should not be performed, and you should not make a turn.
-     *                  However, you should still flip chess according to the rule.
+     * Force side swapping.
+     *
      * @return <code>true</code> If the operation succeeds.
      */
     public void forceSideSwapping();
+
+    /**
+     * Set Player1 as an AI player with corresponding difficulty, no matter what its current
+     * status is.
+     * @param difficulty Difficulty
+     */
+    public void setPlayer1AsAIPlayer(Difficulty difficulty);
+
+    public void setPlayer2AsAIPlayer(Difficulty difficulty);
+
+    /**
+     * If possible, recover Player1 as the original HumanPlayer
+     */
+    public void setRecoverPlayer1AsHuman();
+
+    public void setRecoverPlayer2AsHuman();
+
+    public boolean isRecoverPlayer1Available();
+
+    public boolean isRecoverPlayer2Available();
 
 
     /**
