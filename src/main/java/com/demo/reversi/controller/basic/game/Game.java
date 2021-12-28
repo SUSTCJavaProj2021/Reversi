@@ -184,6 +184,7 @@ public class Game {
             return false;
         }
 
+        lastModifiedTime = LocalDateTime.now();
         board.changeBack(stepList.remove(stepList.size() - 1).getModifiedChessList());
 
         return true;

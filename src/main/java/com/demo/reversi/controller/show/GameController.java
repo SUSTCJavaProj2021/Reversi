@@ -289,13 +289,8 @@ public class GameController extends Game implements GameControllerLayer {
 
     @Override
     public void forceSideSwapping() {
-//        if (isPlayer1) {
-//            super.cheatMode[0] = true;
-//            Log0j.writeInfo("Cheat mode of player 1 switched: ON");
-//        } else {
-//            super.cheatMode[1] = true;
-//            Log0j.writeInfo("Cheat mode of player 2 switched: ON");
-//        }
+        forcePause();
+        --pauseCnt;
     }
 
     @Override
