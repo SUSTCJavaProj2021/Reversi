@@ -48,6 +48,13 @@ public class GameSystem {
     public boolean load(File file) {
         try {
             Scanner scanner = new Scanner(file);
+
+            if (!scanner.hasNextInt()) {
+                scanner.close();
+
+                return false;
+            }
+
             int playerCnt = scanner.nextInt();
 
             Player.setPlayerCnt(0);
