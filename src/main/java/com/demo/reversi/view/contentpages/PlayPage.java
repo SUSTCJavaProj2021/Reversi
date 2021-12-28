@@ -160,4 +160,9 @@ public class PlayPage implements Updatable {
     public void update() {
         refreshLocalGamePreview();
     }
+
+    @Override
+    public void performOnCloseAction() {
+        gameSystem.save();
+    }
 }

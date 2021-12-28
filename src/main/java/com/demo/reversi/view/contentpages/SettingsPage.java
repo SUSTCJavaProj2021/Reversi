@@ -529,6 +529,11 @@ public class SettingsPage implements Updatable {
 
     }
 
+    @Override
+    public void performOnCloseAction() {
+        theme.saveTheme();
+    }
+
     private FileChooser createImageFileChooser(String title) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);

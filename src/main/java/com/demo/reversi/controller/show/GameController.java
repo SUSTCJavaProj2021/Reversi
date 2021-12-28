@@ -29,7 +29,7 @@ public class GameController extends Game implements GameControllerLayer {
     private PlayerController player1, player2;
 
     public GameController(HumanPlayerController player1, HumanPlayerController player2, Board board, boolean isReadOnly) {
-        super(new Player[] {player1.get(), player2.get()}, board);
+        super(new Player[]{player1.get(), player2.get()}, board);
 
         this.isReadOnly = isReadOnly;
         gameStatus = GameStatus.UNFINISHED;
@@ -99,26 +99,29 @@ public class GameController extends Game implements GameControllerLayer {
     @Override
     public void onGridClick(int row, int col) {
         if (isReadOnly) {
-            Log0j.writeInfo("Invalid Move (%d, %d): The board is read-only");
+            Log0j.writeInfo(
+                    String.format("Invalid Move (%d, %d): The board is read-only", row, col));
 
             return;
         } else if (!board.isValid(row, col)) {
-            Log0j.writeInfo("Invalid Move (%d, %d): The position is invalid (out of board or banned)");
+            Log0j.writeInfo(
+                    String.format("Invalid Move (%d, %d): The position is invalid (out of board or banned)", row, col));
 
             return;
-        } else if (!board.isCaptured(row, col)) {
-            Log0j.writeInfo("Invalid Move (%d, %d): The position has been captured");
+        } else if (board.isCaptured(row, col)) {
+            Log0j.writeInfo(
+                    String.format("Invalid Move (%d, %d): The position has been captured", row, col));
 
             return;
         }
 
         Log0j.writeInfo(
-            String.format("%s Clicked Grid (%d, %d)", getCurrentPlayer().nameProperty(), row, col));
+                String.format("%s Clicked Grid (%d, %d)", getCurrentPlayer().nameProperty().getValue(), row, col));
 
         if (!move(row, col)) {
             pause();
 
-            if (!isMovable())  {
+            if (!isMovable()) {
                 judgeGameStatus(endGame());
             }
         }
@@ -302,9 +305,9 @@ public class GameController extends Game implements GameControllerLayer {
     @Override
     public boolean undoLastStep() {
         if (isReadOnly) {
-          Log0j.writeInfo("Cannot undo last step because the game is read-only");
+            Log0j.writeInfo("Cannot undo last step because the game is read-only");
 
-          return false;
+            return false;
         }
 
         return undo();
@@ -335,7 +338,7 @@ public class GameController extends Game implements GameControllerLayer {
 
     @Override
     public boolean save() {
-        return saveTo(new File(SaveLoader.getResource(SAVE_PATH + "/" + gid + ".sav").toURI().toString()));
+        return saveTo(new File(SaveLoader.getResource(SAVE_PATH + "/" + gid + ".sav").getAbsolutePath()));
     }
 
     @Override

@@ -23,7 +23,7 @@ import javafx.scene.text.TextAlignment;
 import java.net.URISyntaxException;
 
 
-public class MainView extends GridPane {
+public class MainView extends GridPane implements Updatable{
     public static final double VIEWCOVER_CORNER_RADII = 10;
     public static final double VIEWCOVER_HORIZONTAL_DIST = 20;
     public static final double VIEWCOVER_VERTICAL_DIST = 50;
@@ -103,5 +103,21 @@ public class MainView extends GridPane {
 
     public SelectorPane getMainSelectorPane(){
         return mainSelectorPane;
+    }
+
+
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void performOnCloseAction() {
+        homePage.performOnCloseAction();
+        playPage.performOnCloseAction();
+        statisticsPage.performOnCloseAction();
+        settingsPage.performOnCloseAction();
+        gameSystemPage.performOnCloseAction();
+        aboutPage.performOnCloseAction();
     }
 }

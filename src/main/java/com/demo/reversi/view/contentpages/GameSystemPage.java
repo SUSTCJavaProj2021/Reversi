@@ -190,4 +190,9 @@ public class GameSystemPage implements Updatable {
     public void update() {
         refreshStats();
     }
+
+    @Override
+    public void performOnCloseAction() {
+        gameSystem.save();
+    }
 }

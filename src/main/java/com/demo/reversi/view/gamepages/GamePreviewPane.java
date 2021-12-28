@@ -322,7 +322,7 @@ public class GamePreviewPane extends StackPane {
             if (selectedFile != null) {
                 GameControllerLayer controller = gameSystem.loadGame(selectedFile);
                 if (controller != null) {
-                    GamePageLocal gamePageLocal = new GamePageLocal(gameSystem, controller, theme);
+                    GamePageLocal gamePageLocal = new GamePageLocal(gameSystem, gameSystem.registerGamePlayable(controller), theme);
                     initGameToStage(gamePageLocal, PreviewType.LOAD_GAME_FROM_FILE);
                 }
             } else {
@@ -355,7 +355,7 @@ public class GamePreviewPane extends StackPane {
             });
 
             if (controller != null) {
-                GamePageLocal gameLocalPage = new GamePageLocal(gameSystem, controller, theme);
+                GamePageLocal gameLocalPage = new GamePageLocal(gameSystem, gameSystem.registerGamePlayable(controller), theme);
                 initGameToStage(gameLocalPage, PreviewType.NEW_GAME);
             } else {
                 Log0j.writeInfo("Game loading failed for unknown reason. The scenario was considered not going to happen.");

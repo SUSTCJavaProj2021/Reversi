@@ -112,4 +112,9 @@ public class HomePage implements Updatable {
     public void update() {
 
     }
+
+    @Override
+    public void performOnCloseAction() {
+
+    }
 }

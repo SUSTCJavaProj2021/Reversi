@@ -100,5 +100,10 @@ public class StatisticsPage implements Updatable {
         refreshStats();
     }
 
+    @Override
+    public void performOnCloseAction() {
+
+    }
+
 
 }

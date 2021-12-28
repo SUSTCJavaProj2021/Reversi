@@ -34,4 +34,9 @@ public class AboutPage implements Updatable {
     public void update() {
 
     }
+
+    @Override
+    public void performOnCloseAction() {
+
+    }
 }

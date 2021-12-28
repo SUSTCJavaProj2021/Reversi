@@ -199,6 +199,11 @@ public class InfoPane extends StackPane implements Updatable {
 
     }
 
+    @Override
+    public void performOnCloseAction() {
+
+    }
+
     public enum Status {
         WINNER, TIED, LOSER;
     }

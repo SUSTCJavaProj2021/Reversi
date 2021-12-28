@@ -98,6 +98,11 @@ public class ToggleSwitch extends HBox implements Updatable {
         updateIndicator();
     }
 
+    @Override
+    public void performOnCloseAction() {
+
+    }
+
     private void updateIndicator() {
     }
 

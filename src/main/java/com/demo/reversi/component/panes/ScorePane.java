@@ -83,4 +83,9 @@ public class ScorePane extends GridPane implements Updatable {
     public void update() {
         curPlayerLabel.setText(controller.getCurrentPlayer().nameProperty().getValue());
     }
+
+    @Override
+    public void performOnCloseAction() {
+
+    }
 }

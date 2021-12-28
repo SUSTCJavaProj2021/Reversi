@@ -327,6 +327,7 @@ public class GamePageLocal implements UpdatableGame {
     }
 
     public void performOnCloseAction() {
+        chessBoard.performOnCloseAction();
         controller.unbindGamePage();
         controller.save();
     }

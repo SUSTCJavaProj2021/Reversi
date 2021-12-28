@@ -4,4 +4,5 @@ public interface Updatable {
 
     public void update();
 
+    public void performOnCloseAction();
 }

@@ -190,6 +190,11 @@ public class ChessBoard extends HBox implements Updatable {
         Log0j.writeInfo("Board Updated.");
     }
 
+    @Override
+    public void performOnCloseAction() {
+        unloadController();
+    }
+
     public void updateByPosition(int row, int col) {
         if (controller == null) {
             return;

@@ -118,6 +118,11 @@ public class Chess extends StackPane implements Updatable {
 
     }
 
+    @Override
+    public void performOnCloseAction() {
+
+    }
+
     /**
      * @param oldOwner Old owner of the chess
      * @param axis     rotation axis
