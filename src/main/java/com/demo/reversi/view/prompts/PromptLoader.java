@@ -3,7 +3,7 @@ package com.demo.reversi.view.prompts;
 import com.demo.reversi.component.TextLabel;
 import com.demo.reversi.component.TitleLabel;
 import com.demo.reversi.component.switches.IndicatedToggleSwitch;
-import com.demo.reversi.controller.interfaces.Difficulty;
+import com.demo.reversi.controller.basic.player.Mode;
 import com.demo.reversi.controller.interfaces.GameControllerLayer;
 import com.demo.reversi.controller.interfaces.PlayerLayer;
 import com.demo.reversi.themes.Theme;
@@ -217,14 +217,14 @@ public class PromptLoader {
         HBox[] container = new HBox[2];
         IndicatedToggleSwitch[] toggleSwitch = new IndicatedToggleSwitch[2];
         TextLabel[] indicatorLabels = new TextLabel[4];
-        ComboBox<Difficulty>[] difficultyComboBox = new ComboBox[2];
+        ComboBox<Mode>[] difficultyComboBox = new ComboBox[2];
         for (int i = 0; i < 2; i++) {
             indicatorLabels[i * 2] = new TextLabel("AI Toggle", theme);
             indicatorLabels[i * 2 + 1] = new TextLabel("Difficulty", theme);
             toggleSwitch[i] = new IndicatedToggleSwitch(theme);
 
             difficultyComboBox[i] = new ComboBox();
-            for (Difficulty d : Difficulty.values()) {
+            for (Mode d : Mode.values()) {
                 difficultyComboBox[i].getItems().add(d);
             }
 

@@ -4,6 +4,7 @@ import com.demo.reversi.controller.basic.chess.ChessColor;
 import com.demo.reversi.controller.basic.game.Board;
 import com.demo.reversi.controller.basic.game.Game;
 import com.demo.reversi.controller.basic.game.Step;
+import com.demo.reversi.controller.basic.player.Mode;
 import com.demo.reversi.controller.basic.player.Player;
 import com.demo.reversi.controller.interfaces.GameControllerLayer;
 import com.demo.reversi.controller.interfaces.GameStatus;
@@ -26,15 +27,20 @@ public class GameController extends Game implements GameControllerLayer {
     private boolean isReadOnly;
     private UpdatableGame gamePage;
     private GameStatus gameStatus;
+    private Player originHumanPlayer1, originHumanPlayer2;
     private PlayerController player1, player2;
+    private int[] AIRecommended;
 
     public GameController(HumanPlayerController player1, HumanPlayerController player2, Board board, boolean isReadOnly) {
         super(new Player[]{player1.get(), player2.get()}, board);
 
         this.isReadOnly = isReadOnly;
         gameStatus = GameStatus.UNFINISHED;
+        originHumanPlayer1 = player1.get();
+        originHumanPlayer2 = player2.get();
         this.player1 = player1;
         this.player2 = player2;
+        updateRecommended();
     }
 
     public GameController(Player[] player, Board board) {
@@ -57,9 +63,30 @@ public class GameController extends Game implements GameControllerLayer {
 
     private void initialize() {
         isReadOnly = true;
-        player1 = player[0].isHuman() ? new HumanPlayerController(player[0]) : new AIPlayerController(player[0]);
-        player2 = player[1].isHuman() ? new HumanPlayerController(player[1]) : new AIPlayerController(player[1]);
+
+        if (player[0].isHuman()) {
+            player1 = new HumanPlayerController(player[0]);
+            originHumanPlayer1 = player[0];
+        } else {
+            player1 = new AIPlayerController(player[0]);
+        }
+
+        if (player[1].isHuman()) {
+            player2 = new HumanPlayerController(player[1]);
+            originHumanPlayer2 = player[1];
+        } else {
+            player2 = new AIPlayerController(player[1]);
+        }
+
         judgeGameStatus();
+
+        if (gameStatus == GameStatus.UNFINISHED) {
+           updateRecommended();
+        }
+    }
+
+    private void updateRecommended() {
+        AIRecommended = Mode.HARD.getPlayer().nextStep(this);
     }
 
     private void judgeGameStatus() {
@@ -121,12 +148,14 @@ public class GameController extends Game implements GameControllerLayer {
                 String.format("%s Clicked Grid (%d, %d)", getCurrentPlayer().nameProperty().getValue(), row, col));
 
         if (!move(row, col)) {
-            pause();
+            forcePause();
 
             if (!isMovable()) {
                 endGame();
                 judgeGameStatus();
             }
+        } else {
+            updateRecommended();
         }
 
         Task<Void> task = new Task<Void>() {
@@ -148,6 +177,7 @@ public class GameController extends Game implements GameControllerLayer {
     @Override
     public void forcePause() {
         pause();
+        updateRecommended();
     }
 
     @Override
@@ -294,6 +324,44 @@ public class GameController extends Game implements GameControllerLayer {
     }
 
     @Override
+    public void setPlayer1AsAIPlayer(Mode mode) {
+        player1 = new AIPlayerController(mode.getPlayer());
+    }
+
+    @Override
+    public void setPlayer2AsAIPlayer(Mode mode) {
+        player2 = new AIPlayerController(mode.getPlayer());
+    }
+
+    @Override
+    public void setRecoverPlayer1AsHuman() {
+        if (isRecoverPlayer1Available()) {
+            player1 = new HumanPlayerController(originHumanPlayer1);
+        } else {
+            Log0j.writeCaution("Cannot recover Player1 because there is no available origin");
+        }
+    }
+
+    @Override
+    public void setRecoverPlayer2AsHuman() {
+        if (isRecoverPlayer2Available()) {
+            player2 = new HumanPlayerController(originHumanPlayer2);
+        } else {
+            Log0j.writeCaution("Cannot recover Player2 because there is no available origin");
+        }
+    }
+
+    @Override
+    public boolean isRecoverPlayer1Available() {
+        return originHumanPlayer1 != null;
+    }
+
+    @Override
+    public boolean isRecoverPlayer2Available() {
+        return originHumanPlayer2 != null;
+    }
+
+    @Override
     public boolean isUndoAvailable() {
         return !isReadOnly && !getStepList().isEmpty();
     }
@@ -312,7 +380,13 @@ public class GameController extends Game implements GameControllerLayer {
             return false;
         }
 
-        return undo();
+        boolean result = undo();
+
+        if (result) {
+            updateRecommended();
+        }
+
+        return result;
     }
 
     @Override
@@ -327,7 +401,25 @@ public class GameController extends Game implements GameControllerLayer {
 
     @Override
     public boolean performAINextStep() {
-        return false;
+        if (isReadOnly) {
+            Log0j.writeCaution("Cannot move because the game is read-only");
+
+            return false;
+        } else if (!getPlayerCurrent().isHuman()) {
+            Log0j.writeInfo("Current player is not an AI");
+
+            return false;
+        }
+
+        if (isMovable()) {
+            int[] move = getPlayerCurrent().nextStep(this);
+
+            onGridClick(move[0], move[1]);
+        } else {
+            forcePause();
+        }
+
+        return true;
     }
 
     @Override
@@ -338,6 +430,8 @@ public class GameController extends Game implements GameControllerLayer {
             return board.getChess()[row][col].getColor() == ChessColor.BLACK ? GridStatus.PLAYER_1 : GridStatus.PLAYER_2;
         } else if (isMovable(row, col)) {
             return GridStatus.AVAILABLE;
+        } else if (!isReadOnly && AIRecommended != null && row == AIRecommended[0] && col == AIRecommended[1]) {
+            return GridStatus.INVESTIGATING;
         } else {
             return GridStatus.UNOCCUPIED;
         }

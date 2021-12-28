@@ -1,5 +1,6 @@
 package com.demo.reversi.controller.interfaces;
 
+import com.demo.reversi.controller.basic.player.Mode;
 import com.demo.reversi.view.UpdatableGame;
 import javafx.concurrent.Task;
 
@@ -205,11 +206,11 @@ public interface GameControllerLayer {
     /**
      * Set Player1 as an AI player with corresponding difficulty, no matter what its current
      * status is.
-     * @param difficulty Difficulty
+     * @param mode Difficulty
      */
-    public void setPlayer1AsAIPlayer(Difficulty difficulty);
+    public void setPlayer1AsAIPlayer(Mode mode);
 
-    public void setPlayer2AsAIPlayer(Difficulty difficulty);
+    public void setPlayer2AsAIPlayer(Mode mode);
 
     /**
      * If possible, recover Player1 as the original HumanPlayer

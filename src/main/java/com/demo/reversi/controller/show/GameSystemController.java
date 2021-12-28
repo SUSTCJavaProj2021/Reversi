@@ -3,10 +3,10 @@ package com.demo.reversi.controller.show;
 import com.demo.reversi.controller.basic.GameSystem;
 import com.demo.reversi.controller.basic.chess.ChessColor;
 import com.demo.reversi.controller.basic.game.Board;
-import com.demo.reversi.controller.basic.game.Game;
+import com.demo.reversi.controller.basic.player.AIPlayer;
 import com.demo.reversi.controller.basic.player.HumanPlayer;
 import com.demo.reversi.controller.basic.player.Player;
-import com.demo.reversi.controller.interfaces.Difficulty;
+import com.demo.reversi.controller.basic.player.Mode;
 import com.demo.reversi.controller.interfaces.GameControllerLayer;
 import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.controller.interfaces.PlayerLayer;
@@ -15,8 +15,6 @@ import com.demo.reversi.save.SaveLoader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URISyntaxException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -46,7 +44,7 @@ public class GameSystemController extends GameSystem implements GameSystemLayer 
         PlayerLayer previousPlayer = getPlayer(playerName);
 
         if (previousPlayer != null) {
-            Log0j.writeCaution("You create a existed player named " + playerName);
+            Log0j.writeInfo("You create a existed player named " + playerName);
 
             return previousPlayer;
         }
@@ -116,17 +114,8 @@ public class GameSystemController extends GameSystem implements GameSystemLayer 
 
     @Override
     public GameControllerLayer startNewGame(String playerName1, String playerName2) {
-        PlayerLayer player1 = getPlayer(playerName1);
-
-        if (player1 == null) {
-            player1 = createNewPlayer(playerName1);
-        }
-
-        PlayerLayer player2 = getPlayer(playerName2);
-
-        if (player2 == null) {
-            player2 = createNewPlayer(playerName2);
-        }
+        PlayerLayer player1 = createNewPlayer(playerName1);
+        PlayerLayer player2 = createNewPlayer(playerName2);
 
         return newSimpleGame(new Player[] {player1.get(), player2.get()});
     }
@@ -137,24 +126,29 @@ public class GameSystemController extends GameSystem implements GameSystemLayer 
 
         board.setSize(rowSize, colSize);
 
-        PlayerLayer player1 = getPlayer(playerName1);
-
-        if (player1 == null) {
-            player1 = createNewPlayer(playerName1);
-        }
-
-        PlayerLayer player2 = getPlayer(playerName2);
-
-        if (player2 == null) {
-            player2 = createNewPlayer(playerName2);
-        }
+        PlayerLayer player1 = createNewPlayer(playerName1);
+        PlayerLayer player2 = createNewPlayer(playerName2);
 
         return newSimpleGame(new Player[] {player1.get(), player2.get()}, board);
     }
 
     @Override
-    public GameControllerLayer startNewGame(String playerName1, boolean isAIEnabled1, Difficulty difficulty1, String playerName2, boolean isAIEnabled2, Difficulty difficulty2, int rowSize, int colSize) {
-        return null;
+    public GameControllerLayer startNewGame(String playerName1,
+                                            boolean isAIEnabled1,
+                                            Mode mode1,
+                                            String playerName2,
+                                            boolean isAIEnabled2,
+                                            Mode mode2,
+                                            int rowSize,
+                                            int colSize) {
+        Board board = new Board(initialBoard);
+
+        board.setSize(rowSize, colSize);
+
+        PlayerLayer player1 = isAIEnabled1 ? new AIPlayerController(mode1.getPlayer()) : createNewPlayer(playerName1);
+        PlayerLayer player2 = isAIEnabled2 ? new AIPlayerController(mode2.getPlayer()) :createNewPlayer(playerName2);
+
+        return newSimpleGame(new Player[] {player1.get(), player2.get()}, board);
     }
 
     @Override

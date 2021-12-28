@@ -7,7 +7,6 @@ import com.demo.reversi.component.panes.InfoPane;
 import com.demo.reversi.controller.interfaces.GameControllerLayer;
 import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.logger.Log0j;
-import com.demo.reversi.save.SaveLoader;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.prompts.PromptLoader;
 import javafx.animation.FadeTransition;
@@ -31,8 +30,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -349,8 +346,8 @@ public class GamePreviewPane extends StackPane {
 
             optionalGameInfo.ifPresent((GameInfo gameInfo) -> {
                 //todo: change AI player settings
-                controller = gameSystem.startNewGame(gameInfo.playerName1, gameInfo.isPlayer1AI, gameInfo.player1Difficulty,
-                        gameInfo.playerName2, gameInfo.isPlayer2AI, gameInfo.player2Difficulty, gameInfo.rowSize, gameInfo.colSize);
+                controller = gameSystem.startNewGame(gameInfo.playerName1, gameInfo.isPlayer1AI, gameInfo.player1Mode,
+                        gameInfo.playerName2, gameInfo.isPlayer2AI, gameInfo.player2Mode, gameInfo.rowSize, gameInfo.colSize);
             });
 
             if (controller != null) {

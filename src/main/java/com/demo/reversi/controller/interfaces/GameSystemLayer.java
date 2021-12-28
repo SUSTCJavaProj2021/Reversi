@@ -1,7 +1,8 @@
 package com.demo.reversi.controller.interfaces;
 
+import com.demo.reversi.controller.basic.player.Mode;
+
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -87,8 +88,8 @@ public interface GameSystemLayer {
      */
     public GameControllerLayer startNewGame(String playerName1, String playerName2, int rowSize, int colSize);
 
-    public GameControllerLayer startNewGame(String playerName1, boolean isAIEnabled1, Difficulty difficulty1,
-                                            String playerName2, boolean isAIEnabled2, Difficulty difficulty2,
+    public GameControllerLayer startNewGame(String playerName1, boolean isAIEnabled1, Mode mode1,
+                                            String playerName2, boolean isAIEnabled2, Mode mode2,
                                             int rowSize, int colSize);
 
     /**
