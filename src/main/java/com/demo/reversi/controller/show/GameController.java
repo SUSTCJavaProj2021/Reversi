@@ -30,6 +30,7 @@ public class GameController extends Game implements GameControllerLayer {
     private Player originHumanPlayer1, originHumanPlayer2;
     private PlayerController player1, player2;
     private int[] AIRecommended;
+    private int invalidPosition;
 
     public GameController(HumanPlayerController player1, HumanPlayerController player2, Board board, boolean isReadOnly) {
         super(new Player[]{player1.get(), player2.get()}, board);
@@ -58,18 +59,18 @@ public class GameController extends Game implements GameControllerLayer {
     public GameController(Scanner scanner, List<Player> list) {
         super(scanner, list);
 
-        int invalidPosition = replayGameImplicitly();
+        invalidPosition = replayGameImplicitly();
 
         if (invalidPosition > 0) {
             Log0j.writeCaution(
                 String.format("Step %d is invalid in the game %d file", invalidPosition, gid));
-
-            if (gamePage != null) {
-                gamePage.callInterrupt(UpdatableGame.Interrupt.INVALID_GAME, "Step %d is invalid");
-            }
         }
 
         initialize();
+    }
+
+    public GameController(Board board) {
+        super(board);
     }
 
     private void initialize() {
@@ -102,8 +103,6 @@ public class GameController extends Game implements GameControllerLayer {
 
     private void judgeGameStatus() {
         if (isEnded) {
-            setReadOnly(true);
-
             if (winner == null) {
                 gameStatus = GameStatus.TIED;
             } else if (winner.getPid() == player1.pidProperty().getValue()) {
@@ -119,6 +118,11 @@ public class GameController extends Game implements GameControllerLayer {
     @Override
     public void bindToGamePage(UpdatableGame gamePage) {
         this.gamePage = gamePage;
+
+        if (invalidPosition > 0) {
+            gamePage.callInterrupt(UpdatableGame.Interrupt.INVALID_GAME,
+                String.format("Step %d is invalid", invalidPosition));
+        }
     }
 
     @Override
@@ -141,6 +145,11 @@ public class GameController extends Game implements GameControllerLayer {
         if (isReadOnly) {
             Log0j.writeInfo(
                     String.format("Invalid Move (%d, %d): The board is read-only", row, col));
+
+            return;
+        } else if (isEnded) {
+            Log0j.writeInfo(
+                String.format("Invalid Move (%d, %d): The board is read-only", row, col));
 
             return;
         } else if (!board.isValid(row, col)) {
@@ -411,6 +420,10 @@ public class GameController extends Game implements GameControllerLayer {
     public boolean undoLastStep() {
         if (isReadOnly) {
             Log0j.writeInfo("Cannot undo last step because the game is read-only");
+
+            return false;
+        } else if (isEnded) {
+            Log0j.writeInfo("Cannot undo last step because the game is ended");
 
             return false;
         }

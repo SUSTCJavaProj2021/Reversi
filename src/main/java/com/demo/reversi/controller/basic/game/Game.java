@@ -62,6 +62,10 @@ public class Game {
         load(scanner, playerList);
     }
 
+    public Game(Board board) {
+        this.board = new Board(board);
+    }
+
     public int getGid() {
         return gid;
     }
