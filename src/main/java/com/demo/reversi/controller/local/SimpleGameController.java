@@ -232,6 +232,11 @@ public class SimpleGameController implements GameControllerLayer {
         return false;
     }
 
+    @Override
+    public void callAIPredictor() {
+
+    }
+
 
     @Override
     public boolean save() {

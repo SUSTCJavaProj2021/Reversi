@@ -458,6 +458,11 @@ public class GameController extends Game implements GameControllerLayer {
     }
 
     @Override
+    public void callAIPredictor() {
+
+    }
+
+    @Override
     public GridStatus getGridStatus(int row, int col) {
         if (!board.isValid(row, col)) {
             return GridStatus.BANNED;

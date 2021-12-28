@@ -14,9 +14,7 @@ import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.UpdatableGame;
 import com.demo.reversi.view.prompts.PromptLoader;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.geometry.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -271,22 +269,15 @@ public class GamePageLocal implements UpdatableGame {
         });
 
         {
-            //Test board judge.
-            MetroButton judgeBtn = new MetroButton("Perform board judge!", theme);
-            judgeBtn.setOnAction(actionEvent -> {
-                curtainCall();
+            //Test AI predictor
+            MetroButton predicatorButton = new MetroButton("Call AI Predictor", theme);
+            predicatorButton.setOnAction(actionEvent -> {
+                controller.callAIPredictor();
+                update();
             });
-            configPane.getChildren().add(judgeBtn);
+            configPane.getChildren().add(predicatorButton);
         }
 
-        {
-            //Test board judge.
-            MetroButton judgeBtn = new MetroButton("Perform board judge!", theme);
-            judgeBtn.setOnAction(actionEvent -> {
-                curtainCall();
-            });
-            configPane.getChildren().add(judgeBtn);
-        }
 
     }
 

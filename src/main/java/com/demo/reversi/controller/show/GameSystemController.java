@@ -8,6 +8,7 @@ import com.demo.reversi.controller.basic.player.HumanPlayer;
 import com.demo.reversi.controller.basic.player.Player;
 import com.demo.reversi.controller.basic.player.Mode;
 import com.demo.reversi.controller.interfaces.GameControllerLayer;
+import com.demo.reversi.controller.interfaces.GameEditor;
 import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.controller.interfaces.PlayerLayer;
 import com.demo.reversi.logger.Log0j;
@@ -213,6 +214,11 @@ public class GameSystemController extends GameSystem implements GameSystemLayer 
         controller.setReadOnly(true);
 
         return controller;
+    }
+
+    @Override
+    public GameEditor getGameEditor() {
+        return null;
     }
 
     @Override
