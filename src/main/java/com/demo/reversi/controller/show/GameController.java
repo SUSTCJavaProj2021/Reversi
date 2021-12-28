@@ -440,7 +440,7 @@ public class GameController extends Game implements GameControllerLayer {
             Log0j.writeCaution("Cannot move because the game is read-only");
 
             return false;
-        } else if (!getPlayerCurrent().isHuman()) {
+        } else if (getPlayerCurrent().isHuman()) {
             Log0j.writeInfo("Current player is not an AI");
 
             return false;
