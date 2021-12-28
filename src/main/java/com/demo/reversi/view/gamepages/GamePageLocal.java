@@ -333,8 +333,8 @@ public class GamePageLocal implements UpdatableGame {
     @Override
     public void callInterrupt(Interrupt interrupt, String reason) {
         //todo: Add body
-//        Alert alert = PromptLoader.getGameInvalidInterruptAlert(reason, theme);
-//        alert.showAndWait();
+        Alert alert = PromptLoader.getGameInvalidInterruptAlert(reason, theme);
+        alert.showAndWait();
     }
 
     private void curtainCall() {
