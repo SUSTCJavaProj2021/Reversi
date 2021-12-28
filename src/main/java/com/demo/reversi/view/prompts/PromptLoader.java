@@ -33,27 +33,34 @@ public class PromptLoader {
         separator1.setOpacity(0);
         gridPane.add(separator1, 0, 1);
 
-        String res = "";
+        String res = "Congratulations for player ";
+        String resEnd = "for his extraordinary performance during the entire game.";
+        String playerName = "";
         switch (controller.getGameStatus()) {
-            case TIED -> res = "Two players have tied. You are evenly powerful.";
-            case WIN_PLAYER1 -> res = "Congratulations for Player " + controller.getPlayer1().nameProperty().getValue()
-                    + " for his extraordinary performance during the entire game.";
-            case WIN_PLAYER2 -> res = "Congratulations for Player " + controller.getPlayer2().nameProperty().getValue()
-                    + " for his extraordinary performance during the entire game.";
-            default -> res = "This could be a result test, or debugging issue.";
+            case TIED -> {
+                res = "Two players have tied. You are evenly powerful.";
+                resEnd = "";
+            }
+            case WIN_PLAYER1 -> playerName = controller.getPlayer1().nameProperty().getValue();
+            case WIN_PLAYER2 -> playerName = controller.getPlayer2().nameProperty().getValue();
+            default -> {
+                res = "This could be a result test, or debugging issue.";
+                resEnd = "";
+            }
         }
-        Label indicatorLabel = new Label(res);
-        indicatorLabel.setWrapText(true);
-        indicatorLabel.fontProperty().bind(theme.textFontFamilyPR());
-        indicatorLabel.textFillProperty().bind(theme.textFontPaintPR());
+        TextLabel indicatorLabel = new TextLabel(res, theme);
+        TitleLabel titleLabel = new TitleLabel(playerName, theme);
+        TextLabel indicatorEndLabel = new TextLabel(resEnd, theme);
         gridPane.add(indicatorLabel, 0, 2);
+        gridPane.add(titleLabel, 0, 3);
+        gridPane.add(indicatorEndLabel, 0, 4);
 
         Separator separator2 = new Separator(Orientation.HORIZONTAL);
         separator2.setOpacity(0);
-        gridPane.add(separator2, 0, 3);
+        gridPane.add(separator2, 0, 5);
 
         TextLabel label = new TextLabel("Go back to see more details.", theme);
-        gridPane.add(label, 0, 4);
+        gridPane.add(label, 0, 6);
 
 
         //todo: optimize this interface
