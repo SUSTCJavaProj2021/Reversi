@@ -19,5 +19,8 @@ public interface UpdatableGame extends Updatable{
      */
     public void curtainCallUpdate();
 
-
+    public enum Interrupt{
+        INVALID_GAME, UNIVERSAL;
+    }
+    public void callInterrupt();
 }

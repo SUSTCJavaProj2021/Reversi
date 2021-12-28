@@ -253,6 +253,7 @@ public class Game {
         string.append('\n');
         string.append(name).append('\n');
         string.append(board.print());
+        string.append(startBoard.print());
         string.append(winner == null ? -1 : winner.getPid()).append('\n');
 
         for (int i = 0; i < 2; i++) {
@@ -290,6 +291,7 @@ public class Game {
 
         name = scanner.next();
         board = new Board(scanner);
+        startBoard = new Board(scanner);
 
         int winnerPid = scanner.nextInt();
 

@@ -153,6 +153,7 @@ public class GamePageLocal implements UpdatableGame {
             undoBtn.setOnAction(event -> {
                 Log0j.writeInfo("GamePage tried to undo the last operation.");
                 controller.undoLastStep();
+                update();
             });
             controlsPane.add(undoBtn, 0, 2);
         }
@@ -259,6 +260,11 @@ public class GamePageLocal implements UpdatableGame {
 
     public void curtainCallUpdate() {
         curtainCall();
+    }
+
+    @Override
+    public void callInterrupt() {
+        //todo: Add body
     }
 
     private void curtainCall() {

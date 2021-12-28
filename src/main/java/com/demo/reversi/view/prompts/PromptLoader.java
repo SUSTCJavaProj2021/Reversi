@@ -298,6 +298,29 @@ public class PromptLoader {
         return gameInfoDialog;
     }
 
+    public static Alert getGameInvalidInterruptAlert(Theme theme) {
+        Alert alert = new Alert(Alert.AlertType.NONE);
+        alert.setTitle("Game Interruption");
+
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
+
+        dialogPane.backgroundProperty().bind(theme.backPanePR());
+
+        GridPane gridPane = new GridPane();
+        dialogPane.setContent(gridPane);
+        TitleLabel warningLabel = new TitleLabel("The game is invalid.", theme);
+        warningLabel.setWrapText(true);
+        gridPane.add(warningLabel, 0, 0);
+
+        Separator separator1 = new Separator(Orientation.HORIZONTAL);
+        separator1.setOpacity(0);
+        gridPane.add(separator1, 0, 1);
+
+        //todo: optimize this interface
+        return alert;
+    }
+
     private static boolean isInteger(String src) {
         try {
             Integer.parseInt(src);

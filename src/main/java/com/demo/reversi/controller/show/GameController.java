@@ -152,6 +152,10 @@ public class GameController extends Game implements GameControllerLayer {
     public void replayGame() {
         List<Step> list = getStepList();
 
+        backToStart();
+        forceGUIUpdate();
+
+
         for (int i = 0; i < list.size(); i++) {
             performStep(i);
             forceGUIUpdate();

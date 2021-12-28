@@ -15,6 +15,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
@@ -403,7 +404,13 @@ public class GamePreviewPane extends StackPane {
             alert.showAndWait()
                     .filter(response -> response == ButtonType.YES)
                     .ifPresent(response -> {
-                        controller.replayGame();
+                        new Thread(new Task<Void>() {
+                            @Override
+                            protected Void call() throws Exception {
+                                controller.replayGame();
+                                return null;
+                            }
+                        }).start();
                     });
         }
 

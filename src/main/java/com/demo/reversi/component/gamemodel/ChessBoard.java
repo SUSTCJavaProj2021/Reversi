@@ -172,7 +172,7 @@ public class ChessBoard extends HBox implements Updatable {
         this.prefHeightProperty().bind(height);
     }
 
-    public void setShowIndicators(boolean value){
+    public void setShowIndicators(boolean value) {
         showAvailablePos = value;
     }
 
@@ -185,7 +185,9 @@ public class ChessBoard extends HBox implements Updatable {
         for (int row = 0; row < rowSize; row++) {
             for (int col = 0; col < colSize; col++) {
                 updateByPosition(row, col);
+
             }
+
         }
         Log0j.writeInfo("Board Updated.");
     }
@@ -387,14 +389,14 @@ public class ChessBoard extends HBox implements Updatable {
     }
 
     private void updateGrid(GridStatus gridStatus, int row, int col) {
-        if(showAvailablePos){
+        if (showAvailablePos) {
             switch (gridStatus) {
                 case AVAILABLE -> gridBases[row][col].setAvailable();
                 case INVESTIGATING -> gridBases[row][col].setInvestigating();
                 case BANNED -> gridBases[row][col].setBanned();
                 default -> gridBases[row][col].setDefault();
             }
-        }else{
+        } else {
             gridBases[row][col].setDefault();
         }
     }

@@ -113,16 +113,18 @@ public class HumanPlayer extends Player {
 
     @Override
     public String print() {
-        return pid.getValue() + "\n" + name.getValue() + "\n" + win.print() + lose.print() + total.print();
+        return pid.getValue() + "\n" + name.getValue() + "\n" + win.print() + lose.print() + total.print() + rating.getValue() + "\n";
     }
 
     @Override
     public void load(Scanner scanner) {
         pid.setValue(scanner.nextLong());
+        scanner.nextLine();
         name.setValue(scanner.nextLine());
         win.load(scanner);
         lose.load(scanner);
         total.load(scanner);
+        rating.setValue(scanner.nextInt());
     }
 
     @Override

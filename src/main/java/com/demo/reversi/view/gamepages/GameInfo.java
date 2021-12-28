@@ -6,6 +6,8 @@ import com.demo.reversi.controller.interfaces.Difficulty;
  * Game info is encapsulated into a single class for dialog info passing
  */
 public class GameInfo {
+//    public static final int BOARD_MIN_SIZE = 8;
+
     public final int rowSize;
     public final int colSize;
     public final String playerName1;
@@ -16,16 +18,8 @@ public class GameInfo {
     public final Difficulty player2Difficulty;
 
     public GameInfo(String playerName1, boolean isPlayer1AI, Difficulty player1Difficulty, String playerName2, boolean isPlayer2AI, Difficulty player2Difficulty, int rowSize, int colSize) {
-        if (rowSize <= 0) {
-            this.rowSize = 8;
-        } else {
-            this.rowSize = rowSize;
-        }
-        if (colSize <= 0) {
-            this.colSize = 8;
-        } else {
-            this.colSize = colSize;
-        }
+        this.rowSize = rowSize;
+        this.colSize = colSize;
 
         this.playerName1 = playerName1;
         this.isPlayer1AI = isPlayer1AI;

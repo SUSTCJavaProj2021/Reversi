@@ -35,7 +35,7 @@ public class MainApp extends Application {
 
         //Loading...
 
-        gameSystem = new SimpleGameSystem();
+        gameSystem = new GameSystemController();
 
 
         //Initialize MainView
