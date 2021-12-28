@@ -320,10 +320,11 @@ public class GamePreviewPane extends StackPane {
                     new FileChooser.ExtensionFilter("Save File", "*.sav"));
             File selectedFile = fileChooser.showOpenDialog(getScene().getWindow());
             if (selectedFile != null) {
-                GameControllerLayer controller = gameSystem.loadGame(selectedFile);
+                controller = gameSystem.loadGame(selectedFile);
                 if (controller != null) {
                     GamePageLocal gamePageLocal = new GamePageLocal(gameSystem, gameSystem.registerGamePlayable(controller), theme);
                     initGameToStage(gamePageLocal, PreviewType.LOAD_GAME_FROM_FILE);
+                    controller = null;
                 }
             } else {
                 Log0j.writeError("No file is selected. Loading failed.");
@@ -357,6 +358,7 @@ public class GamePreviewPane extends StackPane {
             if (controller != null) {
                 GamePageLocal gameLocalPage = new GamePageLocal(gameSystem, gameSystem.registerGamePlayable(controller), theme);
                 initGameToStage(gameLocalPage, PreviewType.NEW_GAME);
+                controller = null;
             } else {
                 Log0j.writeInfo("Game loading failed for unknown reason. The scenario was considered not going to happen.");
             }

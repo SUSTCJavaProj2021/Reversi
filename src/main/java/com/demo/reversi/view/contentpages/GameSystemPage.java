@@ -99,7 +99,15 @@ public class GameSystemPage implements Updatable {
         addToConfig(resetButton);
 
         initConfigs();
+        initActions();
         refreshStats();
+    }
+    public void initActions(){
+        root.visibleProperty().addListener(((observable, oldValue, newValue) -> {
+            if(newValue){
+                refreshStats();
+            }
+        }));
     }
 
     private void addToConfig(Node node) {

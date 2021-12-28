@@ -109,9 +109,15 @@ public class PlayPage implements Updatable {
         initLayout();
         initRelations();
 
-
+        initActions();
         loadLocalGamePreview();
-
+    }
+    public void initActions(){
+        root.visibleProperty().addListener(((observable, oldValue, newValue) -> {
+            if(newValue){
+                refreshLocalGamePreview();
+            }
+        }));
     }
 
     private void initLayout() {
@@ -145,15 +151,12 @@ public class PlayPage implements Updatable {
 
     private void refreshLocalGamePreview() {
         //Clear all the children except for the first two panes
-        if (localPlayPane.getChildren().size() > 2) {
-            localPlayPane.getChildren().subList(2, localPlayPane.getChildren().size()).clear();
+        if (localPlayPane.getChildren().size() > 3) {
+            localPlayPane.getChildren().subList(3, localPlayPane.getChildren().size()).clear();
         }
 
         //Load new panes
-        List<GameControllerLayer> gameControllers = gameSystem.queryGameControllerAllSorted();
-        for (GameControllerLayer controller : gameControllers) {
-            localPlayPane.getChildren().add(new GamePreviewPane(gameSystem, controller, theme));
-        }
+        loadLocalGamePreview();
     }
 
     @Override

@@ -28,7 +28,7 @@ public class GameSystemController extends GameSystem implements GameSystemLayer 
     public GameSystemController() {
         super();
 
-        load(new File(SaveLoader.getResource(SAVE_PATH).toURI().toString()));
+        load(new File(SaveLoader.getResource(SAVE_PATH).getAbsolutePath()));
     }
 
     @Override
@@ -209,7 +209,7 @@ public class GameSystemController extends GameSystem implements GameSystemLayer 
 
     @Override
     public boolean save() {
-        return saveTo(new File(SaveLoader.getResource(SAVE_PATH).toURI().toString()));
+        return saveTo(new File(SaveLoader.getResource(SAVE_PATH).getAbsolutePath()));
     }
 
     @Override

@@ -91,7 +91,6 @@ public class MainApp extends Application {
         primaryStage.setOnHidden(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
-                mainView.performOnCloseAction();
                 curtainCall();
             }
         });
@@ -99,6 +98,7 @@ public class MainApp extends Application {
     }
 
     public void curtainCall(){
+        mainView.performOnCloseAction();
         gameSystem.save();
         theme.saveTheme();
     }

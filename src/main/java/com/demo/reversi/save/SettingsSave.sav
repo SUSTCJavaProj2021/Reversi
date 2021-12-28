@@ -1,0 +1,50 @@
+4
+LongProperty [value: 1]
+StringProperty [value: dnmd]
+1 0
+1
+2 1
+0 0
+0
+1 0
+1
+2 1
+LongProperty [value: 2]
+StringProperty [value: qa3]
+0 0
+0
+1 0
+1
+1 1
+1 0
+1
+1 1
+LongProperty [value: 3]
+StringProperty [value: 233]
+0 0
+0
+1 0
+1
+4 1
+1 0
+1
+4 1
+LongProperty [value: 4]
+StringProperty [value: 123]
+1 0
+1
+3 1
+0 0
+0
+1 0
+1
+3 1
+8 8 
+NULL NULL NULL NULL NULL NULL NULL NULL 
+NULL NULL NULL NULL NULL NULL NULL NULL 
+NULL NULL NULL NULL NULL NULL NULL NULL 
+NULL NULL NULL BLACK WHITE NULL NULL NULL 
+NULL NULL NULL WHITE BLACK NULL NULL NULL 
+NULL NULL NULL NULL NULL NULL NULL NULL 
+NULL NULL NULL NULL NULL NULL NULL NULL 
+NULL NULL NULL NULL NULL NULL NULL NULL 

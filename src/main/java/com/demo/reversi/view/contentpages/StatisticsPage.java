@@ -68,7 +68,15 @@ public class StatisticsPage implements Updatable {
         configWrapper.add(refreshButton, 0, 0);
 
         initRefreshButton();
+        initActions();
         refreshStats();
+    }
+    public void initActions(){
+        root.visibleProperty().addListener(((observable, oldValue, newValue) -> {
+            if(newValue){
+                refreshStats();
+            }
+        }));
     }
 
     private void initRefreshButton() {
