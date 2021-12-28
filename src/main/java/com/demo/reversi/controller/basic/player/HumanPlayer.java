@@ -1,6 +1,7 @@
 package com.demo.reversi.controller.basic.player;
 
 import com.demo.reversi.controller.basic.game.Game;
+import com.demo.reversi.logger.Log0j;
 
 import java.util.Scanner;
 

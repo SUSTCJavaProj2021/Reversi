@@ -185,7 +185,7 @@ public class InfoPane extends StackPane implements Updatable {
         this.player = player;
         playerNameLabel.textProperty().bind(player.nameProperty());
         playerInfoLabel.textProperty().bind(Bindings.createObjectBinding(() -> {
-            return String.format("%3dW / %3dL  %3.2f", player.totalMatchCountProperty().getValue(), player.totalWinCountProperty().getValue(),
+            return String.format("%3dW / %3dL  %3.2f", player.totalWinCountProperty().getValue(), player.totalMatchCountProperty().getValue() - player.totalWinCountProperty().getValue(),
                     player.overallWinRateProperty().getValue());
         }, player.totalMatchCountProperty(), player.totalWinCountProperty(), player.overallWinRateProperty()));
     }
