@@ -10,6 +10,7 @@ import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.gamepages.GameInfo;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
@@ -188,11 +189,11 @@ public class PromptLoader {
 
         TitleLabel titleLabel = new TitleLabel("Provide the required info to complete the game setup.", theme);
         titleLabel.setWrapText(true);
-        gridPane.add(titleLabel, 0, 0, 2, 1);
+        gridPane.add(titleLabel, 0, 0, GridPane.REMAINING, 1);
 
         Separator separator = new Separator(Orientation.HORIZONTAL);
         separator.setOpacity(0);
-        gridPane.add(separator, 0, 1, 2, 1);
+        gridPane.add(separator, 0, 1, GridPane.REMAINING, 1);
 
         TextField[] textFields = new TextField[4];
         for (int i = 0; i < 4; i++) {
@@ -232,6 +233,7 @@ public class PromptLoader {
             toggleSwitch[i].switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
                 if (newValue) {
                     difficultyComboBox[finalI].setDisable(false);
+                    textFields[finalI].setText("");
                     textFields[finalI].setDisable(true);
                 } else {
                     difficultyComboBox[finalI].getSelectionModel().select(0);
@@ -250,7 +252,8 @@ public class PromptLoader {
         for (int i = 0; i < 2; i++) {
             gridPane.add(labels[i], 0, gridPane.getRowCount());
             gridPane.add(textFields[i], 1, gridPane.getRowCount() - 1);
-            gridPane.add(container[i], 0, gridPane.getRowCount(), 2, 1);
+            gridPane.add(container[i], 2, gridPane.getRowCount() - 1);
+            GridPane.setMargin(container[i], new Insets(0, 0, 0, 10));
         }
 
         for (int i = 2; i < 4; i++) {
@@ -260,7 +263,7 @@ public class PromptLoader {
 
         for (int i = 0; i < 2; i++) {
             ColumnConstraints colConstraints = new ColumnConstraints();
-            colConstraints.setPercentWidth(50 + (i * 2 - 1) * 15);
+//            colConstraints.setPercentWidth(50 + (i * 2 - 1) * 15);
             colConstraints.setHgrow(Priority.ALWAYS);
             gridPane.getColumnConstraints().add(colConstraints);
         }
@@ -273,7 +276,9 @@ public class PromptLoader {
                         || textFields[2].getText().isEmpty()
                         || textFields[3].getText().isEmpty()
                         || !isInteger(textFields[2].getText())
-                        || !isInteger(textFields[3].getText()), textFields[0].textProperty(), textFields[1].textProperty(), textFields[2].textProperty(), textFields[3].textProperty()));
+                        || !isInteger(textFields[3].getText()),
+                textFields[0].textProperty(), textFields[1].textProperty(), textFields[2].textProperty(), textFields[3].textProperty(),
+                toggleSwitch[0].switchedOnProperty(), toggleSwitch[1].switchedOnProperty()));
 
         Platform.runLater(textFields[0]::requestFocus);
 

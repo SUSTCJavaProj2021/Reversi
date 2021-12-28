@@ -210,6 +210,7 @@ public class GamePageLocal implements UpdatableGame {
             }));
             configPane.getChildren().add(new HBox(10, new TextLabel("Show Indicators", theme), indicatorToggle));
         }
+
         {
             //Test board judge.
             MetroButton judgeBtn = new MetroButton("Perform board judge!", theme);
