@@ -123,17 +123,17 @@ public abstract class AIPlayer extends Player {
 
     @Override
     public GameCounter winCounter() {
-        return null;
+        return win;
     }
 
     @Override
     public GameCounter loseCounter() {
-        return null;
+        return lose;
     }
 
     @Override
     public GameCounter totalCounter() {
-        return null;
+        return total;
     }
 
     @Override
@@ -147,22 +147,22 @@ public abstract class AIPlayer extends Player {
 
     @Override
     public double calculateWinRateOverall() {
-        return -1.0;
+        return 0.0;
     }
 
     @Override
     public double calculateWinRateToHuman() {
-        return -1.0;
+        return 0.0;
     }
 
     @Override
     public double calculateWinRateToAI() {
-        return -1.0;
+        return 0.0;
     }
 
     @Override
     public double calculateWinRate(int pid) {
-        return -1.0;
+        return 0.0;
     }
 
     @Override

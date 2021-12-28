@@ -236,6 +236,33 @@ public class Board {
         }
     }
 
+    public boolean changeIntoWithErrorCheck(Step step) {
+        Chess chess = step.getChess();
+
+        if (!isValid(chess.getRowIndex(), chess.getColumnIndex()) || isCaptured(chess.getRowIndex(), chess.getColumnIndex())) {
+            return false;
+        }
+
+        List<Chess[]> list = checkPosition(step.getChess(), true), listInStep = step.getModifiedChessList();
+
+        if (list.size() != listInStep.size()) {
+            return false;
+        }
+
+        changeInto(listInStep);
+
+        for (Chess[] modifiedChess: list) {
+            Chess newChess = modifiedChess[1];
+            int i = newChess.getRowIndex(), j = newChess.getColumnIndex();
+
+            if (!this.chess[i][j].equals(newChess)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public void changeBack(List<Chess[]> list) {
         for (Chess[] modifiedChess: list) {
             Chess newChess = modifiedChess[0];

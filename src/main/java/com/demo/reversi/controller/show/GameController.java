@@ -58,6 +58,17 @@ public class GameController extends Game implements GameControllerLayer {
     public GameController(Scanner scanner, List<Player> list) {
         super(scanner, list);
 
+        int invalidPosition = replayGameImplicitly();
+
+        if (invalidPosition > 0) {
+            Log0j.writeCaution(
+                String.format("Step %d is invalid in the game %d file", invalidPosition, gid));
+
+            if (gamePage != null) {
+                gamePage.callInterrupt(UpdatableGame.Interrupt.INVALID_GAME, "Step %d is invalid");
+            }
+        }
+
         initialize();
     }
 
@@ -147,6 +158,13 @@ public class GameController extends Game implements GameControllerLayer {
         Log0j.writeInfo(
                 String.format("%s Clicked Grid (%d, %d)", getCurrentPlayer().nameProperty().getValue(), row, col));
 
+        if (!isMovable(row, col)) {
+            Log0j.writeInfo(
+                String.format("Invalid Move (%d, %d): The position is not available for player now", row, col));
+
+            return;
+        }
+
         if (!move(row, col)) {
             forcePause();
 
@@ -187,7 +205,6 @@ public class GameController extends Game implements GameControllerLayer {
         backToStart();
         forceGUIUpdate();
 
-
         for (int i = 0; i < list.size(); i++) {
             performStep(i);
             forceGUIUpdate();
@@ -198,6 +215,24 @@ public class GameController extends Game implements GameControllerLayer {
                 e.printStackTrace();
             }
         }
+    }
+
+    public int replayGameImplicitly() {
+        Board hiddenBoard = new Board(startBoard);
+        List<Step> list = getStepList();
+
+        ChessColor color = ChessColor.BLACK;
+
+        for (int i = 0; i < list.size(); ++i, color = ChessColor.dual(color)) {
+            Step step = list.get(i);
+
+            if (step.getChess() != null &&
+                (step.getChess().getColor() != color || !hiddenBoard.changeIntoWithErrorCheck(step))) {
+                return i + 1;
+            }
+        }
+
+        return 0;
     }
 
     @Override
