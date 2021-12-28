@@ -5,6 +5,7 @@ import com.demo.reversi.controller.basic.chess.ChessColor;
 import com.demo.reversi.controller.basic.player.AIPlayer;
 import com.demo.reversi.controller.basic.player.Mode;
 import com.demo.reversi.controller.basic.player.Player;
+import com.demo.reversi.logger.Log0j;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -298,7 +299,13 @@ public class Game {
             if (pid >= AIPlayer.getOffset()) {
                 player[i] = Mode.getPlayer(pid);
             } else {
-                player[i] = playerList.stream().filter((value) -> value.getPid() == pid).findFirst().get();
+                Optional<Player> optionalPlayer = playerList.stream().filter((value) -> value.getPid() == pid).findFirst();
+
+                if (optionalPlayer.isPresent()) {
+                    player[i] = optionalPlayer.get();
+                } else {
+                    Log0j.writeError(String.format("Player%d does not exist in loading game", i + 1));
+                }
             }
         }
 

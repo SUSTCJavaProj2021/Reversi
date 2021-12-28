@@ -112,7 +112,7 @@ public class HumanPlayer extends Player {
 
     @Override
     public String print() {
-        return pid + "\n" + name + "\n" + win.print() + lose.print() + total.print();
+        return pid.getValue() + "\n" + name.getValue() + "\n" + win.print() + lose.print() + total.print();
     }
 
     @Override
