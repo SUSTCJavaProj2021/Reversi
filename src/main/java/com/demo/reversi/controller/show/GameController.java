@@ -59,10 +59,10 @@ public class GameController extends Game implements GameControllerLayer {
         isReadOnly = true;
         player1 = player[0].isHuman() ? new HumanPlayerController(player[0]) : new AIPlayerController(player[0]);
         player2 = player[1].isHuman() ? new HumanPlayerController(player[1]) : new AIPlayerController(player[1]);
-        judgeGameStatus(null);
+        judgeGameStatus();
     }
 
-    private void judgeGameStatus(Player winner) {
+    private void judgeGameStatus() {
         if (isEnded) {
             if (winner == null) {
                 gameStatus = GameStatus.TIED;
@@ -122,7 +122,8 @@ public class GameController extends Game implements GameControllerLayer {
             pause();
 
             if (!isMovable()) {
-                judgeGameStatus(endGame());
+                endGame();
+                judgeGameStatus();
             }
         }
 

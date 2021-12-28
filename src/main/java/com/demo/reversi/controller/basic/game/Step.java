@@ -56,7 +56,11 @@ public class Step {
         StringBuilder string = new StringBuilder();
 
         string.append(isPause).append('\n');
-        string.append(chess.print());
+
+        if (chess != null) {
+            string.append(chess.print());
+        }
+
         string.append(modifiedChessList.size()).append('\n');
 
         for (Chess[] pair: modifiedChessList) {
@@ -68,7 +72,10 @@ public class Step {
 
     public void load(Scanner scanner) {
         isPause = scanner.nextBoolean();
-        chess = new Chess(scanner);
+
+        if (!isPause) {
+            chess = new Chess(scanner);
+        }
 
         int size = scanner.nextInt();
 
