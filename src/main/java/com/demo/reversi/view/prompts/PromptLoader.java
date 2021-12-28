@@ -283,6 +283,7 @@ public class PromptLoader {
         Platform.runLater(textFields[0]::requestFocus);
 
 
+
         //Set result format
         gameInfoDialog.setResultConverter((ButtonType buttonType) -> {
             if (buttonType == ButtonType.FINISH) {

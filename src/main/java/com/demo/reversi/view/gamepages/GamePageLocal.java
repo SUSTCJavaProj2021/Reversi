@@ -33,8 +33,12 @@ public class GamePageLocal implements UpdatableGame {
     public final VBox sidePanel;
     public final GridPane controlsPane;
     public final VBox configPane;
-    public InfoPane player1Info;
-    public InfoPane player2Info;
+    public final InfoPane player1Info;
+    public final InfoPane player2Info;
+    public final IndicatedToggleSwitch cheatToggle;
+    public final IndicatedToggleSwitch cheatPlayerToggle;
+    public final MetroButton undoButton;
+    public final MetroButton saveToButton;
 
     public final ChessBoard chessBoard;
     public final GameSystemLayer gameSystem;
@@ -97,6 +101,12 @@ public class GamePageLocal implements UpdatableGame {
 
         sidePanel.getChildren().add(new TitleLabel("Settings", theme));
 
+        cheatToggle = new IndicatedToggleSwitch(theme);
+        cheatPlayerToggle = new IndicatedToggleSwitch(theme, "Player 1", "Player 2");
+
+        undoButton = new MetroButton("Undo", theme);
+        saveToButton = new MetroButton("Save To...", theme);
+
         //Adding controls pane
         controlsPane = new GridPane();
         VBox.setVgrow(controlsPane, Priority.ALWAYS);
@@ -133,55 +143,37 @@ public class GamePageLocal implements UpdatableGame {
     }
 
     public void initControls() {
-        {
-            IndicatedToggleSwitch cheatToggle = new IndicatedToggleSwitch(theme);
-            cheatToggle.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
-                controller.setCheatMode(newValue);
-            }));
+        cheatToggle.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
+            controller.setCheatMode(newValue);
+        }));
 
-            IndicatedToggleSwitch cheatPlayer = new IndicatedToggleSwitch(theme, "Player 1", "Player 2");
-            cheatPlayer.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
-                controller.setCheatAsPlayer(newValue);
-            }));
-            controlsPane.add(new HBox(10, new TextLabel("Cheat Mode", theme), cheatToggle), 0, 0);
-            controlsPane.add(new HBox(10, new TextLabel("As which player", theme), cheatPlayer), 0, 1);
-        }
+        cheatPlayerToggle.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
+            controller.forceSideSwapping();
+        }));
+        controlsPane.add(new HBox(10, new TextLabel("Cheat Mode", theme), cheatToggle), 0, 0);
+        controlsPane.add(new HBox(10, new TextLabel("As which player", theme), cheatPlayerToggle), 0, 1);
 
         //todo: the following buttons shall all be rewritten
-        {
-            MetroButton undoBtn = new MetroButton("Undo", theme);
-            undoBtn.setOnAction(event -> {
-                Log0j.writeInfo("GamePage tried to undo the last operation.");
-                controller.undoLastStep();
-                update();
-            });
-            controlsPane.add(undoBtn, 0, 2);
-        }
+        undoButton.setOnAction(event -> {
+            Log0j.writeInfo("GamePage tried to undo the last operation.");
+            controller.undoLastStep();
+            update();
+        });
+        controlsPane.add(undoButton, 0, 2);
 
-        {
-            MetroButton saveToBtn = new MetroButton("Save To...", theme);
-            saveToBtn.setOnAction(ActionEvent -> {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Save to");
-                File file = fileChooser.showSaveDialog(root.getScene().getWindow());
-                if (file != null) {
-                    controller.saveTo(file);
-                    Log0j.writeInfo("Saved to " + file.getPath());
-                } else {
-                    Log0j.writeError("Player hasn't selected a valid saveTo destination. The saving process had been cancelled.");
-                }
-            });
-            controlsPane.add(saveToBtn, 1, 2);
-        }
-
-        {
-            MetroButton pauseBtn = new MetroButton("Pause", theme);
-            pauseBtn.setOnAction(event -> {
-                Log0j.writeInfo("Game paused on request.");
-                controller.forcePause();
-            });
-            controlsPane.add(pauseBtn, 0, 3);
-        }
+        MetroButton saveToButton = new MetroButton("Save To...", theme);
+        saveToButton.setOnAction(ActionEvent -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save to");
+            File file = fileChooser.showSaveDialog(root.getScene().getWindow());
+            if (file != null) {
+                controller.saveTo(file);
+                Log0j.writeInfo("Saved to " + file.getPath());
+            } else {
+                Log0j.writeError("Player hasn't selected a valid saveTo destination. The saving process had been cancelled.");
+            }
+        });
+        controlsPane.add(saveToButton, 1, 2);
 
         {
             //todo: This may need change.
@@ -229,7 +221,7 @@ public class GamePageLocal implements UpdatableGame {
 
             IndicatedToggleSwitch cheatPlayerToggle = new IndicatedToggleSwitch(theme, "Player 1", "Player 2");
             cheatPlayerToggle.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
-                controller.setCheatAsPlayer(newValue);
+                controller.forceSideSwapping();
             }));
             controlsPane.add(new HBox(10, new TextLabel("Cheat Mode", theme), cheatToggle), 0, 0);
             controlsPane.add(new HBox(10, new TextLabel("As which player", theme), cheatPlayerToggle), 0, 1);
@@ -243,18 +235,21 @@ public class GamePageLocal implements UpdatableGame {
             return;
         }
         chessBoard.update();
+        updateAIPlayer();
         updateElements();
     }
 
     @Override
     public void sourcedUpdate(int row, int col) {
         chessBoard.sourcedUpdate(row, col);
+        updateAIPlayer();
         updateElements();
     }
 
     @Override
     public void sourcedUpdate(int row, int col, Task<?> task) {
         chessBoard.sourcedUpdate(row, col, task);
+        updateAIPlayer();
         updateElements();
     }
 
@@ -321,12 +316,22 @@ public class GamePageLocal implements UpdatableGame {
         if (controller.getCurrentPlayer() == controller.getPlayer1()) {
             player1Info.isActivatedProperty().setValue(true);
             player2Info.isActivatedProperty().setValue(false);
+            cheatPlayerToggle.switchedOnProperty().setValue(false);
         } else {
             player1Info.isActivatedProperty().setValue(false);
             player2Info.isActivatedProperty().setValue(true);
+            cheatPlayerToggle.switchedOnProperty().setValue(true);
         }
-        //todo: add updates
 
+        //todo: add updates
+        cheatToggle.switchedOnProperty().setValue(controller.isCheatMode());
+
+    }
+
+    public void updateAIPlayer() {
+        if (controller != null) {
+            controller.performAINextStep();
+        }
     }
 
     public GamePageLocal outer() {

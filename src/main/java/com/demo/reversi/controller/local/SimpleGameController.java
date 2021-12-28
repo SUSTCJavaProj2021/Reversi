@@ -161,7 +161,7 @@ public class SimpleGameController implements GameControllerLayer {
     }
 
     @Override
-    public boolean getCheatMode() {
+    public boolean isCheatMode() {
         return false;
     }
 
@@ -173,7 +173,7 @@ public class SimpleGameController implements GameControllerLayer {
     }
 
     @Override
-    public void setCheatAsPlayer(boolean isPlayer1) {
+    public void forceSideSwapping() {
     }
 
     @Override
@@ -193,6 +193,11 @@ public class SimpleGameController implements GameControllerLayer {
 
     @Override
     public boolean isPlayer2AI() {
+        return false;
+    }
+
+    @Override
+    public boolean performAINextStep() {
         return false;
     }
 

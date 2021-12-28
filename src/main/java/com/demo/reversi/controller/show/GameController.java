@@ -64,6 +64,8 @@ public class GameController extends Game implements GameControllerLayer {
 
     private void judgeGameStatus() {
         if (isEnded) {
+            setReadOnly(true);
+
             if (winner == null) {
                 gameStatus = GameStatus.TIED;
             } else if (winner.getPid() == player1.pidProperty().getValue()) {
@@ -286,20 +288,14 @@ public class GameController extends Game implements GameControllerLayer {
     }
 
     @Override
-    public boolean getCheatMode() {
-        //todo: finish this
-        return false;
-    }
-
-    @Override
-    public void setCheatAsPlayer(boolean isPlayer1) {
-        if (isPlayer1) {
-            super.cheatMode[0] = true;
-            Log0j.writeInfo("Cheat mode of player 1 switched: ON");
-        } else {
-            super.cheatMode[1] = true;
-            Log0j.writeInfo("Cheat mode of player 2 switched: ON");
-        }
+    public void forceSideSwapping() {
+//        if (isPlayer1) {
+//            super.cheatMode[0] = true;
+//            Log0j.writeInfo("Cheat mode of player 1 switched: ON");
+//        } else {
+//            super.cheatMode[1] = true;
+//            Log0j.writeInfo("Cheat mode of player 2 switched: ON");
+//        }
     }
 
     @Override
@@ -332,6 +328,11 @@ public class GameController extends Game implements GameControllerLayer {
     @Override
     public boolean isPlayer2AI() {
         return !player2.get().isHuman();
+    }
+
+    @Override
+    public boolean performAINextStep() {
+        return false;
     }
 
     @Override

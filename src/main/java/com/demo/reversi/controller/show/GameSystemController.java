@@ -6,6 +6,7 @@ import com.demo.reversi.controller.basic.game.Board;
 import com.demo.reversi.controller.basic.game.Game;
 import com.demo.reversi.controller.basic.player.HumanPlayer;
 import com.demo.reversi.controller.basic.player.Player;
+import com.demo.reversi.controller.interfaces.Difficulty;
 import com.demo.reversi.controller.interfaces.GameControllerLayer;
 import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.controller.interfaces.PlayerLayer;
@@ -42,6 +43,14 @@ public class GameSystemController extends GameSystem implements GameSystemLayer 
 
     @Override
     public PlayerLayer createNewPlayer(String playerName) {
+        PlayerLayer previousPlayer = getPlayer(playerName);
+
+        if (previousPlayer != null) {
+            Log0j.writeCaution("You create a existed player named " + playerName);
+
+            return previousPlayer;
+        }
+
         Player newPlayer = new HumanPlayer(playerName);
 
         playerList.add(newPlayer);
@@ -144,6 +153,11 @@ public class GameSystemController extends GameSystem implements GameSystemLayer 
     }
 
     @Override
+    public GameControllerLayer startNewGame(String playerName1, boolean isAIEnabled1, Difficulty difficulty1, String playerName2, boolean isAIEnabled2, Difficulty difficulty2, int rowSize, int colSize) {
+        return null;
+    }
+
+    @Override
     public GameController loadGame(File file) {
         try {
             Scanner scanner = new Scanner(file);
@@ -209,6 +223,7 @@ public class GameSystemController extends GameSystem implements GameSystemLayer 
 
     @Override
     public boolean save() {
+        Log0j.writeCaution("GameSystem saved.");
         return saveTo(new File(SaveLoader.getResource(SAVE_PATH).getAbsolutePath()));
     }
 

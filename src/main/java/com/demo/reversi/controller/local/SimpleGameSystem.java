@@ -1,5 +1,6 @@
 package com.demo.reversi.controller.local;
 
+import com.demo.reversi.controller.interfaces.Difficulty;
 import com.demo.reversi.controller.interfaces.GameControllerLayer;
 import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.controller.interfaces.PlayerLayer;
@@ -49,6 +50,11 @@ public class SimpleGameSystem implements GameSystemLayer {
     @Override
     public GameControllerLayer startNewGame(String player1, String player2, int rowSize, int colSize) {
         return new SimpleGameController(getPlayer(player1), getPlayer(player2), rowSize, colSize, true);
+    }
+
+    @Override
+    public GameControllerLayer startNewGame(String playerName1, boolean isAIEnabled1, Difficulty difficulty1, String playerName2, boolean isAIEnabled2, Difficulty difficulty2, int rowSize, int colSize) {
+        return null;
     }
 
     @Override

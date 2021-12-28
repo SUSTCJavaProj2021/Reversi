@@ -306,7 +306,7 @@ public class Game {
                 if (optionalPlayer.isPresent()) {
                     player[i] = optionalPlayer.get();
                 } else {
-                    Log0j.writeError(String.format("Player%d does not exist in loading game", i + 1));
+                    Log0j.writeError(String.format("Player%d does not exist in loading game %s", i + 1, gid));
                 }
             }
         }

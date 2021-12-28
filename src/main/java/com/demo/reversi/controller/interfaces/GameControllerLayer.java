@@ -184,7 +184,7 @@ public interface GameControllerLayer {
      *
      * @return <code>true</code> if cheat mode is enabled.
      */
-    public boolean getCheatMode();
+    public boolean isCheatMode();
 
 
     /**
@@ -202,7 +202,7 @@ public interface GameControllerLayer {
      *                  However, you should still flip chess according to the rule.
      * @return <code>true</code> If the operation succeeds.
      */
-    public void setCheatAsPlayer(boolean isPlayer1);
+    public void forceSideSwapping();
 
 
     /**
@@ -231,6 +231,8 @@ public interface GameControllerLayer {
      * @return <code>true</code> If Player 2 is AI.
      */
     public boolean isPlayer2AI();
+
+    public boolean performAINextStep();
 
 
     /**
