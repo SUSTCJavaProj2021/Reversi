@@ -119,7 +119,7 @@ public class HumanPlayer extends Player {
     @Override
     public void load(Scanner scanner) {
         pid.setValue(scanner.nextLong());
-        name.setValue(scanner.next());
+        name.setValue(scanner.nextLine());
         win.load(scanner);
         lose.load(scanner);
         total.load(scanner);
