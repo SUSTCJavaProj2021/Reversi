@@ -471,6 +471,11 @@ public class GameController extends Game implements GameControllerLayer {
     }
 
     @Override
+    public void callAIPredictor() {
+
+    }
+
+    @Override
     public GridStatus getGridStatus(int row, int col) {
         if (!board.isValid(row, col)) {
             return GridStatus.BANNED;
@@ -493,5 +498,10 @@ public class GameController extends Game implements GameControllerLayer {
     @Override
     public void setReadOnly(boolean isReadOnly) {
         this.isReadOnly = isReadOnly;
+    }
+
+    @Override
+    public void resizeBoard(int rowSize, int colSize) {
+
     }
 }

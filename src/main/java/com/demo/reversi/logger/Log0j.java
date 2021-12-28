@@ -27,7 +27,6 @@ public class Log0j {
         String s = String.valueOf(message);
         String tmp = Thread.currentThread().getStackTrace()[2].getClassName();
         String className = tmp.substring(tmp.lastIndexOf((int)'.') + 1);
-
         System.err.printf("[%s] [%s/Caution]: %s\n", LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss.SS")), className, s);
     }
 }

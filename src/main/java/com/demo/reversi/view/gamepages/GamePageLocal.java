@@ -14,9 +14,7 @@ import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.UpdatableGame;
 import com.demo.reversi.view.prompts.PromptLoader;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.geometry.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -178,6 +176,7 @@ public class GamePageLocal implements UpdatableGame {
         cheatPlayerToggle.switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
             if (cheatPlayerListen) {
                 controller.forceSideSwapping();
+                updateWithoutIndicator();
             }
         }));
 
@@ -262,29 +261,38 @@ public class GamePageLocal implements UpdatableGame {
         setPlayer2AsAI.setOnAction(ActionEvent -> {
             controller.setPlayer2AsAIPlayer(player2AIMode.getValue());
         });
+        recoverPlayer1.setOnAction(ActionEvent -> {
+            controller.setRecoverPlayer1AsHuman();
+        });
+        recoverPlayer2.setOnAction(ActionEvent -> {
+            controller.setRecoverPlayer2AsHuman();
+        });
 
         {
-            //Test board judge.
-            MetroButton judgeBtn = new MetroButton("Perform board judge!", theme);
-            judgeBtn.setOnAction(actionEvent -> {
-                curtainCall();
+            //Test AI predictor
+            MetroButton predicatorButton = new MetroButton("Call AI Predictor", theme);
+            predicatorButton.setOnAction(actionEvent -> {
+                controller.callAIPredictor();
+                update();
             });
-            configPane.getChildren().add(judgeBtn);
+            configPane.getChildren().add(predicatorButton);
         }
 
-        {
-            //Test board judge.
-            MetroButton judgeBtn = new MetroButton("Perform board judge!", theme);
-            judgeBtn.setOnAction(actionEvent -> {
-                curtainCall();
-            });
-            configPane.getChildren().add(judgeBtn);
-        }
 
     }
 
     @Override
     public void update() {
+        if (controller == null) {
+            return;
+        }
+        chessBoard.update();
+        updateAIPlayer();
+        updateElements();
+        updateIndicator();
+    }
+
+    public void updateWithoutIndicator() {
         if (controller == null) {
             return;
         }
@@ -298,6 +306,7 @@ public class GamePageLocal implements UpdatableGame {
         chessBoard.sourcedUpdate(row, col);
         updateAIPlayer();
         updateElements();
+        updateIndicator();
     }
 
     @Override
@@ -305,6 +314,7 @@ public class GamePageLocal implements UpdatableGame {
         chessBoard.sourcedUpdate(row, col, task);
         updateAIPlayer();
         updateElements();
+        updateIndicator();
     }
 
     public void curtainCallUpdate() {
@@ -312,9 +322,9 @@ public class GamePageLocal implements UpdatableGame {
     }
 
     @Override
-    public void callInterrupt(Interrupt interrupt, String... reason) {
+    public void callInterrupt(Interrupt interrupt, String reason) {
         //todo: Add body
-        Alert alert = PromptLoader.getGameInvalidInterruptAlert(theme);
+        Alert alert = PromptLoader.getGameInvalidInterruptAlert(reason, theme);
         alert.showAndWait();
     }
 
@@ -369,16 +379,14 @@ public class GamePageLocal implements UpdatableGame {
      * Update all other elements except the chessboard.
      */
     public void updateElements() {
+        if (controller.getCurrentPlayer() == controller.getPlayer1()) {
+            player1Info.isActivatedProperty().setValue(true);
+            player2Info.isActivatedProperty().setValue(false);
+        } else if (controller.getCurrentPlayer() == controller.getPlayer2()) {
+            player1Info.isActivatedProperty().setValue(false);
+            player2Info.isActivatedProperty().setValue(true);
 
-        Platform.runLater(
-                () -> {
-                    cheatListen = false;
-                    cheatPlayerListen = false;
-                    cheatToggle.switchedOnProperty().setValue(controller.isCheatMode());
-                    cheatPlayerToggle.switchedOnProperty().setValue(controller.getCurrentPlayer() != controller.getCurrentPlayer());
-                    cheatListen = true;
-                    cheatPlayerListen = true;
-                });
+        }
         recoverPlayer1.setDisable(!controller.isRecoverPlayer1Available());
         recoverPlayer2.setDisable(!controller.isRecoverPlayer2Available());
         undoButton.setDisable(!controller.isUndoAvailable());
@@ -391,6 +399,17 @@ public class GamePageLocal implements UpdatableGame {
         if (controller != null) {
             controller.performAINextStep();
         }
+    }
+
+    public void updateIndicator() {
+        Platform.runLater(() -> {
+            cheatListen = false;
+            cheatPlayerListen = false;
+            cheatToggle.switchedOnProperty().setValue(controller.isCheatMode());
+            cheatPlayerToggle.switchedOnProperty().setValue(controller.getCurrentPlayer() != controller.getCurrentPlayer());
+            cheatListen = true;
+            cheatPlayerListen = true;
+        });
     }
 
     public GamePageLocal outer() {

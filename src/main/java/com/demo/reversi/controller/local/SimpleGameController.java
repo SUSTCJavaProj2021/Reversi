@@ -232,6 +232,11 @@ public class SimpleGameController implements GameControllerLayer {
         return false;
     }
 
+    @Override
+    public void callAIPredictor() {
+
+    }
+
 
     @Override
     public boolean save() {
@@ -250,6 +255,11 @@ public class SimpleGameController implements GameControllerLayer {
 
     @Override
     public void setReadOnly(boolean isReadOnly) {
+    }
+
+    @Override
+    public void resizeBoard(int rowSize, int colSize) {
+
     }
 
     ;

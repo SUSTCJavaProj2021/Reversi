@@ -125,6 +125,12 @@ public interface GameSystemLayer {
     public GameControllerLayer unregisterGamePlayable(GameControllerLayer controller);
 
     /**
+     * Return the GameEditor which can be used to customize the initial board layout.
+     * @return The GameEditor
+     */
+    public GameEditor getGameEditor();
+
+    /**
      * Load the GameSystem instance from the selected file.
      *
      * @param file The GameSystem File

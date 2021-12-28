@@ -2,6 +2,7 @@ package com.demo.reversi.controller.local;
 
 import com.demo.reversi.controller.basic.player.Mode;
 import com.demo.reversi.controller.interfaces.GameControllerLayer;
+import com.demo.reversi.controller.interfaces.GameEditor;
 import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.controller.interfaces.PlayerLayer;
 import com.demo.reversi.logger.Log0j;
@@ -78,6 +79,11 @@ public class SimpleGameSystem implements GameSystemLayer {
     public GameControllerLayer unregisterGamePlayable(GameControllerLayer controller) {
         //todo: you should set the controller to be unplayable
         return controller;
+    }
+
+    @Override
+    public GameEditor getGameEditor() {
+        return null;
     }
 
     @Override

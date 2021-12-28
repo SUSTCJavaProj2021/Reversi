@@ -8,6 +8,7 @@ import com.demo.reversi.component.gamemodel.ChessBoard;
 import com.demo.reversi.component.panes.SmoothishScrollPane;
 import com.demo.reversi.component.switches.IndicatedToggleSwitch;
 import com.demo.reversi.controller.basic.GameSystem;
+import com.demo.reversi.controller.interfaces.GameEditor;
 import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.controller.local.SimpleGameSystem;
 import com.demo.reversi.logger.Log0j;
@@ -15,12 +16,14 @@ import com.demo.reversi.res.lang.LiteralConstants;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
 import javafx.beans.value.ChangeListener;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -192,7 +195,57 @@ public class SettingsPage implements Updatable {
 
         {
             //todo: Finish customizing ChessBoard
+            GridPane gridPane = new GridPane();
             ChessBoard chessBoard = new ChessBoard(theme);
+            GameEditor gameEditor = gameSystem.getGameEditor();
+            VBox container = new VBox(5);
+
+            chessBoard.initBoardPlayable(gameEditor);
+
+            gridPane.add(chessBoard, 0, 0);
+            gridPane.add(container, 1, 0);
+
+            TextField rowText = new TextField("8");
+            TextField colText = new TextField("8");
+            MetroButton resizeButton = new MetroButton("Resize", theme);
+            MetroButton brushEmptyButton = new MetroButton("Brush: Empty", theme);
+            MetroButton brushPlayer1Button = new MetroButton("Brush: Player1", theme);
+            MetroButton brushPlayer2Button = new MetroButton("Brush: Player2", theme);
+            MetroButton brushBanningButton = new MetroButton("Brush: Ban", theme);
+            MetroButton brushNullButton = new MetroButton("Brush: NULL", theme);
+            MetroButton saveButton = new MetroButton("Save Config", theme);
+            MetroButton resetButton = new MetroButton("Reset Board", theme);
+            container.getChildren().addAll(
+                    rowText, colText,
+                    resizeButton, brushEmptyButton, brushPlayer1Button, brushPlayer2Button, brushBanningButton, brushNullButton,
+                    saveButton, resetButton);
+
+            resizeButton.setOnAction(ActionEvent -> {
+                gameEditor.resizeBoard(Integer.parseInt(rowText.getText()), Integer.parseInt(colText.getText()));
+                chessBoard.initBoardPlayable(gameEditor);
+            });
+            brushEmptyButton.setOnAction(ActionEvent -> {
+                gameEditor.setBrushAsEmptying();
+            });
+            brushPlayer1Button.setOnAction(ActionEvent -> {
+                gameEditor.setBrushAsPlayer1();
+            });
+            brushPlayer2Button.setOnAction(ActionEvent -> {
+                gameEditor.setBrushAsPlayer2();
+            });
+            brushBanningButton.setOnAction(ActionEvent -> {
+                gameEditor.setBrushAsBanning();
+            });
+            brushNullButton.setOnAction(ActionEvent -> {
+                gameEditor.setBrushAsNull();
+            });
+            saveButton.setOnAction(ActionEvent -> {
+                gameEditor.saveConfig();
+            });
+            resetButton.setOnAction(ActionEvent -> {
+                gameEditor.resetConfig();
+            });
+
             addToContentWrapper(createItemContainer("Initial ChessBoard Setting", chessBoard));
         }
 

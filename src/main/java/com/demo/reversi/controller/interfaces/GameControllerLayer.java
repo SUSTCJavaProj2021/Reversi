@@ -253,6 +253,8 @@ public interface GameControllerLayer {
 
     public boolean performAINextStep();
 
+    public void callAIPredictor();
+
 
     /**
      * Get the status of the specific grid.
@@ -281,4 +283,6 @@ public interface GameControllerLayer {
     public boolean saveTo(File file);
 
     public void setReadOnly(boolean isReadOnly);
+
+    public void resizeBoard(int rowSize, int colSize);
 }
