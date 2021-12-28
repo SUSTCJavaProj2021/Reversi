@@ -347,6 +347,7 @@ public class GamePreviewPane extends StackPane {
             Optional<GameInfo> optionalGameInfo = gameInfoDialog.showAndWait();
 
             optionalGameInfo.ifPresent((GameInfo gameInfo) -> {
+                //todo: change AI player settings
                 if (gameInfo.rowSize < 0 || gameInfo.colSize < 0) {
                     controller = gameSystem.startNewGame(gameInfo.playerName1, gameInfo.playerName2);
                 } else {
@@ -358,6 +359,8 @@ public class GamePreviewPane extends StackPane {
             if (controller != null) {
                 GamePageLocal gameLocalPage = new GamePageLocal(gameSystem, gameSystem.registerGamePlayable(controller), theme);
                 initGameToStage(gameLocalPage, PreviewType.NEW_GAME);
+
+                //Resetting the GameController
                 controller = null;
             } else {
                 Log0j.writeInfo("Game loading failed for unknown reason. The scenario was considered not going to happen.");

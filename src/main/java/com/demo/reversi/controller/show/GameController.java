@@ -282,6 +282,12 @@ public class GameController extends Game implements GameControllerLayer {
     }
 
     @Override
+    public boolean getCheatMode() {
+        //todo: finish this
+        return false;
+    }
+
+    @Override
     public void setCheatAsPlayer(boolean isPlayer1) {
         if (isPlayer1) {
             super.cheatMode[0] = true;

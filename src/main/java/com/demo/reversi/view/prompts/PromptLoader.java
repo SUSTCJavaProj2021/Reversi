@@ -2,6 +2,8 @@ package com.demo.reversi.view.prompts;
 
 import com.demo.reversi.component.TextLabel;
 import com.demo.reversi.component.TitleLabel;
+import com.demo.reversi.component.switches.IndicatedToggleSwitch;
+import com.demo.reversi.controller.interfaces.Difficulty;
 import com.demo.reversi.controller.interfaces.GameControllerLayer;
 import com.demo.reversi.controller.interfaces.PlayerLayer;
 import com.demo.reversi.themes.Theme;
@@ -12,6 +14,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
 public class PromptLoader {
@@ -210,8 +213,47 @@ public class PromptLoader {
         labels[2].setText("Row size: (Integer)");
         labels[3].setText("Column Size: (Integer)");
 
+        HBox[] container = new HBox[2];
+        IndicatedToggleSwitch[] toggleSwitch = new IndicatedToggleSwitch[2];
+        TextLabel[] indicatorLabels = new TextLabel[4];
+        ComboBox<Difficulty>[] difficultyComboBox = new ComboBox[2];
+        for (int i = 0; i < 2; i++) {
+            indicatorLabels[i * 2] = new TextLabel("AI Toggle", theme);
+            indicatorLabels[i * 2 + 1] = new TextLabel("Difficulty", theme);
+            toggleSwitch[i] = new IndicatedToggleSwitch(theme);
 
-        for (int i = 0; i < 4; i++) {
+            difficultyComboBox[i] = new ComboBox();
+            for (Difficulty d : Difficulty.values()) {
+                difficultyComboBox[i].getItems().add(d);
+            }
+
+            int finalI = i;
+
+            toggleSwitch[i].switchedOnProperty().addListener(((observable, oldValue, newValue) -> {
+                if (newValue) {
+                    difficultyComboBox[finalI].setDisable(false);
+                    textFields[finalI].setDisable(true);
+                } else {
+                    difficultyComboBox[finalI].getSelectionModel().select(0);
+                    difficultyComboBox[finalI].setDisable(true);
+                    textFields[finalI].setDisable(false);
+                }
+            }));
+
+            difficultyComboBox[i].getSelectionModel().select(0);
+            toggleSwitch[i].switchedOnProperty().setValue(false);
+
+            container[i] = new HBox(10, indicatorLabels[i * 2], toggleSwitch[i], indicatorLabels[i * 2 + 1], difficultyComboBox[i]);
+        }
+
+
+        for (int i = 0; i < 2; i++) {
+            gridPane.add(labels[i], 0, gridPane.getRowCount());
+            gridPane.add(textFields[i], 1, gridPane.getRowCount() - 1);
+            gridPane.add(container[i], 0, gridPane.getRowCount(), 2, 1);
+        }
+
+        for (int i = 2; i < 4; i++) {
             gridPane.add(labels[i], 0, gridPane.getRowCount());
             gridPane.add(textFields[i], 1, gridPane.getRowCount() - 1);
         }
@@ -225,12 +267,13 @@ public class PromptLoader {
 
 
         //Set button content
-        dialogPane.lookupButton(ButtonType.FINISH).disableProperty().bind(Bindings.createBooleanBinding(() -> textFields[0].getText().isEmpty()
-                || textFields[1].getText().isEmpty()
-                || textFields[2].getText().isEmpty()
-                || textFields[3].getText().isEmpty()
-                || !isInteger(textFields[2].getText())
-                || !isInteger(textFields[3].getText()), textFields[0].textProperty(), textFields[1].textProperty(), textFields[2].textProperty(), textFields[3].textProperty()));
+        dialogPane.lookupButton(ButtonType.FINISH).disableProperty().bind(Bindings.createBooleanBinding(() ->
+                textFields[0].getText().isEmpty() && !toggleSwitch[0].switchedOnProperty().getValue()
+                        || textFields[1].getText().isEmpty() && !toggleSwitch[1].switchedOnProperty().getValue()
+                        || textFields[2].getText().isEmpty()
+                        || textFields[3].getText().isEmpty()
+                        || !isInteger(textFields[2].getText())
+                        || !isInteger(textFields[3].getText()), textFields[0].textProperty(), textFields[1].textProperty(), textFields[2].textProperty(), textFields[3].textProperty()));
 
         Platform.runLater(textFields[0]::requestFocus);
 
@@ -238,7 +281,10 @@ public class PromptLoader {
         //Set result format
         gameInfoDialog.setResultConverter((ButtonType buttonType) -> {
             if (buttonType == ButtonType.FINISH) {
-                return new GameInfo(textFields[0].getText(), textFields[1].getText(), Integer.parseInt(textFields[2].getText()), Integer.parseInt(textFields[3].getText()));
+                return new GameInfo(
+                        textFields[0].getText(), toggleSwitch[0].switchedOnProperty().getValue(), difficultyComboBox[0].getValue(),
+                        textFields[1].getText(), toggleSwitch[1].switchedOnProperty().getValue(), difficultyComboBox[1].getValue(),
+                        Integer.parseInt(textFields[2].getText()), Integer.parseInt(textFields[3].getText()));
             }
             return null;
         });

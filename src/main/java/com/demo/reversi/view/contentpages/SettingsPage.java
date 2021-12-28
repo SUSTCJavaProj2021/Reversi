@@ -4,6 +4,7 @@ import com.demo.reversi.MainApp;
 import com.demo.reversi.component.MetroButton;
 import com.demo.reversi.component.TextLabel;
 import com.demo.reversi.component.TitleLabel;
+import com.demo.reversi.component.gamemodel.ChessBoard;
 import com.demo.reversi.component.panes.SmoothishScrollPane;
 import com.demo.reversi.component.switches.IndicatedToggleSwitch;
 import com.demo.reversi.controller.basic.GameSystem;
@@ -185,6 +186,15 @@ public class SettingsPage implements Updatable {
          * Chess Up Sound Source
          * Grid Sound Source
          */
+
+        //GameSystem Settings
+        addToContentWrapper(new TitleLabel("Gameplay", theme));
+
+        {
+            //todo: Finish customizing ChessBoard
+            ChessBoard chessBoard = new ChessBoard(theme);
+            addToContentWrapper(createItemContainer("Initial ChessBoard Setting", chessBoard));
+        }
 
         //Colors
         addToContentWrapper(new TitleLabel("Colors", theme));

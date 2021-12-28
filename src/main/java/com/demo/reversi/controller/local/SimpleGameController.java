@@ -160,6 +160,11 @@ public class SimpleGameController implements GameControllerLayer {
         return currentPlayer;
     }
 
+    @Override
+    public boolean getCheatMode() {
+        return false;
+    }
+
 
     @Override
     public void setCheatMode(boolean isEnabled) {

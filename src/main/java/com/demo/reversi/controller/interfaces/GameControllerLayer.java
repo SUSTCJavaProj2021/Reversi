@@ -180,6 +180,12 @@ public interface GameControllerLayer {
      */
     public PlayerLayer getCurrentPlayer();
 
+    /**
+     *
+     * @return <code>true</code> if cheat mode is enabled.
+     */
+    public boolean getCheatMode();
+
 
     /**
      * A toggle switch will be used to toggle the cheat mode.
