@@ -348,12 +348,7 @@ public class GamePreviewPane extends StackPane {
 
             optionalGameInfo.ifPresent((GameInfo gameInfo) -> {
                 //todo: change AI player settings
-                if (gameInfo.rowSize < 0 || gameInfo.colSize < 0) {
-                    controller = gameSystem.startNewGame(gameInfo.playerName1, gameInfo.playerName2);
-                } else {
-                    controller = gameSystem.startNewGame(gameInfo.playerName1, gameInfo.playerName2,
-                            gameInfo.rowSize, gameInfo.colSize);
-                }
+                controller = gameSystem.startNewGame(gameInfo.playerName1, gameInfo.playerName2, gameInfo.rowSize, gameInfo.colSize);
             });
 
             if (controller != null) {
