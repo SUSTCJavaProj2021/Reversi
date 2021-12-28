@@ -16,7 +16,7 @@ public class HardAIPlayer extends AIPlayer {
         pid.setValue(AI_PID_OFFSET + 2);
     }
 
-    private static final int RANDOM_TIMES = 50;
+    private static final int RANDOM_TIMES = 200;
 
     private boolean MonteCarlo(Chess chess, Board initialBoard) {
         Board board = new Board(initialBoard);
@@ -27,7 +27,6 @@ public class HardAIPlayer extends AIPlayer {
 
         for (int pauseCnt = 0; pauseCnt < 2; color = ChessColor.dual(color)) {
             List<int[]> list = board.showAllPossibleMoves(color, false);
-            double[] weight = new double[list.size()];
 
             if (list.isEmpty()) {
                 ++pauseCnt;
@@ -36,15 +35,7 @@ public class HardAIPlayer extends AIPlayer {
                 pauseCnt = 0;
             }
 
-            for (int i = 0; i < list.size(); i++) {
-                int[] move = list.get(i);
-                List<Chess[]> change = board.addChess(new Chess(color, move[0], move[1]), false);
-
-                weight[i] = borderWeight(move, board) + board.showAllPossibleMoves(ChessColor.dual(color), false).size();
-                board.changeBack(change);
-            }
-
-            int[] move = list.get(weightedSelect(weight));
+            int[] move = list.get(random.nextInt(list.size()));
 
             board.addChess(new Chess(color, move[0], move[1]), false);
         }
