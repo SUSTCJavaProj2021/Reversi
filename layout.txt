@@ -1,6 +1,0 @@
-PrimaryStage
-	mainView
-		SelectorPage.root
-		viewPane (StackPane)
-			PlayPage.root
-			HomePage.root
