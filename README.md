@@ -5,4 +5,4 @@
     System.out.println("Hello, Reversi!");
  ```
  
- This markdown file serves only as a test.
+ 好耶，是黑白棋！
