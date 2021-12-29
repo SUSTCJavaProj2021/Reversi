@@ -1,5 +1,7 @@
 package com.demo.reversi.controller.interfaces;
 
+import com.demo.reversi.controller.basic.game.Board;
+
 public interface GameEditor extends GameControllerLayer{
 
     public void setBrushAsPlayer1();
@@ -16,9 +18,7 @@ public interface GameEditor extends GameControllerLayer{
 
     public void setBrushAsNull();
 
-    public void saveConfig();
+    public Board saveConfig();
 
     public void resetConfig();
-
-
 }

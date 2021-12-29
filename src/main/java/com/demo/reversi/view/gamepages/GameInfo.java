@@ -16,8 +16,9 @@ public class GameInfo {
     public final String playerName2;
     public final boolean isPlayer2AI;
     public final Mode player2Mode;
+    public final boolean isEditorApplied;
 
-    public GameInfo(String playerName1, boolean isPlayer1AI, Mode player1Mode, String playerName2, boolean isPlayer2AI, Mode player2Mode, int rowSize, int colSize) {
+    public GameInfo(String playerName1, boolean isPlayer1AI, Mode player1Mode, String playerName2, boolean isPlayer2AI, Mode player2Mode, int rowSize, int colSize, boolean isEditorApplied) {
         this.rowSize = rowSize;
         this.colSize = colSize;
 
@@ -28,13 +29,14 @@ public class GameInfo {
         this.playerName2 = playerName2;
         this.isPlayer2AI = isPlayer2AI;
         this.player2Mode = player2Mode;
+        this.isEditorApplied = isEditorApplied;
     }
 
     public GameInfo(String playerName1, String playerName2) {
-        this(playerName1, false, Mode.EASY, playerName2, false, Mode.EASY, 8, 8);
+        this(playerName1, false, Mode.EASY, playerName2, false, Mode.EASY, 8, 8, false);
     }
 
     public GameInfo(String playerName1, String playerName2, int rowSize, int colSize) {
-        this(playerName1, false, Mode.EASY, playerName2, false, Mode.EASY, rowSize, colSize);
+        this(playerName1, false, Mode.EASY, playerName2, false, Mode.EASY, rowSize, colSize, false);
     }
 }

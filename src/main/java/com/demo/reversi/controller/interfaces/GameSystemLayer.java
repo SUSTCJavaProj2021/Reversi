@@ -92,6 +92,10 @@ public interface GameSystemLayer {
                                             String playerName2, boolean isAIEnabled2, Mode mode2,
                                             int rowSize, int colSize);
 
+    public GameControllerLayer startNewGame(String playerName1, boolean isAIEnabled1, Mode mode1,
+                                            String playerName2, boolean isAIEnabled2, Mode mode2,
+                                            boolean isEditorApplied);
+
     /**
      * Load the Game from the specific path.
      *
@@ -130,6 +134,7 @@ public interface GameSystemLayer {
      */
     public GameEditor getGameEditor();
 
+
     /**
      * Load the GameSystem instance from the selected file.
      *
@@ -160,4 +165,7 @@ public interface GameSystemLayer {
      * @return <code>true</code> if the operation succeeds
      */
     public void reset();
+
+
+    public void saveConfig(GameEditor gameEditor);
 }

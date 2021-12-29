@@ -55,8 +55,8 @@ public class GameEditorController extends GameController implements GameEditor {
     }
 
     @Override
-    public void saveConfig() {
-
+    public Board saveConfig() {
+        return board;
     }
 
     @Override

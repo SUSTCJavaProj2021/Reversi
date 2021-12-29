@@ -153,6 +153,16 @@ public class GameSystemController extends GameSystem implements GameSystemLayer 
     }
 
     @Override
+    public GameControllerLayer startNewGame(String playerName1, boolean isAIEnabled1, Mode mode1, String playerName2, boolean isAIEnabled2, Mode mode2, boolean isEditorApplied) {
+        Board board = new Board(initialBoard);
+
+        PlayerLayer player1 = isAIEnabled1 ? new AIPlayerController(mode1.getPlayer()) : createNewPlayer(playerName1);
+        PlayerLayer player2 = isAIEnabled2 ? new AIPlayerController(mode2.getPlayer()) :createNewPlayer(playerName2);
+
+        return newSimpleGame(new Player[] {player1.get(), player2.get()}, board);
+    }
+
+    @Override
     public GameController loadGame(File file) {
         try {
             Scanner scanner = new Scanner(file);
@@ -231,5 +241,10 @@ public class GameSystemController extends GameSystem implements GameSystemLayer 
     public void reset() {
         backToDefaultBoard();
         playerList.clear();
+    }
+
+    @Override
+    public void saveConfig(GameEditor gameEditor) {
+        this.initialBoard = gameEditor.saveConfig();
     }
 }

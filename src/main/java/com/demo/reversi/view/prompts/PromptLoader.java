@@ -268,6 +268,11 @@ public class PromptLoader {
             gridPane.getColumnConstraints().add(colConstraints);
         }
 
+        /*
+         * Ask whether the new game should apply the default editor.
+         */
+        CheckBox checkBox = new CheckBox();
+        gridPane.add(new HBox(10, new TextLabel("Apply Customized ChessBoard?", theme), checkBox), 0, gridPane.getRowCount(), GridPane.REMAINING, 1);
 
         //Set button content
         dialogPane.lookupButton(ButtonType.FINISH).disableProperty().bind(Bindings.createBooleanBinding(() ->
@@ -289,7 +294,7 @@ public class PromptLoader {
                 return new GameInfo(
                         textFields[0].getText(), toggleSwitch[0].switchedOnProperty().getValue(), difficultyComboBox[0].getValue(),
                         textFields[1].getText(), toggleSwitch[1].switchedOnProperty().getValue(), difficultyComboBox[1].getValue(),
-                        Integer.parseInt(textFields[2].getText()), Integer.parseInt(textFields[3].getText()));
+                        Integer.parseInt(textFields[2].getText()), Integer.parseInt(textFields[3].getText()), checkBox.isSelected());
             }
             return null;
         });

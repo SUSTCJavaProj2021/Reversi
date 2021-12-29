@@ -64,7 +64,7 @@ public class GameEditorPage extends GridPane implements UpdatableGame {
 
         resizeButton.setOnAction(ActionEvent -> {
             gameEditor.resizeBoard(Integer.parseInt(rowText.getText()), Integer.parseInt(colText.getText()));
-            Log0j.writeCaution("Reloading ChessBoard to size: " + Integer.parseInt(rowText.getText()) + ", " +Integer.parseInt(colText.getText()));
+            Log0j.writeCaution("Reloading ChessBoard to size: " + Integer.parseInt(rowText.getText()) + ", " + Integer.parseInt(colText.getText()));
             chessBoard.initBoardPlayable(gameEditor);
         });
         brushEmptyButton.setOnAction(ActionEvent -> {
@@ -83,7 +83,7 @@ public class GameEditorPage extends GridPane implements UpdatableGame {
             gameEditor.setBrushAsNull();
         });
         saveButton.setOnAction(ActionEvent -> {
-            gameEditor.saveConfig();
+            gameSystem.saveConfig(gameEditor);
         });
         resetButton.setOnAction(ActionEvent -> {
             gameEditor.resetConfig();

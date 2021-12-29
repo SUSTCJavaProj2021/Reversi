@@ -59,6 +59,11 @@ public class SimpleGameSystem implements GameSystemLayer {
     }
 
     @Override
+    public GameControllerLayer startNewGame(String playerName1, boolean isAIEnabled1, Mode mode1, String playerName2, boolean isAIEnabled2, Mode mode2, boolean isEditorApplied) {
+        return null;
+    }
+
+    @Override
     public GameControllerLayer loadGame(File file) {
         return new SimpleGameController(new SimplePlayer("Loaded Player"), new SimplePlayer("Loaded Player"), true);
     }
@@ -137,6 +142,11 @@ public class SimpleGameSystem implements GameSystemLayer {
 
     @Override
     public void reset() {
+    }
+
+    @Override
+    public void saveConfig(GameEditor gameEditor) {
+
     }
 
 }
