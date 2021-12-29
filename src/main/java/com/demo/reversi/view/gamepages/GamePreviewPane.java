@@ -6,7 +6,9 @@ import com.demo.reversi.component.gamemodel.ChessBoard;
 import com.demo.reversi.component.panes.InfoPane;
 import com.demo.reversi.controller.interfaces.GameControllerLayer;
 import com.demo.reversi.controller.interfaces.GameSystemLayer;
+import com.demo.reversi.controller.show.GameController;
 import com.demo.reversi.logger.Log0j;
+import com.demo.reversi.save.SaveLoader;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.prompts.PromptLoader;
 import javafx.animation.FadeTransition;
@@ -313,7 +315,7 @@ public class GamePreviewPane extends StackPane {
             //todo: finish this.
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Select Save");
-            fileChooser.setInitialDirectory(new File(MainApp.class.getResource("save/").getPath().substring(1)));
+            fileChooser.setInitialDirectory(new File(SaveLoader.getResource(GameController.SAVE_PATH + "/").getAbsolutePath()));
             fileChooser.getExtensionFilters().addAll(
                     new FileChooser.ExtensionFilter("Save File", "*.sav"));
             File selectedFile = fileChooser.showOpenDialog(getScene().getWindow());

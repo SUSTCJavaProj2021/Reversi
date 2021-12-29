@@ -15,6 +15,7 @@ import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.res.lang.LiteralConstants;
 import com.demo.reversi.themes.Theme;
 import com.demo.reversi.view.Updatable;
+import com.demo.reversi.view.gamepages.GameEditorPage;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -62,6 +63,8 @@ public class SettingsPage implements Updatable {
     public final MetroButton loadButton;
     public final MetroButton saveButton;
     public final MetroButton resetButton;
+
+    public GameEditorPage gameEditorPage;
 
     public final GameSystemLayer gameSystem;
     public final Theme theme;
@@ -195,58 +198,9 @@ public class SettingsPage implements Updatable {
 
         {
             //todo: Finish customizing ChessBoard
-            GridPane gridPane = new GridPane();
-            ChessBoard chessBoard = new ChessBoard(theme);
-            GameEditor gameEditor = gameSystem.getGameEditor();
-            VBox container = new VBox(5);
+            gameEditorPage = new GameEditorPage(gameSystem, theme);
 
-            chessBoard.initBoardPlayable(gameEditor);
-
-            gridPane.add(chessBoard, 0, 0);
-            gridPane.add(container, 1, 0);
-
-            TextField rowText = new TextField("8");
-            TextField colText = new TextField("8");
-            MetroButton resizeButton = new MetroButton("Resize", theme);
-            MetroButton brushEmptyButton = new MetroButton("Brush: Empty", theme);
-            MetroButton brushPlayer1Button = new MetroButton("Brush: Player1", theme);
-            MetroButton brushPlayer2Button = new MetroButton("Brush: Player2", theme);
-            MetroButton brushBanningButton = new MetroButton("Brush: Ban", theme);
-            MetroButton brushNullButton = new MetroButton("Brush: NULL", theme);
-            MetroButton saveButton = new MetroButton("Save Config", theme);
-            MetroButton resetButton = new MetroButton("Reset Board", theme);
-            container.getChildren().addAll(
-                    rowText, colText,
-                    resizeButton, brushEmptyButton, brushPlayer1Button, brushPlayer2Button, brushBanningButton, brushNullButton,
-                    saveButton, resetButton);
-
-            resizeButton.setOnAction(ActionEvent -> {
-                gameEditor.resizeBoard(Integer.parseInt(rowText.getText()), Integer.parseInt(colText.getText()));
-                chessBoard.initBoardPlayable(gameEditor);
-            });
-            brushEmptyButton.setOnAction(ActionEvent -> {
-                gameEditor.setBrushAsEmptying();
-            });
-            brushPlayer1Button.setOnAction(ActionEvent -> {
-                gameEditor.setBrushAsPlayer1();
-            });
-            brushPlayer2Button.setOnAction(ActionEvent -> {
-                gameEditor.setBrushAsPlayer2();
-            });
-            brushBanningButton.setOnAction(ActionEvent -> {
-                gameEditor.setBrushAsBanning();
-            });
-            brushNullButton.setOnAction(ActionEvent -> {
-                gameEditor.setBrushAsNull();
-            });
-            saveButton.setOnAction(ActionEvent -> {
-                gameEditor.saveConfig();
-            });
-            resetButton.setOnAction(ActionEvent -> {
-                gameEditor.resetConfig();
-            });
-
-            addToContentWrapper(createItemContainer("Initial ChessBoard Setting", chessBoard));
+            addToContentWrapper(createItemContainer("Initial ChessBoard Setting", gameEditorPage));
         }
 
         //Colors
@@ -398,7 +352,7 @@ public class SettingsPage implements Updatable {
 
                 if (selectedFile != null) {
                     theme.chessBoardBackgroundPR().setValue(new Background(new BackgroundImage(new Image(selectedFile.toURI().toString()),
-                            BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                            BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, true))));
                 } else {
                     Log0j.writeError("Image file is null. Cannot load ChessBoard image.");
                 }

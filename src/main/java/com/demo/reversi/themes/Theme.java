@@ -153,7 +153,7 @@ public class Theme {
 
     public static final Background defaultBackPaneBKGND = new Background(
             new BackgroundImage(new Image(defaultBackgroundSource.toUri().toString()),
-                    BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT));
+                    BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, true)));
     /**
      * Main-View FrontPane background
      */
@@ -208,7 +208,7 @@ public class Theme {
     public static final Color defaultChessBoardColor2 = Color.rgb(55, 58, 84);
     public static final Color defaultChessBoardGridColor = Color.rgb(255, 255, 255, 0.50);
     public static final Color defaultChessBoardInvestColor = Color.rgb(239, 36, 36, 0.5);
-    public static final Color defaultChessBoardBannedColor = Color.rgb(120, 120, 120, 0.5);
+    public static final Color defaultChessBoardBannedColor = Color.rgb(30, 30, 30, 0.88);
     public static final Background defaultChessBoardBackground = null;
 
     /**

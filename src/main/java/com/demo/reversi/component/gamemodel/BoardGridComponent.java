@@ -121,8 +121,8 @@ public class BoardGridComponent extends StackPane {
 
     public void setInvestigating() {
         if(status != BoardStatus.INVESTIGATING){
+            setDefault();
             Platform.runLater(() -> {
-                setDefault();
                 theme.bindToChessBoardInvestColor(viewCover.backgroundProperty());
             });
             status = BoardStatus.INVESTIGATING;
@@ -131,11 +131,15 @@ public class BoardGridComponent extends StackPane {
 
     public void setBanned() {
         if (status != BoardStatus.BANNED) {
+            setDefault();
             Platform.runLater(() -> {
-                setDefault();
                 theme.bindToChessBoardBannedColor(viewCover.backgroundProperty());
             });
             status = BoardStatus.BANNED;
         }
+    }
+
+    public BoardStatus getStatus(){
+        return status;
     }
 }

@@ -105,7 +105,6 @@ public class TutorialPage extends GamePageLocal {
     /**
      * I know the implementation may seem stupid, but this is by far the quickest solution.
      */
-
     private void callTutorialStepIn() {
         switch (step.getValue()) {
             case 0 -> {

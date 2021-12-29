@@ -8,6 +8,7 @@ import com.demo.reversi.component.panes.InfoPane;
 import com.demo.reversi.component.switches.IndicatedToggleSwitch;
 import com.demo.reversi.controller.basic.player.Mode;
 import com.demo.reversi.controller.interfaces.GameControllerLayer;
+import com.demo.reversi.controller.interfaces.GameStatus;
 import com.demo.reversi.controller.interfaces.GameSystemLayer;
 import com.demo.reversi.logger.Log0j;
 import com.demo.reversi.themes.Theme;
@@ -270,12 +271,12 @@ public class GamePageLocal implements UpdatableGame {
 
         {
             //Test AI predictor
-            MetroButton predicatorButton = new MetroButton("Call AI Predictor", theme);
-            predicatorButton.setOnAction(actionEvent -> {
+            MetroButton predictorButton = new MetroButton("Call AI Predictor", theme);
+            predictorButton.setOnAction(actionEvent -> {
+                Log0j.writeInfo("Trying to call AI predictor.");
                 controller.callAIPredictor();
-                update();
             });
-            configPane.getChildren().add(predicatorButton);
+            configPane.getChildren().add(predictorButton);
         }
 
 
@@ -396,8 +397,25 @@ public class GamePageLocal implements UpdatableGame {
     }
 
     public void updateAIPlayer() {
-        if (controller != null) {
-            controller.performAINextStep();
+        if (controller != null && controller.getGameStatus() == GameStatus.UNFINISHED) {
+            if (controller.isPlayer1AI() && controller.getCurrentPlayer() == controller.getPlayer1()
+                    || controller.isPlayer2AI() && controller.getCurrentPlayer() == controller.getPlayer2()) {
+
+                new Thread(new Task<Void>() {
+                    @Override
+                    public Void call() {
+                        try {
+                            Thread.sleep(400);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        Log0j.writeInfo("Calling AI to perform next step.");
+                        controller.performAINextStep();
+                        return null;
+                    }
+                }).start();
+
+            }
         }
     }
 

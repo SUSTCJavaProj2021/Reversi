@@ -43,7 +43,7 @@ public class ChessBoard extends HBox implements Updatable {
 
     private final Theme theme;
 
-    public boolean showAvailablePos = false;
+    private boolean showAvailablePos = false;
 
     public ChessBoard(Theme theme) {
         this(theme, 0);
@@ -173,7 +173,7 @@ public class ChessBoard extends HBox implements Updatable {
     }
 
     public void setShowIndicators(boolean value) {
-        showAvailablePos = value;
+        setShowAvailablePos(value);
     }
 
     @Override
@@ -185,7 +185,6 @@ public class ChessBoard extends HBox implements Updatable {
         for (int row = 0; row < rowSize; row++) {
             for (int col = 0; col < colSize; col++) {
                 updateByPosition(row, col);
-
             }
 
         }
@@ -203,7 +202,7 @@ public class ChessBoard extends HBox implements Updatable {
         }
         GridStatus gridStatus = controller.getGridStatus(row, col);
         Chess chess = ((Chess) gridBases[row][col].getChildren().get(1));
-        chess.setChessOwner(readBlockStatus(gridStatus));
+        chess.setChessOwner(readGridStatus(gridStatus));
         final int r = row, c = col;
         updateGrid(gridStatus, r, c);
     }
@@ -223,7 +222,7 @@ public class ChessBoard extends HBox implements Updatable {
          */
         GridStatus gridStatus = controller.getGridStatus(row, col);
         Chess chess = ((Chess) gridBases[row][col].getChildren().get(1));
-        chess.setChessOwner(readBlockStatus(gridStatus));
+        chess.setChessOwner(readGridStatus(gridStatus));
 
         List<Callable<Object>> tasks = new ArrayList<>();
         int cnt = 0;
@@ -270,7 +269,7 @@ public class ChessBoard extends HBox implements Updatable {
             Chess chess = ((Chess) gridBases[row][col].getChildren().get(1));
 
 
-            chess.setChessOwnerDirected(readBlockStatus(gridStatus), stepCol, stepRow);
+            chess.setChessOwnerDirected(readGridStatus(gridStatus), stepCol, stepRow);
 
             try {
                 Thread.sleep(CHESS_REVERSE_GAP_TIME);
@@ -389,7 +388,7 @@ public class ChessBoard extends HBox implements Updatable {
     }
 
     private void updateGrid(GridStatus gridStatus, int row, int col) {
-        if (showAvailablePos) {
+        if (isShowAvailablePos()) {
             switch (gridStatus) {
                 case AVAILABLE -> gridBases[row][col].setAvailable();
                 case INVESTIGATING -> gridBases[row][col].setInvestigating();
@@ -399,9 +398,11 @@ public class ChessBoard extends HBox implements Updatable {
         } else {
             gridBases[row][col].setDefault();
         }
+        //todo: delete test
+//        Log0j.writeCaution("isShowAvailablePos = " + isShowAvailablePos() + ", row[" + row + "], col[" + col + "] = " + gridBases[row][col].getStatus());
     }
 
-    public Chess.ChessOwner readBlockStatus(GridStatus gridStatus) {
+    public Chess.ChessOwner readGridStatus(GridStatus gridStatus) {
         if (gridStatus == GridStatus.PLAYER_1) {
             return Chess.ChessOwner.PLAYER1;
         } else if (gridStatus == GridStatus.PLAYER_2) {
@@ -466,4 +467,11 @@ public class ChessBoard extends HBox implements Updatable {
         update();
     }
 
+    public boolean isShowAvailablePos() {
+        return showAvailablePos;
+    }
+
+    public void setShowAvailablePos(boolean showAvailablePos) {
+        this.showAvailablePos = showAvailablePos;
+    }
 }
