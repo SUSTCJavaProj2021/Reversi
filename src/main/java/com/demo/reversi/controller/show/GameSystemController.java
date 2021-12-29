@@ -142,7 +142,7 @@ public class GameSystemController extends GameSystem implements GameSystemLayer 
                                             Mode mode2,
                                             int rowSize,
                                             int colSize) {
-        Board board = new Board(initialBoard);
+        Board board = new Board();
 
         board.setSize(rowSize, colSize);
 

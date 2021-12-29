@@ -69,7 +69,7 @@ public class GameEditorController extends GameController implements GameEditor {
     public void onGridClick(int row, int col) {
         if (!board.isValid(row, col)) {
             Log0j.writeInfo(
-                String.format("Invalid Move (%d, %d): The position is invalid (out of board or banned)", row, col));
+                    String.format("Invalid Move (%d, %d): The position is invalid (out of board or banned)", row, col));
 
             return;
         }
@@ -101,7 +101,10 @@ public class GameEditorController extends GameController implements GameEditor {
 
     @Override
     public GridStatus getGridStatus(int row, int col) {
-        if (board.isBanned(row, col)) {
+        if (!board.isValid(row, col)) {
+            Log0j.writeCaution("Invalid position");
+            return GridStatus.BANNED;
+        } else if (board.isBanned(row, col)) {
             return GridStatus.BANNED;
         } else {
             Chess chess = board.getChess()[row][col];

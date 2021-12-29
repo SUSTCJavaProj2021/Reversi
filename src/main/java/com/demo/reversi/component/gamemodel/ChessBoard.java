@@ -121,11 +121,10 @@ public class ChessBoard extends HBox implements Updatable {
         cellMinSize = boardSize / this.rowSize;
 
         gridBases = new BoardGridComponent[rowSize][colSize];
-
+        Log0j.writeCaution("Reloading the grid to size " + rowSize + "," + colSize);
         for (int row = 0; row < this.rowSize; row++) {
             gridBases[row] = new BoardGridComponent[this.colSize];
             for (int col = 0; col < this.colSize; col++) {
-
                 //Initialize Grids
                 gridBases[row][col] = new BoardGridComponent(theme);
                 gridBases[row][col].setMinHeight(cellMinSize);
@@ -444,7 +443,7 @@ public class ChessBoard extends HBox implements Updatable {
     }
 
     public void initBoardPlayable(GameControllerLayer controller) {
-        unloadController();
+//        unloadController();
 
         Log0j.writeInfo("Initializing the chessboard to be playable.");
         this.controller = controller;

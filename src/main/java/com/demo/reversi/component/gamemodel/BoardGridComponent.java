@@ -122,8 +122,11 @@ public class BoardGridComponent extends StackPane {
     public void setInvestigating() {
         if(status != BoardStatus.INVESTIGATING){
             setDefault();
+            Circle circle = new Circle();
+            circle.radiusProperty().bind(widthProperty().multiply(0.2));
+            circle.fillProperty().bind(theme.chessBoardInvestColorPR());
             Platform.runLater(() -> {
-                theme.bindToChessBoardInvestColor(viewCover.backgroundProperty());
+                viewCover.getChildren().add(circle);
             });
             status = BoardStatus.INVESTIGATING;
         }

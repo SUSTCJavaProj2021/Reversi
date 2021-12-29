@@ -115,7 +115,7 @@ public class PlayPage implements Updatable {
     public void initActions(){
         root.visibleProperty().addListener(((observable, oldValue, newValue) -> {
             if(newValue){
-                refreshLocalGamePreview();
+//                refreshLocalGamePreview();
             }
         }));
     }

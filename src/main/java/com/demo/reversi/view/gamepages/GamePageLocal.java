@@ -258,17 +258,25 @@ public class GamePageLocal implements UpdatableGame {
 
         setPlayer1AsAI.setOnAction(ActionEvent -> {
             controller.setPlayer1AsAIPlayer(player1AIMode.getValue());
+            player1Info.setPlayer(controller.getPlayer1());
+            player1Info.setPlayerAsAI();
             updateAIPlayer();
         });
         setPlayer2AsAI.setOnAction(ActionEvent -> {
             controller.setPlayer2AsAIPlayer(player2AIMode.getValue());
+            player2Info.setPlayer(controller.getPlayer2());
+            player2Info.setPlayerAsAI();
             updateAIPlayer();
         });
         recoverPlayer1.setOnAction(ActionEvent -> {
             controller.setRecoverPlayer1AsHuman();
+            player1Info.setPlayer(controller.getPlayer1());
+            player1Info.reInit();
         });
         recoverPlayer2.setOnAction(ActionEvent -> {
             controller.setRecoverPlayer2AsHuman();
+            player2Info.setPlayer(controller.getPlayer2());
+            player2Info.reInit();
         });
 
         {

@@ -87,6 +87,8 @@ public class GameEditorPage extends GridPane implements UpdatableGame {
         });
         resetButton.setOnAction(ActionEvent -> {
             gameEditor.resetConfig();
+            chessBoard.initBoardPlayable(gameEditor);
+            update();
         });
 
         update();

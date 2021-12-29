@@ -373,18 +373,23 @@ public class GameController extends Game implements GameControllerLayer {
 
     @Override
     public void setPlayer1AsAIPlayer(Mode mode) {
+        Log0j.writeInfo("Switch player1 to mode " + mode.name());
         player1 = new AIPlayerController(mode.getPlayer());
+        player[0] = mode.getPlayer();
     }
 
     @Override
     public void setPlayer2AsAIPlayer(Mode mode) {
+        Log0j.writeInfo("Switch player2 to mode " + mode.name());
         player2 = new AIPlayerController(mode.getPlayer());
+        player[1] = mode.getPlayer();
     }
 
     @Override
     public void setRecoverPlayer1AsHuman() {
         if (isRecoverPlayer1Available()) {
             player1 = new HumanPlayerController(originHumanPlayer1);
+            player[0] = originHumanPlayer1;
         } else {
             Log0j.writeCaution("Cannot recover Player1 because there is no available origin");
         }
@@ -394,6 +399,7 @@ public class GameController extends Game implements GameControllerLayer {
     public void setRecoverPlayer2AsHuman() {
         if (isRecoverPlayer2Available()) {
             player2 = new HumanPlayerController(originHumanPlayer2);
+            player[1] = originHumanPlayer2;
         } else {
             Log0j.writeCaution("Cannot recover Player2 because there is no available origin");
         }
@@ -458,7 +464,7 @@ public class GameController extends Game implements GameControllerLayer {
 
             return false;
         } else if (getPlayerCurrent().isHuman()) {
-            Log0j.writeInfo("Current player is not an AI");
+            Log0j.writeInfo("Current player is not an AI, name is " + getPlayerCurrent().getName());
 
             return false;
         }
@@ -477,6 +483,8 @@ public class GameController extends Game implements GameControllerLayer {
     @Override
     public void callAIPredictor() {
         updateRecommended(Mode.HARD);
+        Log0j.writeInfo(
+                String.format("AI position is (%d, %d)", AIRecommended[0], AIRecommended[1]));
         forceGUIUpdate();
     }
 
@@ -486,10 +494,10 @@ public class GameController extends Game implements GameControllerLayer {
             return GridStatus.BANNED;
         } else if (board.isCaptured(row, col)) {
             return board.getChess()[row][col].getColor() == ChessColor.BLACK ? GridStatus.PLAYER_1 : GridStatus.PLAYER_2;
-        } else if (isMovable(row, col)) {
-            return GridStatus.AVAILABLE;
         } else if (!isReadOnly && AIRecommended != null && row == AIRecommended[0] && col == AIRecommended[1]) {
             return GridStatus.INVESTIGATING;
+        } else if (isMovable(row, col)) {
+            return GridStatus.AVAILABLE;
         } else {
             return GridStatus.UNOCCUPIED;
         }

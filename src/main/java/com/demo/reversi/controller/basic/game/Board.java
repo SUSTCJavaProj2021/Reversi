@@ -133,6 +133,9 @@ public class Board {
                 }
             }
         }
+
+        this.rowSize = rowSize;
+        this.columnSize = columnSize;
     }
 
     public boolean isValid(int i, int j) {
